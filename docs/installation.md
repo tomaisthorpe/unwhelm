@@ -1,71 +1,88 @@
 # unwhelm Installation Guide
 
-## Setup Instructions
+## Self-hosting
 
-### 1. Prerequisites
+### With Docker (easiest)
 
-Make sure you have the following installed:
-
-- Node.js 20 or later
-- PostgreSQL database (local or cloud)
-- npm or yarn package manager
-
-### 2. Environment Configuration
-
-1. Copy the `.env` file and update the database connection:
-
-   ```bash
-   DATABASE_URL="postgresql://username:password@localhost:5432/unwhelm?schema=public"
-   NEXTAUTH_SECRET="your-secure-random-string-here"
-   NEXTAUTH_URL="http://localhost:3000"
-   ```
-
-2. **For local PostgreSQL setup:**
-   - Install PostgreSQL locally
-   - Create a database named `unwhelm`
-   - Update the `DATABASE_URL` with your credentials
-   - For testing, there's a docker compose file: `docker compose up db`
-
-3. **For cloud PostgreSQL:**
-   - Use services like Neon, Supabase, or Railway
-   - Get the connection string and update `DATABASE_URL`
-
-### 3. Installation and Database Setup
-
-1. **Install dependencies:**
-
-   ```bash
-   npm install
-   ```
-
-2. **Generate Prisma client:**
-
-   ```bash
-   npm run db:generate
-   ```
-
-3. **Push the database schema:**
-
-   ```bash
-   npm run db:push
-   ```
-
-4. **Seed the database with sample data:**
-   ```bash
-   npm run db:seed
-   ```
-
-### 4. Development
-
-Start the development server:
+1. **Download docker-compose.yml**
 
 ```bash
-npm run dev
+   wget https://raw.githubusercontent.com/tomaisthorpe/unwhelm/main/docker-compose.yml
 ```
 
-Open [http://localhost:3000](http://localhost:3000) in your browser.
+Or clone the whole repo if you want to browse the code:
 
-### 5. Demo Account
+```bash
+   git clone https://github.com/tomaisthorpe/unwhelm.git
+   cd unwhelm
+```
+
+2. **Update secrets in docker-compose.yml**
+
+```yaml
+   NEXTAUTH_SECRET=your-secret-key-here  # Generate with: openssl rand -base64 32
+   NEXTAUTH_URL=http://localhost:3000     # Change to your domain in production
+```
+
+3. **Start everything**
+
+```bash
+   docker compose up
+```
+
+That's it. Open http://localhost:3000
+
+To seed demo data:
+
+```bash
+docker compose exec app npm run db:seed
+```
+
+### Without Docker
+
+If you prefer running Node directly:
+
+1. **Install dependencies**
+
+```bash
+   npm install
+```
+
+2. **Set up PostgreSQL**
+
+   Run locally with Docker:
+
+```bash
+   docker compose up db -d
+```
+
+Or use a cloud provider (Neon, Supabase, Railway)
+
+3. **Configure environment**
+
+   Copy `.env.example` to `.env`:
+
+```bash
+   DATABASE_URL="postgresql://unwhelm:password@localhost:5432/unwhelm"
+   NEXTAUTH_SECRET="generate-with-openssl-rand-base64-32"
+   NEXTAUTH_URL="http://localhost:3000"
+```
+
+4. **Initialize database**
+
+```bash
+   npm run db:generate
+   npm run db:push
+   npm run db:seed  # optional: adds demo account
+```
+
+5. **Start the app**
+
+```bash
+   npm run dev
+```
+
+### Demo Account
 
 The application comes with a pre-seeded demo account for immediate testing:
 
@@ -74,31 +91,36 @@ The application comes with a pre-seeded demo account for immediate testing:
 
 This account includes sample contexts and tasks that demonstrate all features including different task types, habit tracking, and context health visualization.
 
-## Troubleshooting
+### Production deployment
 
-### Database Connection Issues
+**With Docker:**
 
-- Verify your `DATABASE_URL` is correct
-- Ensure your PostgreSQL server is running
-- Check firewall settings for cloud databases
+- Change `NEXTAUTH_URL` to your domain
+- Generate a strong `NEXTAUTH_SECRET`
+- Use a managed PostgreSQL instance (recommended) or the included db service
+- Set up a reverse proxy (nginx, Caddy) for HTTPS
 
-### Authentication Issues
+**Without Docker (Vercel, Railway, etc):**
 
-- Verify `NEXTAUTH_SECRET` is set
-- Check `NEXTAUTH_URL` matches your domain
-- Clear browser cookies if needed
+- Set environment variables in your platform
+- Connect your PostgreSQL database
+- Deploy normally
 
-### Build Issues
+### Troubleshooting
 
-- Run `npm run db:generate` after schema changes
-- Ensure all environment variables are set
-- Check TypeScript errors with `npm run lint`
+**Can't connect to database?**
 
-## Support
+- Docker: Make sure both services are running: `docker compose ps`
+- Check your `DATABASE_URL` format
+- Cloud databases: verify firewall/IP allowlists
 
-For questions or issues:
+**Authentication errors?**
 
-1. Check the documentation in `/docs/`
-2. Check the console for error messages
-3. Verify database connectivity and seeding
-4. Post an issue!
+- Generate a new secret: `openssl rand -base64 32`
+- Make sure `NEXTAUTH_URL` matches your actual URL
+
+**Port already in use?**
+
+- Change ports in docker-compose.yml or stop conflicting services
+
+**Need help?** [Open an issue](https://github.com/tomaisthorpe/unwhelm/issues)
