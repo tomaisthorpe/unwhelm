@@ -4,53 +4,25 @@ A self-hostable context-based task management app with customizable urgency scor
 
 ![Screenshot of the main task list](screenshot.png)
 
-## Core Concept
+## Why I built this
 
-unwhelm is designed to solve the problem of prioritizing work across multiple projects and life areas. Unlike traditional task apps, it uses:
+I built this because I was stuck in a loop of trying new task managers, getting slightly behind, and then not sticking with it because the overdue became overwhelming.
+I wanted a way to easily see what tasks deserved my attention without the shame of seeing 40 overdue tasks.
 
-- **Context-based organization** (coding, bathroom, kitchen, etc.)
-- **Customizable urgency scoring** (inspired by TaskWarrior)
-- **Flexible habit tracking** with different types
-- **Natural language task entry** with smart parsing (!context #tags p1 tomorrow)
+unwhelm organises tasks by **context** (kitchen, coding, whatever) and calculates urgency scores so you always know what to work on next.
+It also handles habits without making you feel guilty about broken streaks.
 
-## Features
+## What it does
 
-**Core Functionality:**
-
-- ✅ Complete task CRUD with Server Actions
-- ✅ Context management with health tracking
-- ✅ Dynamic urgency calculation
-- ✅ Full habit tracking system with 4 habit types
-- ✅ PostgreSQL database with Prisma ORM
-- ✅ User authentication with NextAuth.js
-- ✅ Server-side rendering and data fetching
-
-**Task Management:**
-
-- ✅ Three task types: regular, habits, recurring
-- ✅ Urgency scoring based on priority, age, due dates, tags
-- ✅ Optimistic UI updates with Server Actions
-- ✅ Task completion with habit streak tracking
-- ✅ Text-based task entry with natural language parsing
-- ✅ Subtasks with drag-and-drop reordering
-- ✅ Tag coefficient system for customizable urgency weighting
-
-**UI/UX:**
-
-- ✅ Responsive design with Tailwind CSS + shadcn/ui
-- ✅ Context health visualization
-- ✅ Collapsible context groups
-- ✅ Today section for due tasks
-- ✅ Relaxed habit status language
-- ✅ Search and filtering across tasks and contexts
-- ✅ Context archiving system
-- ✅ Completed tasks page with pagination
-
-**Analytics & Insights:**
-
-- ✅ Task burndown chart and completion analytics
-- ✅ PWA badge notifications for due tasks
-- ✅ Context health tracking and visualization
+- **Smart task sorting** - urgency score based on due dates, priority, age, and custom tags. Heavily inspired by TaskWarrior.
+- **Context-based organisation** - group tasks by where you do them or what project they belong to. Each context tracks its own "health" based on how well you're keeping up with habits.
+- **Add tasks with natural language** - easily add tasks with smart parsing (!context #tags p1 tomorrow)
+- **Flexible habits** - Four types with different UI emphasis:
+  - Streak habits (exercise) show your current streak prominently
+  - Learning habits (reading) have moderate streak display
+  - Wellness habits (skincare) balance streaks with frequency
+  - Maintenance habits (cleaning) just show when you last did them
+- **The basics** - subtasks, recurring tasks, tags, search, archiving contexts, completion history, analytics.
 
 ## Key Features
 
