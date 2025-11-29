@@ -160,10 +160,12 @@ Context health is calculated based ONLY on habit completion (not regular tasks).
 Tasks can have subtasks stored as a JSON array in the database:
 
 **Data Structure:**
+
 - Stored in `Task.subtasks` field as JSON: `[{id: string, text: string, completed: boolean}]`
 - Managed via `components/ui/subtasks-input.tsx`
 
 **Features:**
+
 - Drag-and-drop reordering using `@dnd-kit/sortable`
 - Inline editing of subtask text
 - Independent completion state (doesn't affect parent task)
@@ -171,6 +173,7 @@ Tasks can have subtasks stored as a JSON array in the database:
 - Keyboard-accessible with grab handles
 
 **Usage:**
+
 - Available in task creation/editing modal
 - Displayed in task cards with completion count
 - Persisted with task updates via server actions
@@ -180,6 +183,7 @@ Tasks can have subtasks stored as a JSON array in the database:
 Contexts can be archived to reduce clutter while preserving historical data:
 
 **Features:**
+
 - Archive/unarchive via context menu in UI
 - Archived contexts don't appear in main dashboard
 - Dedicated "Archived Contexts" modal to view and restore
@@ -187,6 +191,7 @@ Contexts can be archived to reduce clutter while preserving historical data:
 - Database field: `Context.archived` (Boolean)
 
 **Server Actions:**
+
 - `archiveContextAction(contextId)` - Archives a context
 - `unarchiveContextAction(contextId)` - Restores an archived context
 
@@ -199,6 +204,7 @@ Dedicated page for viewing completed tasks with pagination:
 **Route:** `/tasks/completed`
 
 **Features:**
+
 - Shows all completed tasks across all contexts
 - Displays completion timestamp (date and time)
 - Pagination with 20 items per page
@@ -206,6 +212,7 @@ Dedicated page for viewing completed tasks with pagination:
 - Sortable by completion date (newest first)
 
 **Components:**
+
 - `app/(app)/tasks/completed/page.tsx` - Server Component with pagination
 - `components/pagination.tsx` - Reusable pagination UI
 - `components/task-card.tsx` - Reused for consistent display
@@ -215,16 +222,19 @@ Dedicated page for viewing completed tasks with pagination:
 User account management:
 
 **Routes:**
+
 - `/settings` - Redirects to `/settings/account`
 - `/settings/account` - Account settings (name, email management)
 
 **Features:**
+
 - Profile information editing
 - Email verification status
 - Account creation date
 - Future: Password change, notification preferences
 
 **Components:**
+
 - `app/(app)/settings/account/page.tsx` - Settings page
 - `components/account-settings-form.tsx` - Account form UI
 
@@ -233,6 +243,7 @@ User account management:
 Unwhelm is a full Progressive Web App with offline support and native features:
 
 **Core Features:**
+
 - Service worker with comprehensive caching strategy
 - Installable on iOS, Android, Windows, macOS, Linux
 - Offline-first architecture with automatic sync
@@ -251,6 +262,7 @@ Shows count of due/overdue tasks on the app icon (home screen/dock/taskbar):
 - **API Route:** `app/api/badge/route.ts` for server-side badge updates
 
 **Caching Strategy (next.config.ts):**
+
 - **Fonts:** CacheFirst with 365-day expiration
 - **Images:** StaleWhileRevalidate with 24-hour expiration
 - **API calls:** NetworkFirst with 10-second timeout fallback
@@ -258,12 +270,14 @@ Shows count of due/overdue tasks on the app icon (home screen/dock/taskbar):
 - **Service worker:** Disabled in development, enabled in production
 
 **Installation:**
+
 - Configured via `next-pwa` package
 - Service worker registered automatically
 - Manifest and icons in `/public` directory
 - Support for all major platforms and browsers
 
 **Badge Permission Flow:**
+
 1. User visits app, banner prompts for badge permission (iOS only)
 2. Granting notification permission enables badge API
 3. Badge automatically updates with task count
@@ -409,6 +423,7 @@ Resource limits are configurable per user (potential for subscription tiers):
 - `MAX_CONTEXTS` - Currently set to `Infinity` (unlimited)
 
 **Server-side Enforcement:**
+
 - Checked in server actions before creating new resources
 - Returns error messages from `FEATURE_LIMIT_ERRORS` when limits exceeded
 - Ready for future subscription tier implementation
@@ -420,6 +435,7 @@ Task completion visualization over time:
 **Component:** `components/burndown-chart.tsx`
 
 **Features:**
+
 - Uses Recharts library for data visualization
 - Shows task creation vs. completion trends
 - Tracks total pending tasks over the past 30 days
@@ -427,16 +443,18 @@ Task completion visualization over time:
 - Statistics summary (total created, completed, pending)
 
 **Data Structure:**
+
 ```typescript
 interface BurndownDataPoint {
-  date: string;           // YYYY-MM-DD format
-  createdTasks: number;   // Tasks created on this day
+  date: string; // YYYY-MM-DD format
+  createdTasks: number; // Tasks created on this day
   completedTasks: number; // Tasks completed on this day
-  pendingTasks: number;   // Total pending tasks at end of day
+  pendingTasks: number; // Total pending tasks at end of day
 }
 ```
 
 **Usage:**
+
 - Fetched via `getBurndownData()` from `lib/data.ts`
 - Displayed on dashboard or dedicated analytics page
 - Helps visualize productivity trends and task accumulation
