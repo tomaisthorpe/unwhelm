@@ -17,11 +17,21 @@ Or clone the whole repo if you want to browse the code:
    cd unwhelm
 ```
 
-2. **Update secrets in docker-compose.yml**
+2. **Configure docker-compose.yml**
+
+   Update these environment variables:
 
 ```yaml
+   # Generate a secure secret
    NEXTAUTH_SECRET=your-secret-key-here  # Generate with: openssl rand -base64 32
-   NEXTAUTH_URL=http://localhost:3000     # Change to your domain in production
+
+   # Set your domain (change in production)
+   NEXTAUTH_URL=http://localhost:3000
+
+   # Create your admin account
+   ADMIN_EMAIL=admin@example.com
+   ADMIN_PASSWORD=changeme
+   ADMIN_NAME=Admin User
 ```
 
 3. **Start everything**
@@ -30,13 +40,19 @@ Or clone the whole repo if you want to browse the code:
    docker compose up
 ```
 
-That's it. Open http://localhost:3000
+That's it. Open http://localhost:3000 and log in with your admin credentials.
 
-To seed demo data:
+The database will be automatically migrated and your admin user created on first startup.
+
+**Optional: Add demo data**
+
+To add sample tasks and contexts for testing:
 
 ```bash
-docker compose exec app npm run db:seed
+docker compose exec -e ENABLE_DEMO_USER=true app npm run db:seed
 ```
+
+This creates a demo account (demo@unwhelm.app / password123) with example data.
 
 ### Without Docker
 
@@ -73,37 +89,46 @@ Or use a cloud provider (Neon, Supabase, Railway)
 ```bash
    npm run db:generate
    npm run db:push
-   npm run db:seed  # optional: adds demo account
 ```
 
-5. **Start the app**
+5. **Create admin user**
+
+   Set environment variables and run the script:
+
+```bash
+   ADMIN_EMAIL=admin@example.com ADMIN_PASSWORD=changeme ADMIN_NAME="Admin User" node prisma/create-admin.js
+```
+
+6. **Start the app**
 
 ```bash
    npm run dev
 ```
 
-### Demo Account
+**Optional: Add demo data**
 
-The application comes with a pre-seeded demo account for immediate testing:
+```bash
+ENABLE_DEMO_USER=true npm run db:seed
+```
 
-- **Email**: `demo@unwhelm.app`
-- **Password**: `password123`
-
-This account includes sample contexts and tasks that demonstrate all features including different task types, habit tracking, and context health visualization.
+This creates a demo account (demo@unwhelm.app / password123) with sample contexts and tasks.
 
 ### Production deployment
 
 **With Docker:**
 
 - Change `NEXTAUTH_URL` to your domain
-- Generate a strong `NEXTAUTH_SECRET`
+- Generate a strong `NEXTAUTH_SECRET`: `openssl rand -base64 32`
+- Set a secure `ADMIN_PASSWORD`
 - Use a managed PostgreSQL instance (recommended) or the included db service
 - Set up a reverse proxy (nginx, Caddy) for HTTPS
 
 **Without Docker (Vercel, Railway, etc):**
 
-- Set environment variables in your platform
+- Set all environment variables in your platform
 - Connect your PostgreSQL database
+- Add `ADMIN_EMAIL`, `ADMIN_PASSWORD`, `ADMIN_NAME` to create your first user
+- The admin user will be created automatically on first deployment
 - Deploy normally
 
 ### Troubleshooting
@@ -118,6 +143,12 @@ This account includes sample contexts and tasks that demonstrate all features in
 
 - Generate a new secret: `openssl rand -base64 32`
 - Make sure `NEXTAUTH_URL` matches your actual URL
+
+**Admin user not created?**
+
+- Check container logs: `docker compose logs app`
+- Verify `ADMIN_EMAIL` and `ADMIN_PASSWORD` are set
+- Try running create-admin script manually: `docker compose exec app node prisma/create-admin.js`
 
 **Port already in use?**
 
