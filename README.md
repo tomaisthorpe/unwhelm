@@ -6,59 +6,27 @@ A self-hostable context-based task management app with customizable urgency scor
 
 ## Why I built this
 
-I built this because I was stuck in a loop of trying new task managers, getting slightly behind, and then not sticking with it because the overdue became overwhelming.
+I kept bouncing between task apps because they always turned into guilt machines. I built this because I was stuck in a loop of trying new task managers, getting slightly behind, and then not sticking with it because the overdue became overwhelming.
 I wanted a way to easily see what tasks deserved my attention without the shame of seeing 40 overdue tasks.
 
 unwhelm organises tasks by **context** (kitchen, coding, whatever) and calculates urgency scores so you always know what to work on next.
-It also handles habits without making you feel guilty about broken streaks.
+It also handles habits without punishing you for broken streaks.
 
 ## What it does
 
 - **Smart task sorting** - urgency score based on due dates, priority, age, and custom tags. Heavily inspired by TaskWarrior.
 - **Context-based organisation** - group tasks by where you do them or what project they belong to. Each context tracks its own "health" based on how well you're keeping up with habits.
-- **Add tasks with natural language** - easily add tasks with smart parsing (!context #tags p1 tomorrow)
-- **Flexible habits** - Four types with different UI emphasis:
+- **Add tasks with natural language** - easily add tasks with smart parsing: `task name !context #tags p1 tomorrow``
+- **Flexible habits** - four types with different UI emphasis:
   - Streak habits (exercise) show your current streak prominently
-  - Learning habits (reading) have moderate streak display
+  - Learning habits (reading) have a more moderate streak display
   - Wellness habits (skincare) balance streaks with frequency
   - Maintenance habits (cleaning) just show when you last did them
 - **The basics** - subtasks, recurring tasks, tags, search, archiving contexts, completion history, analytics.
 
-## Key Features
+### Coming eventually
 
-### Task Types
-
-1. **Regular Tasks** - One-off items with due dates and urgency scores
-2. **Habits** - Recurring activities with flexible timing and streak tracking
-3. **Recurring Tasks** - Scheduled items with strict deadlines (meetings, etc.)
-
-### Habit Types
-
-Different habit types have different UI emphasis:
-
-- **Streak Habits** (exercise, meditation) - Prominent streak display with personal bests
-- **Learning Habits** (coding practice, reading) - Moderate streak emphasis
-- **Wellness Habits** (skincare, make bed) - Balanced streak and frequency
-- **Maintenance Habits** (cleaning) - De-emphasized streaks, focus on "last done"
-
-### Context Health
-
-Each context shows a "health" percentage based only on habit completion (not regular tasks). This represents how well-maintained that area of life is.
-
-### Urgency System
-
-Tasks are sorted by urgency scores that can be customized based on:
-
-- Project importance
-- Age of task
-- Priority level
-- Tags
-- Due date proximity
-
-### 🔄 Future Enhancements
-
-- Advanced analytics beyond burndown charts
-- Shared contexts for families/roommates
+- Better analytics
 - Offline support
 
 ## Quick Start
@@ -107,25 +75,12 @@ Habits use relaxed, non-judgmental language:
 4. **Natural Language Entry** - Smart parsing of context, tags, priority, and dates
 5. **Visual Scanning** - Important information is immediately visible
 
-## Design Reference
-
-The current UI mockup can be found in `/docs/mockup.tsx`. This represents the target design and includes:
-
-- Complete task management interface
-- All task types (regular, habits, recurring)
-- Context organization with health bars
-- Habit status language and visual hierarchy
-- Collapsible contexts with unified task lists
-
-Use this mockup as a reference for component structure, styling patterns, and user interaction flows.
-
 ## Documentation Maintenance
 
 When making significant changes to the UI or design decisions, please update:
 
 - `/docs/design-decisions.md` - Add new decisions or update reasoning
 - `/docs/ui-patterns.md` - Update component patterns and examples
-- `/docs/mockup.tsx` - Update if UI significantly changes
 
 This helps maintain context for future development and AI assistance.
 
