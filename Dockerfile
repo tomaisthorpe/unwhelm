@@ -61,6 +61,10 @@ COPY --from=builder --chown=nextjs:nodejs /app/prisma ./prisma
 
 # Copy the generated Prisma Client (overwrites the traced version with generated one)
 COPY --from=builder --chown=nextjs:nodejs /app/node_modules/.prisma ./node_modules/.prisma
+COPY --from=builder --chown=nextjs:nodejs /app/node_modules/bcryptjs ./node_modules/bcryptjs
+
+COPY --from=builder --chown=nextjs:nodejs /app/docker-entrypoint.sh ./docker-entrypoint.sh
+RUN chmod +x ./docker-entrypoint.sh
 
 USER nextjs
 
@@ -70,4 +74,5 @@ ENV PORT 3000
 ENV HOSTNAME "0.0.0.0"
 
 # Start the application
+ENTRYPOINT ["/app/docker-entrypoint.sh"]
 CMD ["node", "server.js"] 
