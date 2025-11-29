@@ -31,7 +31,7 @@ It also handles habits without punishing you for broken streaks.
 
 ## Quick Start
 
-For detailed setup instructions, see [SETUP.md](./SETUP.md).
+For detailed setup instructions, see [installation.md](./docs/installation.md).
 
 **Demo Account:**
 
