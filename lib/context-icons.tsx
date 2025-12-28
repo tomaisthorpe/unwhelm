@@ -132,6 +132,12 @@ export function getContextIconComponent(name: string): IconComponent {
   return contextIconMap[name] || Home;
 }
 
+// Helper component to render context icons dynamically without creating components during render
+export function ContextIcon({ iconName, className }: { iconName: string; className?: string }) {
+  const Icon = contextIconMap[iconName] || Home;
+  return <Icon className={className} />;
+}
+
 export const contextIconOptions: ReadonlyArray<{
   value: string;
   icon: IconComponent;

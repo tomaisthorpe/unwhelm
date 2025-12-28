@@ -17,7 +17,7 @@ import {
   shouldHabitShowAsAvailable,
 } from "@/lib/utils";
 import { getHabitStatus, getHabitDisplay } from "@/lib/habits";
-import { getContextIconComponent } from "@/lib/context-icons";
+import { ContextIcon } from "@/lib/context-icons";
 import { cn } from "@/lib/utils";
 import { TaskToggleButton } from "./task-toggle-button";
 import { TaskModal } from "./add-item-modal";
@@ -164,10 +164,6 @@ export function TaskCard({
     tagCoefficients,
   });
 
-  // Get context icon component for display
-  const ContextIconComponent = taskContext
-    ? getContextIconComponent(taskContext.icon)
-    : null;
 
   return (
     <TooltipProvider>
@@ -232,7 +228,6 @@ export function TaskCard({
                 <div className="flex flex-wrap items-center space-x-2 md:space-x-3 mt-1">
                   {showContext &&
                     taskContext &&
-                    ContextIconComponent &&
                     (onContextClick ? (
                       <button
                         onClick={() => onContextClick(taskContext.id)}
@@ -242,7 +237,7 @@ export function TaskCard({
                         )}
                         title={`Click to scroll to ${taskContext.name} context`}
                       >
-                        <ContextIconComponent className="w-3 h-3 mr-1" />
+                        <ContextIcon iconName={taskContext.icon} className="w-3 h-3 mr-1" />
                         {taskContext.name}
                       </button>
                     ) : (
@@ -253,7 +248,7 @@ export function TaskCard({
                         )}
                         title={taskContext.name}
                       >
-                        <ContextIconComponent className="w-3 h-3 mr-1" />
+                        <ContextIcon iconName={taskContext.icon} className="w-3 h-3 mr-1" />
                         {taskContext.name}
                       </span>
                     ))}

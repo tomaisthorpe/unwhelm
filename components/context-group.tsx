@@ -17,7 +17,7 @@ import {
   useCollapsible,
 } from "./context-collapsible";
 import type { Task, Context, Tag } from "@/lib/data";
-import { getContextIconComponent } from "@/lib/context-icons";
+import { ContextIcon } from "@/lib/context-icons";
 import { HighlightedText } from "@/components/ui/highlighted-text";
 
 interface ContextGroupProps {
@@ -67,7 +67,6 @@ function ContextGroupHeader({
 }) {
   const [isEditContextOpen, setIsEditContextOpen] = useState(false);
   const { isCollapsed } = useCollapsible();
-  const IconComponent = getContextIconComponent(context.icon);
 
   return (
     <div className={cn("py-2 px-4 text-white", context.color)}>
@@ -80,7 +79,7 @@ function ContextGroupHeader({
                   isCollapsed ? "-rotate-90" : "rotate-0"
                 }`}
               />
-              <IconComponent className="w-5 h-5" />
+              <ContextIcon iconName={context.icon} className="w-5 h-5" />
             </div>
             <div className="text-left">
               <h3 className="font-semibold">

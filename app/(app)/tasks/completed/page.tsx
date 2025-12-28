@@ -18,51 +18,19 @@ export const metadata: Metadata = {
   title: "unwhelm / Completed Tasks",
 };
 
-export default async function CompletedPage({
-  searchParams,
-}: CompletedPageProps) {
-  // Parse page parameter
-  const resolvedSearchParams = await searchParams;
-  const page = resolvedSearchParams.page
-    ? parseInt(resolvedSearchParams.page, 10)
-    : 1;
-  const pageSize = 20;
-
-  // Server-side data fetching
-  const [completedResult, activeContexts, archivedContexts, burndownData] = await Promise.all([
-    getCompletedTasks(page, pageSize),
-    getContexts(),
-    getArchivedContexts(),
-    getBurndownData(),
-  ]);
-
-  // Combine active and archived contexts so tasks with archived contexts still show badges
-  const contexts = [...activeContexts, ...archivedContexts];
-
-  // Group tasks by today vs older
-  const today = startOfDay(new Date());
-  const todayTasks = completedResult.data.filter((task) => {
-    if (!task.completedAt) return false;
-    const completedDate = startOfDay(new Date(task.completedAt));
-    return completedDate.getTime() === today.getTime();
-  });
-  
-  const olderTasks = completedResult.data.filter((task) => {
-    if (!task.completedAt) return false;
-    const completedDate = startOfDay(new Date(task.completedAt));
-    return completedDate.getTime() < today.getTime();
-  });
-
-  // Component to render a group of tasks
-  const TaskGroup = ({ 
-    title, 
-    tasks, 
-    emptyMessage 
-  }: { 
-    title: string; 
-    tasks: typeof completedResult.data; 
-    emptyMessage: string;
-  }) => (
+// Component to render a group of tasks
+function TaskGroup({
+  title,
+  tasks,
+  emptyMessage,
+  contexts
+}: {
+  title: string;
+  tasks: Awaited<ReturnType<typeof getCompletedTasks>>["data"];
+  emptyMessage: string;
+  contexts: Awaited<ReturnType<typeof getContexts>>;
+}) {
+  return (
     <div className="bg-white rounded-lg shadow-sm mb-6">
       <div className="px-4 py-3 border-b border-gray-200">
         <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
@@ -111,6 +79,42 @@ export default async function CompletedPage({
       )}
     </div>
   );
+}
+
+export default async function CompletedPage({
+  searchParams,
+}: CompletedPageProps) {
+  // Parse page parameter
+  const resolvedSearchParams = await searchParams;
+  const page = resolvedSearchParams.page
+    ? parseInt(resolvedSearchParams.page, 10)
+    : 1;
+  const pageSize = 20;
+
+  // Server-side data fetching
+  const [completedResult, activeContexts, archivedContexts, burndownData] = await Promise.all([
+    getCompletedTasks(page, pageSize),
+    getContexts(),
+    getArchivedContexts(),
+    getBurndownData(),
+  ]);
+
+  // Combine active and archived contexts so tasks with archived contexts still show badges
+  const contexts = [...activeContexts, ...archivedContexts];
+
+  // Group tasks by today vs older
+  const today = startOfDay(new Date());
+  const todayTasks = completedResult.data.filter((task) => {
+    if (!task.completedAt) return false;
+    const completedDate = startOfDay(new Date(task.completedAt));
+    return completedDate.getTime() === today.getTime();
+  });
+  
+  const olderTasks = completedResult.data.filter((task) => {
+    if (!task.completedAt) return false;
+    const completedDate = startOfDay(new Date(task.completedAt));
+    return completedDate.getTime() < today.getTime();
+  });
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-6">
@@ -146,17 +150,19 @@ export default async function CompletedPage({
         {completedResult.data.length > 0 ? (
           <>
             {/* Today's Completed Tasks */}
-            <TaskGroup 
+            <TaskGroup
               title="Today"
               tasks={todayTasks}
               emptyMessage="No tasks completed today yet."
+              contexts={contexts}
             />
 
             {/* Older Completed Tasks */}
-            <TaskGroup 
+            <TaskGroup
               title="Older"
               tasks={olderTasks}
               emptyMessage="No older completed tasks."
+              contexts={contexts}
             />
 
             {/* Pagination */}

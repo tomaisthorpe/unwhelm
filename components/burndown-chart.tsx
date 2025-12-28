@@ -17,6 +17,50 @@ interface BurndownChartProps {
   data: BurndownDataPoint[];
 }
 
+// Format date for display
+function formatDate(dateString: string) {
+  const date = new Date(dateString);
+  return date.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+}
+
+// Custom tooltip component
+function CustomTooltip({
+  active,
+  payload,
+  label,
+}: {
+  active?: boolean;
+  payload?: Array<{ payload: BurndownDataPoint }>;
+  label?: string;
+}) {
+
+  if (active && payload && payload.length) {
+    const data = payload[0].payload;
+    return (
+      <div className="bg-white p-3 rounded-lg shadow-lg border border-gray-200">
+        <p className="font-medium text-gray-900 mb-2">
+          {label ? formatDate(label) : ""}
+        </p>
+        <div className="space-y-1 text-sm">
+          <div className="flex items-center justify-between">
+            <span className="text-blue-600">Incomplete Tasks:</span>
+            <span className="font-medium ml-1">{data.incompleteTasks}</span>
+          </div>
+          <div className="flex items-center justify-between">
+            <span className="text-green-600">Completed:</span>
+            <span className="font-medium ml-1">+{data.completedTasks}</span>
+          </div>
+          <div className="flex items-center justify-between">
+            <span className="text-orange-600">Created:</span>
+            <span className="font-medium ml-1">+{data.createdTasks}</span>
+          </div>
+        </div>
+      </div>
+    );
+  }
+  return null;
+}
+
 export function BurndownChart({ data }: BurndownChartProps) {
   if (!data || data.length === 0) {
     return (
@@ -55,49 +99,6 @@ export function BurndownChart({ data }: BurndownChartProps) {
   const currentIncomplete = data[data.length - 1]?.incompleteTasks || 0;
   const startIncomplete = data[0]?.incompleteTasks || 0;
   const trend = startIncomplete - currentIncomplete;
-
-  // Format date for display
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString("en-US", { month: "short", day: "numeric" });
-  };
-
-  // Custom tooltip component
-  const CustomTooltip = ({
-    active,
-    payload,
-    label,
-  }: {
-    active?: boolean;
-    payload?: Array<{ payload: BurndownDataPoint }>;
-    label?: string;
-  }) => {
-    if (active && payload && payload.length) {
-      const data = payload[0].payload;
-      return (
-        <div className="bg-white p-3 rounded-lg shadow-lg border border-gray-200">
-          <p className="font-medium text-gray-900 mb-2">
-            {label ? formatDate(label) : ""}
-          </p>
-          <div className="space-y-1 text-sm">
-            <div className="flex items-center justify-between">
-              <span className="text-blue-600">Incomplete Tasks:</span>
-              <span className="font-medium ml-1">{data.incompleteTasks}</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-green-600">Completed:</span>
-              <span className="font-medium ml-1">+{data.completedTasks}</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-orange-600">Created:</span>
-              <span className="font-medium ml-1">+{data.createdTasks}</span>
-            </div>
-          </div>
-        </div>
-      );
-    }
-    return null;
-  };
 
   return (
     <Card className="p-6">
