@@ -1,5 +1,5 @@
 # Use the official Node.js runtime as the base image
-FROM node:20-slim AS base
+FROM node:24-slim AS base
 
 # Install OpenSSL for Prisma in all stages
 RUN apt-get update \
