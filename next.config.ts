@@ -4,6 +4,7 @@ import withBundleAnalyzer from "@next/bundle-analyzer";
 
 const nextConfig: NextConfig = {
   output: "standalone",
+  turbopack: {}, // Enable Turbopack (default in Next.js 16+)
   outputFileTracingIncludes: {
     // Include Prisma CLI and its dependencies in standalone output
     "/": [

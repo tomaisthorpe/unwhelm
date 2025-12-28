@@ -45,7 +45,7 @@ export default function SignUp() {
     // Validate using shared Zod schema
     const result = signupSchema.safeParse({ name, email, password });
     if (!result.success) {
-      const firstError = result.error.errors[0];
+      const firstError = result.error.issues[0];
       setError(firstError.message);
       setIsLoading(false);
       return;

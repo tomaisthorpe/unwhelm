@@ -86,7 +86,7 @@ export async function getTasks(): Promise<Task[]> {
     });
 
     const tagCoefficients: { [tagName: string]: number } = {};
-    userTags.forEach(tag => {
+    userTags.forEach((tag: { name: string; coefficient: number }) => {
       tagCoefficients[tag.name.toLowerCase()] = tag.coefficient;
     });
 
@@ -272,7 +272,7 @@ export async function getUserTasks(userId: string): Promise<Task[]> {
     });
 
     const tagCoefficients: { [tagName: string]: number } = {};
-    userTags.forEach(tag => {
+    userTags.forEach((tag: { name: string; coefficient: number }) => {
       tagCoefficients[tag.name.toLowerCase()] = tag.coefficient;
     });
 
@@ -418,7 +418,7 @@ export async function getCompletedTasks(
     });
 
     const tagCoefficients: { [tagName: string]: number } = {};
-    userTags.forEach(tag => {
+    userTags.forEach((tag: { name: string; coefficient: number }) => {
       tagCoefficients[tag.name.toLowerCase()] = tag.coefficient;
     });
 
@@ -590,7 +590,7 @@ export async function getBurndownData(): Promise<BurndownDataPoint[]> {
 
     // Calculate initial incomplete count (tasks created before our range that were incomplete)
     let runningIncompleteCount = olderIncompleteTasks.filter(
-      (task) =>
+      (task: { completed: boolean; completedAt: Date | null }) =>
         !task.completed || (task.completedAt && task.completedAt >= startDate)
     ).length;
 
@@ -600,14 +600,14 @@ export async function getBurndownData(): Promise<BurndownDataPoint[]> {
       nextDay.setDate(nextDay.getDate() + 1);
 
       // Tasks created on this day
-      const createdToday = tasks.filter((task) => {
+      const createdToday = tasks.filter((task: { createdAt: Date }) => {
         const createdDate = new Date(task.createdAt);
         return createdDate >= date && createdDate < nextDay;
       }).length;
 
       // Tasks completed on this day
       const completedToday = [...tasks, ...olderIncompleteTasks].filter(
-        (task) => {
+        (task: { completedAt: Date | null }) => {
           if (!task.completedAt) return false;
           const completedDate = new Date(task.completedAt);
           return completedDate >= date && completedDate < nextDay;
@@ -727,7 +727,7 @@ export async function getAllUserStats(): Promise<UserStats[]> {
     });
 
     const userStats = await Promise.all(
-      users.map(async (user) => {
+      users.map(async (user: { id: string; email: string; createdAt: Date }) => {
         const [tasksCount, contextsCount, tagsCount, completedTasksCount] =
           await Promise.all([
             prisma.task.count({

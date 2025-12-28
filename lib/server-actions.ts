@@ -498,11 +498,11 @@ export async function archiveContextAction(contextId: string) {
   });
 
   // Delete incomplete tasks, keep completed tasks
-  const incompleteTasks = tasks.filter((task) => !task.completed);
+  const incompleteTasks = tasks.filter((task: { completed: boolean }) => !task.completed);
   if (incompleteTasks.length > 0) {
     await prisma.task.deleteMany({
       where: {
-        id: { in: incompleteTasks.map((task) => task.id) },
+        id: { in: incompleteTasks.map((task: { id: string }) => task.id) },
       },
     });
   }
@@ -674,7 +674,7 @@ export async function changePasswordAction(
   });
 
   if (!result.success) {
-    const firstError = result.error.errors[0];
+    const firstError = result.error.issues[0];
     throw new Error(firstError.message);
   }
 
