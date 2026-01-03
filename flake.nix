@@ -10,6 +10,7 @@
       devShell = pkgs.mkShell {
         nativeBuildInputs = [ pkgs.bashInteractive ];
         buildInputs = with pkgs; [
+          nodejs_24
           nodePackages.prisma
         ];
         shellHook = with pkgs; ''
