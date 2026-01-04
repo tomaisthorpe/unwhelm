@@ -12,7 +12,10 @@ import {
  * Hook to automatically update PWA badge based on tasks
  */
 export function usePWABadge(tasks: Task[]) {
-  const [permissionState, setPermissionState] = useState<BadgePermissionState>('unsupported');
+  // Initialize permission state with current value
+  const [permissionState, setPermissionState] = useState<BadgePermissionState>(() =>
+    getBadgePermissionState()
+  );
 
   // Function to manually update badge
   const updateBadge = useCallback(async () => {
@@ -26,12 +29,6 @@ export function usePWABadge(tasks: Task[]) {
     const permission = await requestBadgePermission();
     setPermissionState(permission);
     return permission;
-  }, []);
-
-  // Check permission state on mount
-  useEffect(() => {
-    const currentPermission = getBadgePermissionState();
-    setPermissionState(currentPermission);
   }, []);
 
   // Update badge when tasks change (only if we have permission)

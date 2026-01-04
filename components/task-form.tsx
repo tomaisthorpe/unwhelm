@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
@@ -91,7 +91,10 @@ export function TaskForm({
   const getFieldId = (fieldName: string) => `${fieldIdPrefix}-${fieldName}`;
 
   // State to control wait days input visibility
-  const [showWaitDays, setShowWaitDays] = useState(false);
+  // Initialize to true if wait days is already set
+  const [showWaitDays, setShowWaitDays] = useState(
+    data.waitDays !== undefined && data.waitDays > 0
+  );
 
   // State to control tooltip visibility for each wait days section
   const [tooltipOpen, setTooltipOpen] = useState<{
@@ -99,13 +102,6 @@ export function TaskForm({
     habit?: boolean;
     recurring?: boolean;
   }>({});
-
-  // Show wait days input by default if wait days is already set
-  useEffect(() => {
-    if (data.waitDays !== undefined && data.waitDays > 0) {
-      setShowWaitDays(true);
-    }
-  }, [data.waitDays]);
 
   const gridCols = "grid-cols-2";
   const gap = compact ? "gap-2" : "gap-4";

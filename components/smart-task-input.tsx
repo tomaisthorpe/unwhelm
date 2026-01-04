@@ -6,6 +6,7 @@ import React, {
   useRef,
   useTransition,
   useCallback,
+  useMemo,
 } from "react";
 import * as chrono from "chrono-node";
 import { Button } from "@/components/ui/button";
@@ -73,19 +74,8 @@ export function SmartTaskInput({
   onTaskCreated,
 }: SmartTaskInputProps) {
   const [input, setInput] = useState("");
-  const [parsedTask, setParsedTask] = useState<ParsedTask>({
-    title: "",
-    contextId: null,
-    contextName: null,
-    tags: [],
-    priority: "MEDIUM",
-    dueDate: null,
-    dueDateText: null,
-    type: "TASK",
-    frequency: undefined,
-    recurringText: null,
-  });
-  const [segments, setSegments] = useState<ParsedSegment[]>([]);
+  // Manual edit overrides (used when in edit mode)
+  const [editOverrides, setEditOverrides] = useState<Partial<ParsedTask>>({});
   const [isPending, startTransition] = useTransition();
   const [isEditing, setIsEditing] = useState(false);
   const [existingTags, setExistingTags] = useState<string[]>([]);
@@ -123,205 +113,9 @@ export function SmartTaskInput({
     }
   }, [isPending]);
 
-  // Check for suggestion triggers and update suggestions
-  const updateSuggestions = useCallback(
-    (text: string, cursorPos: number) => {
-      // Check if we're typing after # or !
-      let triggerPos = -1;
-      let triggerType: "tag" | "context" | null = null;
-
-      // Find the last # or ! before the cursor
-      for (let i = cursorPos - 1; i >= 0; i--) {
-        const char = text[i];
-        if (char === "#") {
-          triggerType = "tag";
-          triggerPos = i;
-          break;
-        } else if (char === "!") {
-          triggerType = "context";
-          triggerPos = i;
-          break;
-        } else if (char === " " && triggerType !== "context") {
-          // For tags, stop searching at spaces
-          // For contexts, continue to support spaces in context names
-          break;
-        }
-      }
-
-      if (triggerType && triggerPos !== -1) {
-        const query = text.slice(triggerPos + 1, cursorPos);
-        setSuggestionTrigger({
-          type: triggerType,
-          startPos: triggerPos,
-          query,
-        });
-
-        // Generate suggestions based on type
-        let filteredSuggestions: Suggestion[] = [];
-
-        if (triggerType === "tag") {
-          filteredSuggestions = existingTags
-            .filter(
-              (tag) =>
-                tag.toLowerCase().includes(query.toLowerCase()) &&
-                !parsedTask.tags.includes(tag) &&
-                query.trim() !== ""
-            )
-            .map((tag) => ({
-              text: tag,
-              type: "tag" as const,
-              displayText: `#${tag}`,
-            }));
-        } else if (triggerType === "context") {
-          // Only show context suggestions if no context has been parsed yet
-          if (!parsedTask.contextId && !parsedTask.contextName) {
-            filteredSuggestions = contexts
-              .filter((context) =>
-                context.name.toLowerCase().includes(query.toLowerCase())
-              )
-              .map((context) => ({
-                text: context.name,
-                type: "context" as const,
-                displayText: `!${context.name}`,
-              }));
-          }
-        }
-
-        setSuggestions(filteredSuggestions);
-        setShowSuggestions(filteredSuggestions.length > 0);
-        setSelectedSuggestionIndex(-1);
-      } else {
-        setSuggestionTrigger(null);
-        setShowSuggestions(false);
-        setSuggestions([]);
-        setSelectedSuggestionIndex(-1);
-      }
-    },
-    [existingTags, contexts, parsedTask.tags, parsedTask.contextId, parsedTask.contextName]
-  );
-
-  // Handle input change with suggestions
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const rawValue = e.target.value;
-    const cursorPos = e.target.selectionStart || 0;
-
-    // Convert tags to lowercase while preserving other text
-    const newValue = rawValue.replace(
-      /#([a-zA-Z0-9_-]+)/g,
-      (match, tagName) => {
-        return `#${tagName.toLowerCase()}`;
-      }
-    );
-
-    setInput(newValue);
-    updateSuggestions(newValue, cursorPos);
-  };
-
-  // Handle suggestion selection
-  const selectSuggestion = useCallback(
-    (suggestion: Suggestion) => {
-      if (!suggestionTrigger) return;
-
-      const beforeTrigger = input.substring(0, suggestionTrigger.startPos);
-      const afterQuery = input.substring(
-        suggestionTrigger.startPos + 1 + suggestionTrigger.query.length
-      );
-      const newInput = `${beforeTrigger}${suggestion.displayText} ${afterQuery}`;
-
-      setInput(newInput);
-      setShowSuggestions(false);
-      setSuggestionTrigger(null);
-      setSelectedSuggestionIndex(-1);
-
-      // Focus back to input and position cursor after the suggestion
-      setTimeout(() => {
-        if (inputRef.current) {
-          const newCursorPos =
-            beforeTrigger.length + suggestion.displayText.length + 1;
-          inputRef.current.focus();
-          inputRef.current.setSelectionRange(newCursorPos, newCursorPos);
-        }
-      }, 0);
-    },
-    [input, suggestionTrigger]
-  );
-
-  // Handle keyboard navigation for suggestions
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (showSuggestions && suggestions.length > 0) {
-      switch (e.key) {
-        case "ArrowDown":
-          e.preventDefault();
-          setSelectedSuggestionIndex((prev) =>
-            prev < suggestions.length - 1 ? prev + 1 : 0
-          );
-          break;
-        case "ArrowUp":
-          e.preventDefault();
-          setSelectedSuggestionIndex((prev) =>
-            prev > 0 ? prev - 1 : suggestions.length - 1
-          );
-          break;
-        case "Enter":
-          if (selectedSuggestionIndex >= 0) {
-            e.preventDefault();
-            selectSuggestion(suggestions[selectedSuggestionIndex]);
-            return;
-          }
-          break;
-        case "Escape":
-          e.preventDefault();
-          setShowSuggestions(false);
-          setSelectedSuggestionIndex(-1);
-          break;
-      }
-    }
-
-    // Handle backspace to remove matches
-    if (e.key === "Backspace" && inputRef.current) {
-      const cursorPos = inputRef.current.selectionStart || 0;
-      const selectionEnd = inputRef.current.selectionEnd || 0;
-
-      // Only handle when there's no selection (just cursor position)
-      if (cursorPos === selectionEnd && cursorPos > 0) {
-        // Find if cursor is at the end of a matched segment
-        const matchedSegment = segments.find(
-          (seg) =>
-            seg.type !== "text" &&
-            seg.endIndex === cursorPos
-        );
-
-        if (matchedSegment) {
-          e.preventDefault();
-          // Add this match to ignored matches
-          const matchText = matchedSegment.text.toLowerCase().trim();
-          setIgnoredMatches((prev) => new Set([...prev, matchText]));
-        }
-      }
-    }
-  };
-
-  // Handle input cursor position changes
-  const handleCursorChange = () => {
-    if (inputRef.current) {
-      const cursorPos = inputRef.current.selectionStart || 0;
-      updateSuggestions(input, cursorPos);
-    }
-  };
-
-  // Handle input blur to hide suggestions
-  const handleInputBlur = () => {
-    setIsInputFocused(false);
-    // Delay hiding suggestions to allow for suggestion clicks
-    setTimeout(() => {
-      setShowSuggestions(false);
-      setSelectedSuggestionIndex(-1);
-    }, 150);
-  };
-
   // Parse the input text
   const parseInput = useCallback(
-    (text: string): ParsedTask => {
+    (text: string): { task: ParsedTask; segments: ParsedSegment[] } => {
       let workingText = text;
       const result: ParsedTask = {
         title: "",
@@ -339,32 +133,51 @@ export function SmartTaskInput({
 
       // Parse context (!contextName) - support spaces in context names
       // Only match contexts that exist in the database and are complete
-      let bestMatch: { context: typeof contexts[0]; startIndex: number; matchText: string } | null = null;
+      let bestMatch: {
+        context: (typeof contexts)[0];
+        startIndex: number;
+        matchText: string;
+      } | null = null;
 
       // Find all possible context matches and select the first one that appears in the text
       // If multiple contexts appear at the same position, prefer the longer match
       // Only match if the context name is complete (followed by space, end of string, or special char)
       for (const context of contexts) {
         const contextPattern = `!${context.name}`;
-        const contextIndex = text.toLowerCase().indexOf(contextPattern.toLowerCase());
+        const contextIndex = text
+          .toLowerCase()
+          .indexOf(contextPattern.toLowerCase());
 
-        if (contextIndex !== -1 && !ignoredMatches.has(contextPattern.toLowerCase().trim())) {
+        if (
+          contextIndex !== -1 &&
+          !ignoredMatches.has(contextPattern.toLowerCase().trim())
+        ) {
           // Check if this is a complete match (not a partial substring)
           const endIndex = contextIndex + contextPattern.length;
           const charAfter = text[endIndex];
 
           // Context is valid if followed by: space, end of string, or special chars like # or !
-          const isCompleteMatch = !charAfter || charAfter === ' ' || charAfter === '#' || charAfter === '!';
+          const isCompleteMatch =
+            !charAfter ||
+            charAfter === " " ||
+            charAfter === "#" ||
+            charAfter === "!";
 
           if (isCompleteMatch) {
             // Prioritize by position first (earliest wins), then by length (longest wins if at same position)
-            if (!bestMatch ||
-                contextIndex < bestMatch.startIndex ||
-                (contextIndex === bestMatch.startIndex && contextPattern.length > bestMatch.matchText.length)) {
+            if (
+              !bestMatch ||
+              contextIndex < bestMatch.startIndex ||
+              (contextIndex === bestMatch.startIndex &&
+                contextPattern.length > bestMatch.matchText.length)
+            ) {
               bestMatch = {
                 context,
                 startIndex: contextIndex,
-                matchText: text.substring(contextIndex, contextIndex + contextPattern.length),
+                matchText: text.substring(
+                  contextIndex,
+                  contextIndex + contextPattern.length,
+                ),
               };
             }
           }
@@ -410,7 +223,10 @@ export function SmartTaskInput({
 
       // Parse priority (p1, p2, p3)
       const priorityMatch = workingText.match(/\bp([123])\b/i);
-      if (priorityMatch && !ignoredMatches.has(priorityMatch[0].toLowerCase().trim())) {
+      if (
+        priorityMatch &&
+        !ignoredMatches.has(priorityMatch[0].toLowerCase().trim())
+      ) {
         const priorityNum = priorityMatch[1];
         result.priority =
           priorityNum === "1" ? "HIGH" : priorityNum === "2" ? "MEDIUM" : "LOW";
@@ -554,34 +370,236 @@ export function SmartTaskInput({
         }
       }
 
-      setSegments(finalSegments);
-      return result;
+      return { task: result, segments: finalSegments };
     },
-    [contexts, ignoredMatches]
+    [contexts, ignoredMatches],
   );
 
   // Clean up ignored matches when they're no longer in the input
   useEffect(() => {
-    if (ignoredMatches.size > 0) {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setIgnoredMatches((prev) => {
+      if (prev.size === 0) return prev;
+
       const lowercaseInput = input.toLowerCase();
       const stillPresent = new Set(
-        Array.from(ignoredMatches).filter((match) =>
-          lowercaseInput.includes(match)
-        )
+        Array.from(prev).filter((match) => lowercaseInput.includes(match)),
       );
 
       // Only update if something changed to avoid infinite loops
-      if (stillPresent.size !== ignoredMatches.size) {
-        setIgnoredMatches(stillPresent);
+      if (stillPresent.size !== prev.size) {
+        return stillPresent;
+      }
+      return prev;
+    });
+  }, [input]);
+
+  // Auto-parse the input (derived state)
+  const parseResult = useMemo(() => parseInput(input), [input, parseInput]);
+
+  // Extract segments and task from parse result
+  const segments = parseResult.segments;
+  const parsedTask: ParsedTask = { ...parseResult.task, ...editOverrides };
+
+  // Check for suggestion triggers and update suggestions
+  const updateSuggestions = useCallback(
+    (text: string, cursorPos: number) => {
+      // Check if we're typing after # or !
+      let triggerPos = -1;
+      let triggerType: "tag" | "context" | null = null;
+
+      // Find the last # or ! before the cursor
+      for (let i = cursorPos - 1; i >= 0; i--) {
+        const char = text[i];
+        if (char === "#") {
+          triggerType = "tag";
+          triggerPos = i;
+          break;
+        } else if (char === "!") {
+          triggerType = "context";
+          triggerPos = i;
+          break;
+        } else if (char === " " && triggerType !== "context") {
+          // For tags, stop searching at spaces
+          // For contexts, continue to support spaces in context names
+          break;
+        }
+      }
+
+      if (triggerType && triggerPos !== -1) {
+        const query = text.slice(triggerPos + 1, cursorPos);
+        setSuggestionTrigger({
+          type: triggerType,
+          startPos: triggerPos,
+          query,
+        });
+
+        // Generate suggestions based on type
+        let filteredSuggestions: Suggestion[] = [];
+
+        if (triggerType === "tag") {
+          filteredSuggestions = existingTags
+            .filter(
+              (tag) =>
+                tag.toLowerCase().includes(query.toLowerCase()) &&
+                !parsedTask.tags.includes(tag) &&
+                query.trim() !== "",
+            )
+            .map((tag) => ({
+              text: tag,
+              type: "tag" as const,
+              displayText: `#${tag}`,
+            }));
+        } else if (triggerType === "context") {
+          // Only show context suggestions if no context has been parsed yet
+          if (!parsedTask.contextId && !parsedTask.contextName) {
+            filteredSuggestions = contexts
+              .filter((context) =>
+                context.name.toLowerCase().includes(query.toLowerCase()),
+              )
+              .map((context) => ({
+                text: context.name,
+                type: "context" as const,
+                displayText: `!${context.name}`,
+              }));
+          }
+        }
+
+        setSuggestions(filteredSuggestions);
+        setShowSuggestions(filteredSuggestions.length > 0);
+        setSelectedSuggestionIndex(-1);
+      } else {
+        setSuggestionTrigger(null);
+        setShowSuggestions(false);
+        setSuggestions([]);
+        setSelectedSuggestionIndex(-1);
+      }
+    },
+    [
+      existingTags,
+      contexts,
+      parsedTask.tags,
+      parsedTask.contextId,
+      parsedTask.contextName,
+    ],
+  );
+
+  // Handle input change with suggestions
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const rawValue = e.target.value;
+    const cursorPos = e.target.selectionStart || 0;
+
+    // Convert tags to lowercase while preserving other text
+    const newValue = rawValue.replace(
+      /#([a-zA-Z0-9_-]+)/g,
+      (match, tagName) => {
+        return `#${tagName.toLowerCase()}`;
+      },
+    );
+
+    setInput(newValue);
+    updateSuggestions(newValue, cursorPos);
+  };
+
+  // Handle suggestion selection
+  const selectSuggestion = useCallback(
+    (suggestion: Suggestion) => {
+      if (!suggestionTrigger) return;
+
+      const beforeTrigger = input.substring(0, suggestionTrigger.startPos);
+      const afterQuery = input.substring(
+        suggestionTrigger.startPos + 1 + suggestionTrigger.query.length,
+      );
+      const newInput = `${beforeTrigger}${suggestion.displayText} ${afterQuery}`;
+
+      setInput(newInput);
+      setShowSuggestions(false);
+      setSuggestionTrigger(null);
+      setSelectedSuggestionIndex(-1);
+
+      // Focus back to input and position cursor after the suggestion
+      setTimeout(() => {
+        if (inputRef.current) {
+          const newCursorPos =
+            beforeTrigger.length + suggestion.displayText.length + 1;
+          inputRef.current.focus();
+          inputRef.current.setSelectionRange(newCursorPos, newCursorPos);
+        }
+      }, 0);
+    },
+    [input, suggestionTrigger],
+  );
+
+  // Handle keyboard navigation for suggestions
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (showSuggestions && suggestions.length > 0) {
+      switch (e.key) {
+        case "ArrowDown":
+          e.preventDefault();
+          setSelectedSuggestionIndex((prev) =>
+            prev < suggestions.length - 1 ? prev + 1 : 0,
+          );
+          break;
+        case "ArrowUp":
+          e.preventDefault();
+          setSelectedSuggestionIndex((prev) =>
+            prev > 0 ? prev - 1 : suggestions.length - 1,
+          );
+          break;
+        case "Enter":
+          if (selectedSuggestionIndex >= 0) {
+            e.preventDefault();
+            selectSuggestion(suggestions[selectedSuggestionIndex]);
+            return;
+          }
+          break;
+        case "Escape":
+          e.preventDefault();
+          setShowSuggestions(false);
+          setSelectedSuggestionIndex(-1);
+          break;
       }
     }
-  }, [input, ignoredMatches]);
 
-  // Update parsing when input changes
-  useEffect(() => {
-    const parsed = parseInput(input);
-    setParsedTask(parsed);
-  }, [input, parseInput, error]);
+    // Handle backspace to remove matches
+    if (e.key === "Backspace" && inputRef.current) {
+      const cursorPos = inputRef.current.selectionStart || 0;
+      const selectionEnd = inputRef.current.selectionEnd || 0;
+
+      // Only handle when there's no selection (just cursor position)
+      if (cursorPos === selectionEnd && cursorPos > 0) {
+        // Find if cursor is at the end of a matched segment
+        const matchedSegment = segments.find(
+          (seg) => seg.type !== "text" && seg.endIndex === cursorPos,
+        );
+
+        if (matchedSegment) {
+          e.preventDefault();
+          // Add this match to ignored matches
+          const matchText = matchedSegment.text.toLowerCase().trim();
+          setIgnoredMatches((prev) => new Set([...prev, matchText]));
+        }
+      }
+    }
+  };
+
+  // Handle input cursor position changes
+  const handleCursorChange = () => {
+    if (inputRef.current) {
+      const cursorPos = inputRef.current.selectionStart || 0;
+      updateSuggestions(input, cursorPos);
+    }
+  };
+
+  // Handle input blur to hide suggestions
+  const handleInputBlur = () => {
+    setIsInputFocused(false);
+    // Delay hiding suggestions to allow for suggestion clicks
+    setTimeout(() => {
+      setShowSuggestions(false);
+      setSelectedSuggestionIndex(-1);
+    }, 150);
+  };
 
   // Sync scroll position between input and highlight overlay
   const handleScroll = () => {
@@ -607,30 +625,30 @@ export function SmartTaskInput({
 
   const handleTaskFormChange = <K extends keyof TaskFormData>(
     field: K,
-    value: TaskFormData[K]
+    value: TaskFormData[K],
   ) => {
-    // Update the parsed task state from form changes
+    // Update the edit overrides from form changes
     if (field === "title") {
-      setParsedTask((prev) => ({ ...prev, title: value as string }));
+      setEditOverrides((prev) => ({ ...prev, title: value as string }));
     } else if (field === "priority") {
-      setParsedTask((prev) => ({
+      setEditOverrides((prev) => ({
         ...prev,
         priority: value as "LOW" | "MEDIUM" | "HIGH",
       }));
     } else if (field === "contextId") {
       const context = contexts.find((c) => c.id === value);
-      setParsedTask((prev) => ({
+      setEditOverrides((prev) => ({
         ...prev,
         contextId: value as string,
         contextName: context?.name || null,
       }));
     } else if (field === "dueDate") {
       const date = value ? new Date(value as string) : null;
-      setParsedTask((prev) => ({ ...prev, dueDate: date }));
+      setEditOverrides((prev) => ({ ...prev, dueDate: date }));
     } else if (field === "tags") {
-      setParsedTask((prev) => ({ ...prev, tags: value as string[] }));
+      setEditOverrides((prev) => ({ ...prev, tags: value as string[] }));
     } else if (field === "frequency") {
-      setParsedTask((prev) => ({
+      setEditOverrides((prev) => ({
         ...prev,
         frequency: value as number | undefined,
       }));
@@ -657,7 +675,7 @@ export function SmartTaskInput({
       if (parsedTask.dueDate) {
         formData.append(
           "dueDate",
-          parsedTask.dueDate.toISOString().slice(0, 16)
+          parsedTask.dueDate.toISOString().slice(0, 16),
         );
       }
       formData.append("type", parsedTask.type);
@@ -680,13 +698,14 @@ export function SmartTaskInput({
           setIsEditing(false);
           setError(null);
           setIgnoredMatches(new Set());
+          setEditOverrides({});
         });
 
         onTaskCreated?.();
       } catch (error) {
         console.error("Failed to create task:", error);
         setError(
-          error instanceof Error ? error.message : "Failed to create task"
+          error instanceof Error ? error.message : "Failed to create task",
         );
       }
     });
@@ -820,7 +839,7 @@ export function SmartTaskInput({
                   className={cn(
                     "w-full px-3 py-2 text-left text-sm hover:bg-gray-100 hover:text-gray-900 focus:bg-gray-100 focus:text-gray-900 flex items-center gap-2",
                     index === selectedSuggestionIndex &&
-                      "bg-blue-50 text-blue-900"
+                      "bg-blue-50 text-blue-900",
                   )}
                   onClick={() => selectSuggestion(suggestion)}
                   onMouseEnter={() => setSelectedSuggestionIndex(index)}
@@ -861,7 +880,13 @@ export function SmartTaskInput({
                 type="button"
                 variant="ghost"
                 size="sm"
-                onClick={() => setIsEditing(!isEditing)}
+                onClick={() => {
+                  if (isEditing) {
+                    // Clear edit overrides when exiting edit mode
+                    setEditOverrides({});
+                  }
+                  setIsEditing(!isEditing);
+                }}
                 className="h-6 px-2 text-xs"
               >
                 <Edit3 className="w-3 h-3 mr-1" />
@@ -914,17 +939,17 @@ export function SmartTaskInput({
                     {parsedTask.contextName && parsedTask.contextId ? (
                       (() => {
                         const matchedContext = contexts.find(
-                          (c) => c.id === parsedTask.contextId
+                          (c) => c.id === parsedTask.contextId,
                         );
                         if (matchedContext) {
                           const ContextIconComponent = getContextIconComponent(
-                            matchedContext.icon
+                            matchedContext.icon,
                           );
                           return (
                             <span
                               className={cn(
                                 "inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium text-white mb-1",
-                                matchedContext.color
+                                matchedContext.color,
                               )}
                               title={matchedContext.name}
                             >
@@ -954,13 +979,13 @@ export function SmartTaskInput({
                         const inboxContext = contexts.find((c) => c.isInbox);
                         if (inboxContext) {
                           const ContextIconComponent = getContextIconComponent(
-                            inboxContext.icon
+                            inboxContext.icon,
                           );
                           return (
                             <span
                               className={cn(
                                 "inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium text-white mb-1",
-                                inboxContext.color
+                                inboxContext.color,
                               )}
                               title={`${inboxContext.name} (default)`}
                             >
