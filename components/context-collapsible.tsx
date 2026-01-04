@@ -35,7 +35,9 @@ export function ContextCollapsible({
   const isControlled = typeof collapsed === "boolean";
   const [internalCollapsed, setInternalCollapsed] = useState(defaultCollapsed);
 
-  const currentCollapsed = isControlled ? (collapsed as boolean) : internalCollapsed;
+  const currentCollapsed = isControlled
+    ? (collapsed as boolean)
+    : internalCollapsed;
 
   const toggle = () => {
     if (isControlled) {
@@ -46,7 +48,9 @@ export function ContextCollapsible({
   };
 
   return (
-    <CollapsibleContext.Provider value={{ isCollapsed: currentCollapsed, toggle }}>
+    <CollapsibleContext.Provider
+      value={{ isCollapsed: currentCollapsed, toggle }}
+    >
       {children}
     </CollapsibleContext.Provider>
   );
@@ -72,9 +76,18 @@ export function ContextCollapsibleTrigger({ children }: TriggerProps) {
   const { isCollapsed, toggle } = useCollapsible();
 
   return (
-    <button
+    <div
       onClick={toggle}
-      className="w-full flex items-center justify-center rounded transition-colors"
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          toggle();
+        }
+      }}
+      role="button"
+      tabIndex={0}
+      aria-expanded={!isCollapsed}
+      className="w-full flex items-center justify-center rounded transition-colors cursor-pointer"
     >
       {children || (
         <ChevronDown
@@ -83,6 +96,6 @@ export function ContextCollapsibleTrigger({ children }: TriggerProps) {
           }`}
         />
       )}
-    </button>
+    </div>
   );
 }

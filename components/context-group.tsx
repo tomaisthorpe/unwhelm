@@ -94,10 +94,16 @@ function ContextGroupHeader({
           </div>
           <div className="text-right">
             <div className="flex flex-col items-end gap-1">
-              <div className="ml-3 flex flex-wrap justify-end items-center gap-2 flex-shrink-0">
+              <div
+                className="ml-3 flex flex-wrap justify-end items-center gap-2 flex-shrink-0"
+                onClick={(e) => e.stopPropagation()}
+              >
                 {!context.isInbox && (
                   <button
-                    onClick={() => setIsEditContextOpen(true)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setIsEditContextOpen(true);
+                    }}
                     className="flex items-center space-x-2 px-2 py-1 text-xs bg-white/20 hover:bg-white/30 rounded-md transition-colors"
                     title="Edit context"
                   >
