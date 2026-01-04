@@ -59,9 +59,7 @@ COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 # Copy Prisma schema and migrations
 COPY --from=builder --chown=nextjs:nodejs /app/prisma ./prisma
 
-# Copy the generated Prisma Client (overwrites the traced version with generated one)
-COPY --from=builder --chown=nextjs:nodejs /app/node_modules/.prisma ./node_modules/.prisma
-COPY --from=builder --chown=nextjs:nodejs /app/node_modules/bcryptjs ./node_modules/bcryptjs
+COPY --from=builder --chown=nextjs:nodejs /app/node_modules ./node_modules
 
 COPY --from=builder --chown=nextjs:nodejs /app/docker-entrypoint.sh ./docker-entrypoint.sh
 RUN chmod +x ./docker-entrypoint.sh

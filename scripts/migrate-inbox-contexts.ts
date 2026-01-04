@@ -1,6 +1,4 @@
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import { prisma } from "@/lib/prisma";
 
 async function migrateInboxContexts() {
   console.log("Starting migration to add inbox contexts for existing users...");
@@ -45,9 +43,14 @@ async function migrateInboxContexts() {
           },
         });
 
-        console.log(`✅ Created inbox context for user ${user.email} (ID: ${inboxContext.id})`);
+        console.log(
+          `✅ Created inbox context for user ${user.email} (ID: ${inboxContext.id})`,
+        );
       } catch (error) {
-        console.error(`❌ Failed to create inbox context for user ${user.email}:`, error);
+        console.error(
+          `❌ Failed to create inbox context for user ${user.email}:`,
+          error,
+        );
       }
     }
 
@@ -74,3 +77,4 @@ if (require.main === module) {
 }
 
 export { migrateInboxContexts };
+
