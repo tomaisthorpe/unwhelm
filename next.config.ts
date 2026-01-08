@@ -14,6 +14,7 @@ const nextConfig: NextConfig = {
       "./node_modules/jiti/**/*",
     ],
   },
+  poweredByHeader: false,
   async headers() {
     return [
       {
