@@ -11,7 +11,7 @@
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
     "db:push": "prisma db push",
-    "db:seed": "node prisma/seed.js",
+    "db:seed": "prisma db",
     "db:migrate": "prisma migrate dev",
     "db:generate": "prisma generate",
     "db:studio": "prisma studio"
