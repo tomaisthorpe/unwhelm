@@ -284,7 +284,7 @@ export function TaskCard({
                       key={tag}
                       className="block items-center px-1.5 py-0.5 rounded text-xs bg-gray-100 text-gray-600 mb-1"
                     >
-                      <HighlightedText text={tag} searchQuery={searchQuery} />
+                      #<HighlightedText text={tag} searchQuery={searchQuery} />
                     </span>
                   ))}
                   {task.notes && (
