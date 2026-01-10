@@ -345,14 +345,12 @@ export function SmartTaskInput({
       newSegments.forEach((segment) => {
         if (segment.startIndex > lastIndex) {
           const textBefore = text.slice(lastIndex, segment.startIndex);
-          if (textBefore.trim()) {
-            finalSegments.push({
-              text: textBefore,
-              type: "text",
-              startIndex: lastIndex,
-              endIndex: segment.startIndex,
-            });
-          }
+          finalSegments.push({
+            text: textBefore,
+            type: "text",
+            startIndex: lastIndex,
+            endIndex: segment.startIndex,
+          });
         }
         finalSegments.push(segment);
         lastIndex = segment.endIndex;
@@ -360,14 +358,12 @@ export function SmartTaskInput({
 
       if (lastIndex < text.length) {
         const textAfter = text.slice(lastIndex);
-        if (textAfter.trim()) {
-          finalSegments.push({
-            text: textAfter,
-            type: "text",
-            startIndex: lastIndex,
-            endIndex: text.length,
-          });
-        }
+        finalSegments.push({
+          text: textAfter,
+          type: "text",
+          startIndex: lastIndex,
+          endIndex: text.length,
+        });
       }
 
       return { task: result, segments: finalSegments };
@@ -726,11 +722,14 @@ export function SmartTaskInput({
     return segmentsWithNbsp.map((segment, index) => {
       const colorClass = {
         text: "text-transparent",
-        context: "bg-blue-500/20 text-transparent rounded px-1 py-0.5",
-        tag: "bg-green-500/20 text-transparent rounded px-1 py-0.5",
-        priority: "bg-purple-500/20 text-transparent rounded px-1 py-0.5",
-        date: "bg-orange-500/20 text-transparent rounded px-1 py-0.5",
-        recurring: "bg-cyan-500/20 text-transparent rounded px-1 py-0.5",
+        context:
+          "bg-blue-500/20 text-transparent rounded px-1 py-0.5 -mx-1 -my-0.5",
+        tag: "bg-green-500/20 text-transparent rounded px-1 py-0.5 -mx-1 -my-0.5",
+        priority:
+          "bg-purple-500/20 text-transparent rounded px-1 py-0.5 -mx-1 -my-0.5",
+        date: "bg-orange-500/20 text-transparent rounded px-1 py-0.5 -mx-1 -my-0.5",
+        recurring:
+          "bg-cyan-500/20 text-transparent rounded px-1 py-0.5 -mx-1 -my-0.5",
       }[segment.type];
 
       return (
@@ -786,10 +785,9 @@ export function SmartTaskInput({
           {/* Highlight overlay - positioned to exactly match input text */}
           <div
             ref={highlightRef}
-            className="absolute inset-0 flex text-base leading-6 bg-white rounded-md font-mono pointer-events-none overflow-hidden whitespace-nowrap"
+            className="absolute inset-0 flex text-base leading-6 bg-white rounded-md font-mono pointer-events-none overflow-hidden whitespace-nowrap py-3 px-3"
             style={{
               zIndex: 1,
-              padding: "0.55rem 0.5rem", // matches Input component padding
               border: "1px solid transparent", // matches Input border
             }}
           >
