@@ -143,7 +143,6 @@ export function TaskModal({
 
   const [taskFormData, setTaskFormData] = useState<TaskFormData>({
     title: "",
-    project: "",
     priority: "MEDIUM",
     contextId: fallbackContextId,
     dueDate: "",
@@ -192,7 +191,6 @@ export function TaskModal({
         // Editing mode - populate form with task data
         const formData = {
           title: task.title,
-          project: task.project || "",
           priority: task.priority,
           contextId: task.contextId,
           dueDate: task.dueDate
@@ -233,7 +231,6 @@ export function TaskModal({
           defaultContextId || inboxContext?.id || "";
         const defaultFormData = {
           title: "",
-          project: "",
           priority: "MEDIUM" as const,
           contextId: currentFallbackContextId,
           dueDate: "",
@@ -265,7 +262,7 @@ export function TaskModal({
     contextToEdit?.id,
     inboxContext?.id,
     tagToEdit?.id,
-  ]); // eslint-disable-line react-hooks/exhaustive-deps
+  ]);
 
   // Check if the task form has unsaved changes
   const hasUnsavedTaskChanges = () => {
@@ -274,7 +271,6 @@ export function TaskModal({
     // Deep comparison of form data
     return (
       taskFormData.title !== initialTaskFormData.title ||
-      taskFormData.project !== initialTaskFormData.project ||
       taskFormData.priority !== initialTaskFormData.priority ||
       taskFormData.contextId !== initialTaskFormData.contextId ||
       taskFormData.dueDate !== initialTaskFormData.dueDate ||
@@ -358,7 +354,6 @@ export function TaskModal({
       formData.append("taskId", task.id);
     }
     formData.append("title", taskFormData.title);
-    if (taskFormData.project) formData.append("project", taskFormData.project);
     formData.append("priority", taskFormData.priority);
     formData.append("contextId", taskFormData.contextId);
     if (taskFormData.dueDate) formData.append("dueDate", taskFormData.dueDate);
@@ -600,8 +595,8 @@ export function TaskModal({
                   </TooltipTrigger>
                   <TooltipContent side="bottom" className="max-w-xs">
                     <p className="text-sm">
-                      Mark this task as completed yesterday. Useful if you forgot
-                      to check off a task you finished the day before.
+                      Mark this task as completed yesterday. Useful if you
+                      forgot to check off a task you finished the day before.
                     </p>
                   </TooltipContent>
                 </Tooltip>

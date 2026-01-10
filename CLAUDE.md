@@ -119,9 +119,8 @@ The urgency calculation is in `lib/utils.ts:evaluateUrgency()`. It combines:
 2. **Age** - How long the task has existed (older = more urgent)
 3. **Due date proximity** - Exponential scaling as due date approaches, saturating for overdue
 4. **Wait days** - Optional delay before urgency calculation starts (new feature)
-5. **Project** - Fixed coefficient if project exists
-6. **Tags** - Custom per-tag coefficients
-7. **Context** - Custom per-context coefficients
+5. **Tags** - Custom per-tag coefficients
+6. **Context** - Custom per-context coefficients
 
 Configuration lives in `lib/urgency-config.ts`. The system is designed to be transparent and customizable.
 

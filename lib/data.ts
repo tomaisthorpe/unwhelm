@@ -24,7 +24,6 @@ export interface Subtask {
 export interface Task {
   id: string;
   title: string;
-  project: string | null;
   priority: "LOW" | "MEDIUM" | "HIGH";
   tags: string[];
   contextId: string;
@@ -105,7 +104,9 @@ export async function getTasks(): Promise<Task[]> {
       let subtasks: Subtask[] = [];
       if (task.subtasks) {
         try {
-          subtasks = Array.isArray(task.subtasks) ? task.subtasks : JSON.parse(task.subtasks as string);
+          subtasks = Array.isArray(task.subtasks)
+            ? task.subtasks
+            : JSON.parse(task.subtasks as string);
         } catch (e) {
           console.error("Failed to parse subtasks for task", task.id, e);
           subtasks = [];
@@ -129,7 +130,6 @@ export async function getTasks(): Promise<Task[]> {
           waitDays: task.waitDays,
           createdAt: task.createdAt,
           tags: task.tags,
-          project: task.project,
           contextCoefficient: task.context?.coefficient || 0,
           tagCoefficients,
         }),
@@ -291,7 +291,9 @@ export async function getUserTasks(userId: string): Promise<Task[]> {
       let subtasks: Subtask[] = [];
       if (task.subtasks) {
         try {
-          subtasks = Array.isArray(task.subtasks) ? task.subtasks : JSON.parse(task.subtasks as string);
+          subtasks = Array.isArray(task.subtasks)
+            ? task.subtasks
+            : JSON.parse(task.subtasks as string);
         } catch (e) {
           console.error("Failed to parse subtasks for task", task.id, e);
           subtasks = [];
@@ -315,7 +317,6 @@ export async function getUserTasks(userId: string): Promise<Task[]> {
           waitDays: task.waitDays,
           createdAt: task.createdAt,
           tags: task.tags,
-          project: task.project,
           contextCoefficient: task.context?.coefficient || 0,
           tagCoefficients,
         }),
@@ -367,7 +368,7 @@ export function getTodayTasks(tasks: Task[]): Task[] {
 export function getContextCompletion(tasks: Task[], contextId: string) {
   // Only habits contribute to context health, not one-off tasks
   const contextHabits = tasks.filter(
-    (task) => task.contextId === contextId && task.type === "HABIT"
+    (task) => task.contextId === contextId && task.type === "HABIT",
   );
 
   if (contextHabits.length === 0) {
@@ -394,7 +395,7 @@ export interface PaginatedResults<T> {
 // Get completed tasks with pagination
 export async function getCompletedTasks(
   page: number = 1,
-  pageSize: number = 20
+  pageSize: number = 20,
 ): Promise<PaginatedResults<Task>> {
   const session = await getAuthenticatedSession();
 
@@ -453,7 +454,9 @@ export async function getCompletedTasks(
       let subtasks: Subtask[] = [];
       if (task.subtasks) {
         try {
-          subtasks = Array.isArray(task.subtasks) ? task.subtasks : JSON.parse(task.subtasks as string);
+          subtasks = Array.isArray(task.subtasks)
+            ? task.subtasks
+            : JSON.parse(task.subtasks as string);
         } catch (e) {
           console.error("Failed to parse subtasks for task", task.id, e);
           subtasks = [];
@@ -477,7 +480,6 @@ export async function getCompletedTasks(
           waitDays: task.waitDays,
           createdAt: task.createdAt,
           tags: task.tags,
-          project: task.project,
           contextCoefficient: task.context?.coefficient || 0,
           tagCoefficients,
         }),
@@ -591,7 +593,7 @@ export async function getBurndownData(): Promise<BurndownDataPoint[]> {
     // Calculate initial incomplete count (tasks created before our range that were incomplete)
     let runningIncompleteCount = olderIncompleteTasks.filter(
       (task: { completed: boolean; completedAt: Date | null }) =>
-        !task.completed || (task.completedAt && task.completedAt >= startDate)
+        !task.completed || (task.completedAt && task.completedAt >= startDate),
     ).length;
 
     // Generate data points for each day
@@ -611,7 +613,7 @@ export async function getBurndownData(): Promise<BurndownDataPoint[]> {
           if (!task.completedAt) return false;
           const completedDate = new Date(task.completedAt);
           return completedDate >= date && completedDate < nextDay;
-        }
+        },
       ).length;
 
       // Update running count
@@ -727,33 +729,35 @@ export async function getAllUserStats(): Promise<UserStats[]> {
     });
 
     const userStats = await Promise.all(
-      users.map(async (user: { id: string; email: string; createdAt: Date }) => {
-        const [tasksCount, contextsCount, tagsCount, completedTasksCount] =
-          await Promise.all([
-            prisma.task.count({
-              where: { userId: user.id },
-            }),
-            prisma.context.count({
-              where: { userId: user.id },
-            }),
-            prisma.tag.count({
-              where: { userId: user.id },
-            }),
-            prisma.task.count({
-              where: { userId: user.id, completed: true },
-            }),
-          ]);
+      users.map(
+        async (user: { id: string; email: string; createdAt: Date }) => {
+          const [tasksCount, contextsCount, tagsCount, completedTasksCount] =
+            await Promise.all([
+              prisma.task.count({
+                where: { userId: user.id },
+              }),
+              prisma.context.count({
+                where: { userId: user.id },
+              }),
+              prisma.tag.count({
+                where: { userId: user.id },
+              }),
+              prisma.task.count({
+                where: { userId: user.id, completed: true },
+              }),
+            ]);
 
-        return {
-          id: user.id,
-          email: user.email,
-          createdAt: user.createdAt,
-          tasksCount,
-          contextsCount,
-          tagsCount,
-          completedTasksCount,
-        };
-      })
+          return {
+            id: user.id,
+            email: user.email,
+            createdAt: user.createdAt,
+            tasksCount,
+            contextsCount,
+            tagsCount,
+            completedTasksCount,
+          };
+        },
+      ),
     );
 
     return userStats;

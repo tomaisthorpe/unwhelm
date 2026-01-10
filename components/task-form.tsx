@@ -38,7 +38,6 @@ export interface Subtask {
 
 export interface TaskFormData {
   title: string;
-  project: string;
   priority: "LOW" | "MEDIUM" | "HIGH";
   contextId: string;
   dueDate: string;
@@ -55,7 +54,7 @@ interface TaskFormProps {
   data: TaskFormData;
   onChange: <K extends keyof TaskFormData>(
     field: K,
-    value: TaskFormData[K]
+    value: TaskFormData[K],
   ) => void;
   contexts: Array<{
     id: string;
@@ -93,7 +92,7 @@ export function TaskForm({
   // State to control wait days input visibility
   // Initialize to true if wait days is already set
   const [showWaitDays, setShowWaitDays] = useState(
-    data.waitDays !== undefined && data.waitDays > 0
+    data.waitDays !== undefined && data.waitDays > 0,
   );
 
   // State to control tooltip visibility for each wait days section
@@ -225,7 +224,7 @@ export function TaskForm({
                     />
                     {(() => {
                       const IconComponent = getContextIconComponent(
-                        selectedContext.icon
+                        selectedContext.icon,
                       );
                       return <IconComponent className="w-4 h-4 mr-2" />;
                     })()}
@@ -346,7 +345,7 @@ export function TaskForm({
                     onChange={(e) =>
                       onChange(
                         "waitDays",
-                        e.target.value ? parseInt(e.target.value) : undefined
+                        e.target.value ? parseInt(e.target.value) : undefined,
                       )
                     }
                     placeholder="0"
@@ -375,7 +374,7 @@ export function TaskForm({
                 onValueChange={(value) =>
                   onChange(
                     "habitType",
-                    value as "STREAK" | "LEARNING" | "WELLNESS" | "MAINTENANCE"
+                    value as "STREAK" | "LEARNING" | "WELLNESS" | "MAINTENANCE",
                   )
                 }
               >
@@ -470,7 +469,7 @@ export function TaskForm({
                       onChange={(e) =>
                         onChange(
                           "waitDays",
-                          e.target.value ? parseInt(e.target.value) : undefined
+                          e.target.value ? parseInt(e.target.value) : undefined,
                         )
                       }
                       placeholder="0"
@@ -573,7 +572,7 @@ export function TaskForm({
                       onChange={(e) =>
                         onChange(
                           "waitDays",
-                          e.target.value ? parseInt(e.target.value) : undefined
+                          e.target.value ? parseInt(e.target.value) : undefined,
                         )
                       }
                       placeholder="0"
@@ -592,19 +591,6 @@ export function TaskForm({
               </div>
             )}
           </>
-        )}
-
-        {/* Project - only in full mode */}
-        {!compact && (
-          <div className="col-span-2">
-            <Label htmlFor={getFieldId("project")}>Project</Label>
-            <Input
-              id={getFieldId("project")}
-              value={data.project}
-              onChange={(e) => onChange("project", e.target.value)}
-              placeholder="Optional project name"
-            />
-          </div>
         )}
 
         {/* Notes - only in full mode */}

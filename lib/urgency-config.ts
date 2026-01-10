@@ -27,11 +27,6 @@ export const URGENCY_CONSTANTS = {
     horizonDays: 30,
   },
 
-  // Project: adding a project adds a fixed 1 * coefficient
-  project: {
-    coefficient: 1.0,
-  },
-
   // Tags: special tag impacts
   tags: {
     special: {

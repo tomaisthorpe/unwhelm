@@ -6,7 +6,6 @@
 {
   id: string,
   title: string,
-  project: string,
   priority: 'low' | 'medium' | 'high',
   tags: string[],
   context: string,

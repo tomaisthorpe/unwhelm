@@ -4,13 +4,15 @@
 
 import { prisma } from "./prisma";
 import { addDays } from "./date-utils";
-import { processHabitCompletion, processHabitUncompletion } from "./habit-utils";
+import {
+  processHabitCompletion,
+  processHabitUncompletion,
+} from "./habit-utils";
 import { shouldHabitShowAsAvailable } from "./utils";
 
 export interface TaskForCompletion {
   id: string;
   title: string;
-  project: string | null;
   priority: "LOW" | "MEDIUM" | "HIGH";
   tags: string[];
   contextId: string;
@@ -31,7 +33,7 @@ export interface TaskForCompletion {
  */
 export async function completeRecurringTask(
   task: TaskForCompletion,
-  completionDate: Date
+  completionDate: Date,
 ): Promise<void> {
   if (!task.frequency) {
     throw new Error("Recurring task must have a frequency");
@@ -51,7 +53,6 @@ export async function completeRecurringTask(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const taskData: any = {
     title: task.title,
-    project: task.project,
     priority: task.priority,
     tags: task.tags,
     contextId: task.contextId,
@@ -63,7 +64,7 @@ export async function completeRecurringTask(
     frequency: task.frequency,
     nextDue: nextDueDate,
   };
-  
+
   await prisma.task.create({
     data: taskData,
   });
@@ -84,7 +85,7 @@ export async function completeRecurringTask(
  */
 export async function completeRegularTask(
   taskId: string,
-  completionDate: Date
+  completionDate: Date,
 ): Promise<void> {
   await prisma.task.update({
     where: { id: taskId },
@@ -101,13 +102,13 @@ export async function completeRegularTask(
 export async function toggleRegularTask(
   taskId: string,
   isCompleted: boolean,
-  completionDate?: Date
+  completionDate?: Date,
 ): Promise<void> {
   await prisma.task.update({
     where: { id: taskId },
     data: {
       completed: !isCompleted,
-      completedAt: !isCompleted ? (completionDate || new Date()) : null,
+      completedAt: !isCompleted ? completionDate || new Date() : null,
     },
   });
 }
@@ -117,7 +118,7 @@ export async function toggleRegularTask(
  */
 export async function completeTask(
   task: TaskForCompletion,
-  completionDate: Date
+  completionDate: Date,
 ): Promise<void> {
   switch (task.type) {
     case "HABIT":
@@ -128,14 +129,18 @@ export async function completeTask(
       });
 
       if (habitShowsAsAvailable) {
-        await processHabitCompletion(task.id, {
-          id: task.id,
-          dueDate: task.dueDate,
-          frequency: task.frequency,
-          completedAt: task.completedAt,
-          streak: task.streak,
-          longestStreak: task.longestStreak,
-        }, completionDate);
+        await processHabitCompletion(
+          task.id,
+          {
+            id: task.id,
+            dueDate: task.dueDate,
+            frequency: task.frequency,
+            completedAt: task.completedAt,
+            streak: task.streak,
+            longestStreak: task.longestStreak,
+          },
+          completionDate,
+        );
       }
       break;
 

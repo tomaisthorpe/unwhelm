@@ -131,7 +131,6 @@ enum UserRole {
 model Task {
   id        String    @id @default(cuid())
   title     String
-  project   String?
   priority  Priority  @default(MEDIUM)
   tags      String[]  @default([]) // Keep for backward compatibility during migration
   contextId String

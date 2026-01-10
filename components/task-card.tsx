@@ -65,10 +65,12 @@ const renderHabitIcon = (iconType: string, className: string) => {
 };
 
 // Helper function to render compact subtask display
-const renderSubtaskDisplay = (subtasks: Array<{id: string; text: string; completed: boolean}>) => {
+const renderSubtaskDisplay = (
+  subtasks: Array<{ id: string; text: string; completed: boolean }>,
+) => {
   if (!subtasks || subtasks.length === 0) return null;
 
-  const completedCount = subtasks.filter(s => s.completed).length;
+  const completedCount = subtasks.filter((s) => s.completed).length;
   const totalCount = subtasks.length;
   const completionPercentage = (completedCount / totalCount) * 100;
 
@@ -77,10 +79,12 @@ const renderSubtaskDisplay = (subtasks: Array<{id: string; text: string; complet
       <TooltipTrigger>
         <div className="flex items-center space-x-1 text-xs text-gray-500 mb-1">
           <CheckSquare className="w-3 h-3" />
-          <span>{completedCount}/{totalCount}</span>
+          <span>
+            {completedCount}/{totalCount}
+          </span>
           {totalCount > 0 && (
             <div className="w-12 h-1.5 bg-gray-200 rounded-full overflow-hidden">
-              <div 
+              <div
                 className="h-full bg-green-500 transition-all duration-300"
                 style={{ width: `${completionPercentage}%` }}
               />
@@ -90,15 +94,32 @@ const renderSubtaskDisplay = (subtasks: Array<{id: string; text: string; complet
       </TooltipTrigger>
       <TooltipContent>
         <div className="text-xs max-w-xs">
-          <div className="font-medium mb-1">Subtasks ({completedCount}/{totalCount})</div>
+          <div className="font-medium mb-1">
+            Subtasks ({completedCount}/{totalCount})
+          </div>
           {subtasks.slice(0, 5).map((subtask) => (
-            <div key={subtask.id} className="flex items-center space-x-1 py-0.5">
-              <span className={subtask.completed ? "text-green-500" : "text-gray-400"}>
+            <div
+              key={subtask.id}
+              className="flex items-center space-x-1 py-0.5"
+            >
+              <span
+                className={
+                  subtask.completed ? "text-green-500" : "text-gray-400"
+                }
+              >
                 {subtask.completed ? "✓" : "○"}
               </span>
-              <span className={subtask.completed ? "line-through text-gray-400" : ""}>
-                <MarkdownText 
-                  text={subtask.text.length > 30 ? `${subtask.text.substring(0, 30)}...` : subtask.text}
+              <span
+                className={
+                  subtask.completed ? "line-through text-gray-400" : ""
+                }
+              >
+                <MarkdownText
+                  text={
+                    subtask.text.length > 30
+                      ? `${subtask.text.substring(0, 30)}...`
+                      : subtask.text
+                  }
                 />
               </span>
             </div>
@@ -159,11 +180,9 @@ export function TaskCard({
     dueDate: task.dueDate,
     createdAt: task.createdAt,
     tags: task.tags,
-    project: task.project,
     contextCoefficient: taskContext?.coefficient || 0,
     tagCoefficients,
   });
-
 
   return (
     <TooltipProvider>
@@ -181,13 +200,16 @@ export function TaskCard({
                     "font-normal text-base cursor-pointer hover:text-blue-600 transition-colors",
                     effectiveCompleted
                       ? "line-through text-gray-500"
-                      : "text-gray-900"
+                      : "text-gray-900",
                   )}
                   onClick={() => setIsEditModalOpen(true)}
                   title="Click to edit task"
                 >
                   {searchQuery ? (
-                    <HighlightedText text={task.title} searchQuery={searchQuery} />
+                    <HighlightedText
+                      text={task.title}
+                      searchQuery={searchQuery}
+                    />
                   ) : (
                     <MarkdownText text={task.title} />
                   )}
@@ -206,7 +228,7 @@ export function TaskCard({
                   <div className="flex items-center space-x-1">
                     {renderHabitIcon(
                       habitDisplay.iconType,
-                      cn("w-3 h-3", habitDisplay.iconColor)
+                      cn("w-3 h-3", habitDisplay.iconColor),
                     )}
                     <span className="text-xs font-medium text-gray-600">
                       {habitDisplay.primaryText}
@@ -221,7 +243,6 @@ export function TaskCard({
               </div>
 
               {((showContext && taskContext) ||
-                task.project ||
                 task.tags.length > 0 ||
                 task.notes ||
                 (task.subtasks && task.subtasks.length > 0)) && (
@@ -233,30 +254,31 @@ export function TaskCard({
                         onClick={() => onContextClick(taskContext.id)}
                         className={cn(
                           "inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium text-white transition-all hover:scale-105 hover:shadow-md mb-1",
-                          taskContext.color
+                          taskContext.color,
                         )}
                         title={`Click to scroll to ${taskContext.name} context`}
                       >
-                        <ContextIcon iconName={taskContext.icon} className="w-3 h-3 mr-1" />
+                        <ContextIcon
+                          iconName={taskContext.icon}
+                          className="w-3 h-3 mr-1"
+                        />
                         {taskContext.name}
                       </button>
                     ) : (
                       <span
                         className={cn(
                           "inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium text-white mb-1",
-                          taskContext.color
+                          taskContext.color,
                         )}
                         title={taskContext.name}
                       >
-                        <ContextIcon iconName={taskContext.icon} className="w-3 h-3 mr-1" />
+                        <ContextIcon
+                          iconName={taskContext.icon}
+                          className="w-3 h-3 mr-1"
+                        />
                         {taskContext.name}
                       </span>
                     ))}
-                  {task.project && (
-                    <span className="text-xs text-gray-500 mb-1">
-                      <HighlightedText text={task.project} searchQuery={searchQuery} />
-                    </span>
-                  )}
                   {task.tags.map((tag) => (
                     <span
                       key={tag}
@@ -274,16 +296,20 @@ export function TaskCard({
                         <p className="text-xs max-w-xs">
                           {searchQuery ? (
                             <HighlightedText
-                              text={task.notes.length > 100
-                                ? `${task.notes.substring(0, 100)}...`
-                                : task.notes}
+                              text={
+                                task.notes.length > 100
+                                  ? `${task.notes.substring(0, 100)}...`
+                                  : task.notes
+                              }
                               searchQuery={searchQuery}
                             />
                           ) : (
                             <MarkdownText
-                              text={task.notes.length > 100
-                                ? `${task.notes.substring(0, 100)}...`
-                                : task.notes}
+                              text={
+                                task.notes.length > 100
+                                  ? `${task.notes.substring(0, 100)}...`
+                                  : task.notes
+                              }
                             />
                           )}
                         </p>
@@ -301,7 +327,7 @@ export function TaskCard({
                   <div
                     className={cn(
                       "text-xs font-medium whitespace-nowrap",
-                      habitStatus.color
+                      habitStatus.color,
                     )}
                   >
                     {habitStatus.text}
@@ -311,7 +337,7 @@ export function TaskCard({
                   <div
                     className={cn(
                       "px-1.5 py-0.5 rounded text-xs font-medium whitespace-nowrap",
-                      dateInfo.color
+                      dateInfo.color,
                     )}
                   >
                     {dateInfo.text}
@@ -322,7 +348,7 @@ export function TaskCard({
                     <div
                       className={cn(
                         "px-1.5 py-0.5 rounded text-xs font-semibold cursor-help",
-                        getUrgencyColor(task.urgency)
+                        getUrgencyColor(task.urgency),
                       )}
                     >
                       {task.urgency.toFixed(1)}

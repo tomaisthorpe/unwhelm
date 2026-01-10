@@ -1,13 +1,21 @@
 "use server";
 
-
 import { redirect } from "next/navigation";
 import { getServerSession } from "next-auth/next";
 import { Session } from "next-auth";
 import { authOptions } from "./auth";
 import { prisma } from "./prisma";
-import { calculateUrgency, parseTags, shouldHabitShowAsAvailable } from "./utils";
-import { completeTask, uncompleteHabit, toggleRegularTask, TaskForCompletion } from "./task-completion-utils";
+import {
+  calculateUrgency,
+  parseTags,
+  shouldHabitShowAsAvailable,
+} from "./utils";
+import {
+  completeTask,
+  uncompleteHabit,
+  toggleRegularTask,
+  TaskForCompletion,
+} from "./task-completion-utils";
 import { revalidatePath } from "next/cache";
 import bcrypt from "bcryptjs";
 import { FEATURE_LIMITS, FEATURE_LIMIT_ERRORS } from "./feature-limits";
@@ -140,13 +148,12 @@ export async function createTaskAction(formData: FormData) {
   }
 
   const title = formData.get("title") as string;
-  const project = formData.get("project") as string;
   const priority =
     (formData.get("priority") as "LOW" | "MEDIUM" | "HIGH") || "MEDIUM";
   const contextId = formData.get("contextId") as string;
   const dueDate = formData.get("dueDate") as string;
-  const waitDays = formData.get("waitDays") 
-    ? parseInt(formData.get("waitDays") as string) 
+  const waitDays = formData.get("waitDays")
+    ? parseInt(formData.get("waitDays") as string)
     : null;
   const type =
     (formData.get("type") as "TASK" | "HABIT" | "RECURRING") || "TASK";
@@ -183,7 +190,7 @@ export async function createTaskAction(formData: FormData) {
   }
 
   const tags = parseTags(tagsString || "");
-  
+
   // Parse subtasks JSON
   let subtasks = [];
   if (subtasksString) {
@@ -199,7 +206,6 @@ export async function createTaskAction(formData: FormData) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const taskData: any = {
     title,
-    project: project || null,
     priority,
     tags,
     contextId: finalContextId,
@@ -235,13 +241,12 @@ export async function updateTaskAction(formData: FormData) {
 
   const taskId = formData.get("taskId") as string;
   const title = formData.get("title") as string;
-  const project = formData.get("project") as string;
   const priority =
     (formData.get("priority") as "LOW" | "MEDIUM" | "HIGH") || "MEDIUM";
   const contextId = formData.get("contextId") as string;
   const dueDate = formData.get("dueDate") as string;
-  const waitDays = formData.get("waitDays") 
-    ? parseInt(formData.get("waitDays") as string) 
+  const waitDays = formData.get("waitDays")
+    ? parseInt(formData.get("waitDays") as string)
     : null;
   const type =
     (formData.get("type") as "TASK" | "HABIT" | "RECURRING") || "TASK";
@@ -280,7 +285,7 @@ export async function updateTaskAction(formData: FormData) {
   }
 
   const tags = parseTags(tagsString || "");
-  
+
   // Parse subtasks JSON
   let subtasks = [];
   if (subtasksString) {
@@ -299,7 +304,6 @@ export async function updateTaskAction(formData: FormData) {
     waitDays,
     createdAt: existingTask.createdAt,
     tags,
-    project: project || null,
     contextCoefficient: context.coefficient || 0,
   });
 
@@ -307,7 +311,6 @@ export async function updateTaskAction(formData: FormData) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const updateData: any = {
     title,
-    project: project || null,
     priority,
     tags,
     contextId,
@@ -498,7 +501,9 @@ export async function archiveContextAction(contextId: string) {
   });
 
   // Delete incomplete tasks, keep completed tasks
-  const incompleteTasks = tasks.filter((task: { completed: boolean }) => !task.completed);
+  const incompleteTasks = tasks.filter(
+    (task: { completed: boolean }) => !task.completed,
+  );
   if (incompleteTasks.length > 0) {
     await prisma.task.deleteMany({
       where: {
@@ -574,10 +579,10 @@ export async function updateTagAction(formData: FormData) {
 
   // Check if name conflicts with another tag
   const conflictingTag = await prisma.tag.findFirst({
-    where: { 
-      name: name.toLowerCase(), 
+    where: {
+      name: name.toLowerCase(),
       userId,
-      id: { not: tagId }
+      id: { not: tagId },
     },
   });
 
@@ -662,7 +667,7 @@ export async function updateUserNameAction(name: string) {
 // Change password action
 export async function changePasswordAction(
   currentPassword: string,
-  newPassword: string
+  newPassword: string,
 ) {
   const userId = await getAuthenticatedUser();
 

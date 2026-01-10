@@ -13,7 +13,6 @@ export type UrgencyInput = {
   waitDays?: number | null; // Number of days before due date to start increasing urgency
   createdAt: Date;
   tags: string[];
-  project?: string | null;
   contextCoefficient?: number;
   tagCoefficients?: { [tagName: string]: number };
 };
@@ -38,7 +37,7 @@ export function evaluateUrgency(task: UrgencyInput): UrgencyResult {
 
   // Check if we should wait before calculating any urgency
   const waitDays = task.waitDays; // Keep as null/undefined if not specified
-  
+
   if (task.dueDate && waitDays != null && waitDays > 0) {
     const daysUntilDue = diffInLocalCalendarDays(task.dueDate);
     // If waitDays is set and we're still outside the wait period, set urgency to 0
@@ -53,7 +52,7 @@ export function evaluateUrgency(task: UrgencyInput): UrgencyResult {
   const prioContribution = prioNorm * URGENCY_CONSTANTS.priority.coefficient;
   add(
     prioContribution,
-    `${task.priority[0]}${task.priority.slice(1).toLowerCase()} priority`
+    `${task.priority[0]}${task.priority.slice(1).toLowerCase()} priority`,
   );
 
   // Age factor
@@ -66,7 +65,7 @@ export function evaluateUrgency(task: UrgencyInput): UrgencyResult {
   if (task.dueDate) {
     const daysUntilDue = diffInLocalCalendarDays(task.dueDate);
     let proximity = 0;
-    
+
     if (daysUntilDue >= 0) {
       if (daysUntilDue <= URGENCY_CONSTANTS.due.nearWindowDays) {
         // Exponential scaling for non-overdue tasks
@@ -91,15 +90,10 @@ export function evaluateUrgency(task: UrgencyInput): UrgencyResult {
       daysUntilDue < 0
         ? `Overdue (${Math.abs(daysUntilDue)} days)`
         : `Due in ${daysUntilDue} days`;
-    
+
     add(dueContribution, label);
   } else {
     add(0.0, "No due date");
-  }
-
-  // Project contribution: fixed 1 * coefficient if project exists
-  if (task.project && task.project.trim().length > 0) {
-    add(1 * URGENCY_CONSTANTS.project.coefficient, "Project set");
   }
 
   // Special tags contribution
@@ -171,7 +165,7 @@ export function getUrgencyColor(urgency: number): string {
 }
 
 export function formatDateForTask(
-  date: Date | null
+  date: Date | null,
 ): { text: string; color: string; isOverdue: boolean } | null {
   if (!date) return null;
 

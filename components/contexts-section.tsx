@@ -48,34 +48,39 @@ export function ContextsSection({
   const hasTaskMatches = (context: Context): boolean => {
     if (searchQuery.trim() === "") return false;
 
-    const contextTasks = tasks.filter(task => task.contextId === context.id);
+    const contextTasks = tasks.filter((task) => task.contextId === context.id);
     const searchLower = searchQuery.toLowerCase();
 
-    return contextTasks.some(task =>
-      task.title.toLowerCase().includes(searchLower) ||
-      task.project?.toLowerCase().includes(searchLower) ||
-      task.notes?.toLowerCase().includes(searchLower) ||
-      task.tags.some(tag => tag.toLowerCase().includes(searchLower))
+    return contextTasks.some(
+      (task) =>
+        task.title.toLowerCase().includes(searchLower) ||
+        task.notes?.toLowerCase().includes(searchLower) ||
+        task.tags.some((tag) => tag.toLowerCase().includes(searchLower)),
     );
   };
 
   // Filter contexts based on search query
-  const filteredContexts = searchQuery.trim() === ""
-    ? contexts
-    : contexts.filter((context) => {
-        // Check if context name matches
-        if (context.name.toLowerCase().includes(searchQuery.toLowerCase())) {
-          return true;
-        }
+  const filteredContexts =
+    searchQuery.trim() === ""
+      ? contexts
+      : contexts.filter((context) => {
+          // Check if context name matches
+          if (context.name.toLowerCase().includes(searchQuery.toLowerCase())) {
+            return true;
+          }
 
-        // Check if context description matches
-        if (context.description?.toLowerCase().includes(searchQuery.toLowerCase())) {
-          return true;
-        }
+          // Check if context description matches
+          if (
+            context.description
+              ?.toLowerCase()
+              .includes(searchQuery.toLowerCase())
+          ) {
+            return true;
+          }
 
-        // Check if any tasks in this context match the search
-        return hasTaskMatches(context);
-      });
+          // Check if any tasks in this context match the search
+          return hasTaskMatches(context);
+        });
 
   // Check if all contexts are effectively collapsed/expanded
   // This takes into account temporary expansion due to search matches
@@ -84,7 +89,9 @@ export function ContextsSection({
     filteredContexts.every((c) => {
       const shouldTemporarilyExpand = hasTaskMatches(c);
       const savedCollapsed = collapsedState[c.id] ?? false;
-      const effectiveCollapsed = shouldTemporarilyExpand ? false : savedCollapsed;
+      const effectiveCollapsed = shouldTemporarilyExpand
+        ? false
+        : savedCollapsed;
       return effectiveCollapsed === true;
     });
   const allExpanded =
@@ -92,7 +99,9 @@ export function ContextsSection({
     filteredContexts.every((c) => {
       const shouldTemporarilyExpand = hasTaskMatches(c);
       const savedCollapsed = collapsedState[c.id] ?? false;
-      const effectiveCollapsed = shouldTemporarilyExpand ? false : savedCollapsed;
+      const effectiveCollapsed = shouldTemporarilyExpand
+        ? false
+        : savedCollapsed;
       return effectiveCollapsed === false;
     });
 
@@ -172,7 +181,9 @@ export function ContextsSection({
             // If search is active and context has task matches, temporarily expand it
             const savedCollapsedValue = collapsedState[context.id] ?? false;
             const shouldTemporarilyExpand = hasTaskMatches(context);
-            const effectiveCollapsed = shouldTemporarilyExpand ? false : savedCollapsedValue;
+            const effectiveCollapsed = shouldTemporarilyExpand
+              ? false
+              : savedCollapsedValue;
 
             return (
               <ContextGroup
@@ -197,10 +208,9 @@ export function ContextsSection({
       ) : (
         <div className="text-center py-8">
           <p className="text-gray-500">
-            {searchQuery.trim() === "" 
+            {searchQuery.trim() === ""
               ? "No contexts yet. Create one to get started!"
-              : `No contexts or tasks match "${searchQuery}"`
-            }
+              : `No contexts or tasks match "${searchQuery}"`}
           </p>
         </div>
       )}

@@ -611,7 +611,6 @@ export function SmartTaskInput({
   // Convert parsed task to TaskFormData format
   const getTaskFormData = (): TaskFormData => ({
     title: parsedTask.title,
-    project: "",
     priority: parsedTask.priority,
     contextId: parsedTask.contextId || "",
     dueDate: parsedTask.dueDate?.toISOString().slice(0, 16) || "",
