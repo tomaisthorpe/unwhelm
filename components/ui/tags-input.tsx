@@ -134,20 +134,19 @@ export function TagsInput({
 
   return (
     <div className={cn("relative", className)}>
-      <div className="flex flex-wrap gap-1 p-2 border border-gray-300 rounded-md min-h-[2.5rem] focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-transparent">
+      <div className="flex flex-wrap gap-1 border border-gray-300 rounded-md min-h-[2.5rem] focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-transparent">
         {value.map((tag, index) => (
           <span
             key={index}
             className={cn(
-              "inline-flex items-center gap-1 px-2 py-1 bg-blue-100 text-blue-800 text-sm rounded-md",
+              "inline-flex items-center gap-1 px-2 py-1 ml-1 my-1 bg-blue-100 text-blue-800 text-sm rounded-md",
               onTagClick &&
                 "cursor-pointer hover:bg-blue-200 transition-colors",
             )}
             onClick={onTagClick ? (e) => handleTagClick(tag, e) : undefined}
             title={onTagClick ? "Click to edit tag coefficient" : undefined}
           >
-            {onTagClick && <Edit2 className="w-3 h-3 opacity-60" />}
-            {tag}
+            {onTagClick && <Edit2 className="w-3 h-3 opacity-60" />}#{tag}
             <button
               type="button"
               onClick={(e) => {
@@ -172,7 +171,7 @@ export function TagsInput({
           onFocus={handleFocus}
           placeholder={value.length === 0 ? placeholder : ""}
           disabled={disabled}
-          className="flex-1 min-w-[120px] border-none outline-none focus:ring-0 p-0 bg-transparent shadow-none"
+          className="flex-1 min-w-[120px] border-none outline-none focus:ring-0 py-0 bg-transparent shadow-none"
         />
       </div>
 
