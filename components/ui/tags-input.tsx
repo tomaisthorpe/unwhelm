@@ -87,8 +87,9 @@ export function TagsInput({
   // Add a tag
   const addTag = (tag: string) => {
     const lowercaseTag = tag.toLowerCase();
-    if (lowercaseTag && !value.includes(lowercaseTag)) {
-      onChange([...value, lowercaseTag]);
+    const trimmed = lowercaseTag.replace(/^(#)+/, "");
+    if (trimmed && !value.includes(trimmed)) {
+      onChange([...value, trimmed]);
     }
     setInputValue("");
     setShowSuggestions(false);
