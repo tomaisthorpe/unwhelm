@@ -285,7 +285,7 @@ export function TaskForm({
             type="date"
             value={data.dueDate}
             onChange={(e) => onChange("dueDate", e.target.value)}
-            className={compact ? "text-sm mt-1" : ""}
+            className={compact ? "mt-1" : ""}
           />
         </div>
 

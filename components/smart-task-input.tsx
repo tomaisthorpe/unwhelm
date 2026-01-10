@@ -786,10 +786,10 @@ export function SmartTaskInput({
           {/* Highlight overlay - positioned to exactly match input text */}
           <div
             ref={highlightRef}
-            className="absolute inset-0 flex text-base leading-6 bg-white rounded-md font-mono pointer-events-none overflow-hidden whitespace-nowrap md:text-sm"
+            className="absolute inset-0 flex text-base leading-6 bg-white rounded-md font-mono pointer-events-none overflow-hidden whitespace-nowrap"
             style={{
               zIndex: 1,
-              padding: "0.25rem 0.5rem", // matches Input component padding
+              padding: "0.55rem 0.5rem", // matches Input component padding
               border: "1px solid transparent", // matches Input border
             }}
           >
@@ -808,7 +808,7 @@ export function SmartTaskInput({
             onBlur={handleInputBlur}
             onFocus={() => setIsInputFocused(true)}
             placeholder="Type your task naturally... e.g., 'Setup unwhelm !Homelab #sideprojects #setup p1 tomorrow' or 'Team standup every week !Work #meetings'"
-            className="relative text-base font-mono bg-transparent caret-gray-900 pr-8"
+            className="relative text-base font-mono bg-transparent caret-gray-900 pr-8 h-12"
             style={{ zIndex: 2 }}
             disabled={isPending}
           />
