@@ -33,42 +33,52 @@ function saveCollapsedState(state: Record<string, boolean>): void {
 }
 
 export function DashboardClient() {
-  const [collapsedState, setCollapsedState] = useState<Record<string, boolean>>(() => loadCollapsedState());
+  const [collapsedState, setCollapsedState] = useState<Record<string, boolean>>(
+    () => loadCollapsedState(),
+  );
 
   // Use SWR hook for client-side data fetching
-  const { tasks, contexts, archivedContexts, tags, isLoading, isError, mutate } = useDashboardData();
+  const {
+    tasks,
+    contexts,
+    archivedContexts,
+    tags,
+    isLoading,
+    isError,
+    mutate,
+  } = useDashboardData();
 
   // Persist collapsed state to localStorage whenever it changes
   useEffect(() => {
     saveCollapsedState(collapsedState);
   }, [collapsedState]);
-  
+
   // Update PWA badge based on task data
   const { requestPermission, permissionState } = usePWABadge(tasks);
-  
+
   // Calculate due task count for the permission banner
   const dueTaskCount = countDueAndOverdueTasks(tasks);
 
   const scrollToContext = (contextId: string) => {
     // First, ensure the context is expanded
-    setCollapsedState(prev => ({
+    setCollapsedState((prev) => ({
       ...prev,
-      [contextId]: false
+      [contextId]: false,
     }));
 
     // Small delay to ensure the DOM has updated before scrolling
     setTimeout(() => {
       const element = document.getElementById(`context-${contextId}`);
       if (element) {
-        element.scrollIntoView({ 
-          behavior: 'smooth', 
-          block: 'start' 
+        element.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
         });
-        
+
         // Add a brief highlight effect
-        element.style.boxShadow = '0 0 0 3px rgba(59, 130, 246, 0.5)';
+        element.style.boxShadow = "0 0 0 3px rgba(59, 130, 246, 0.5)";
         setTimeout(() => {
-          element.style.boxShadow = '';
+          element.style.boxShadow = "";
         }, 2000);
       }
     }, 100);
@@ -96,7 +106,9 @@ export function DashboardClient() {
     return (
       <div className="max-w-4xl mx-auto px-4 py-6">
         <div className="bg-red-50 border border-red-200 rounded-xl p-6">
-          <p className="text-red-600">Failed to load dashboard data. Please refresh the page.</p>
+          <p className="text-red-600">
+            Failed to load dashboard data. Please refresh the page.
+          </p>
         </div>
       </div>
     );
@@ -107,23 +119,23 @@ export function DashboardClient() {
   const sortedContexts = [...contexts].sort((a, b) => {
     // Calculate health for each context (server-side snapshot)
     const aHabits = tasks.filter(
-      (task) => task.contextId === a.id && task.type === "HABIT"
+      (task) => task.contextId === a.id && task.type === "HABIT",
     );
     const bHabits = tasks.filter(
-      (task) => task.contextId === b.id && task.type === "HABIT"
+      (task) => task.contextId === b.id && task.type === "HABIT",
     );
 
     const aHealth =
       aHabits.length === 0
         ? 100
         : Math.round(
-            (aHabits.filter((h) => h.completed).length / aHabits.length) * 100
+            (aHabits.filter((h) => h.completed).length / aHabits.length) * 100,
           );
     const bHealth =
       bHabits.length === 0
         ? 100
         : Math.round(
-            (bHabits.filter((h) => h.completed).length / bHabits.length) * 100
+            (bHabits.filter((h) => h.completed).length / bHabits.length) * 100,
           );
 
     // Sort by health (lowest first)
@@ -136,13 +148,13 @@ export function DashboardClient() {
       ...tasks
         .filter((task) => task.contextId === a.id)
         .map((task) => task.urgency),
-      0
+      0,
     );
     const bMaxUrgency = Math.max(
       ...tasks
         .filter((task) => task.contextId === b.id)
         .map((task) => task.urgency),
-      0
+      0,
     );
 
     return bMaxUrgency - aMaxUrgency;
@@ -155,9 +167,7 @@ export function DashboardClient() {
     <>
       <div className="max-w-4xl mx-auto px-4 py-6 space-y-6">
         {/* Smart Task Input */}
-        <div className="bg-white rounded-xl shadow-sm p-6">
-          <SmartTaskInput contexts={contexts} />
-        </div>
+        <SmartTaskInput contexts={contexts} />
 
         {/* Badge Permission Banner */}
         <BadgePermissionBanner
@@ -167,7 +177,13 @@ export function DashboardClient() {
         />
 
         {/* Today Section */}
-        <TodaySection tasks={tasks} contexts={allContexts} tags={tags} onContextClick={scrollToContext} onDataChange={mutate} />
+        <TodaySection
+          tasks={tasks}
+          contexts={allContexts}
+          tags={tags}
+          onContextClick={scrollToContext}
+          onDataChange={mutate}
+        />
 
         {/* Context Groups */}
         <ContextsSection
@@ -186,3 +202,4 @@ export function DashboardClient() {
     </>
   );
 }
+

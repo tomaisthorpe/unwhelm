@@ -786,7 +786,7 @@ export function SmartTaskInput({
           {/* Highlight overlay - positioned to exactly match input text */}
           <div
             ref={highlightRef}
-            className="absolute inset-0 flex text-base leading-6 font-mono pointer-events-none overflow-hidden whitespace-nowrap md:text-sm"
+            className="absolute inset-0 flex text-base leading-6 bg-white rounded-md font-mono pointer-events-none overflow-hidden whitespace-nowrap md:text-sm"
             style={{
               zIndex: 1,
               padding: "0.25rem 0.5rem", // matches Input component padding
@@ -869,7 +869,7 @@ export function SmartTaskInput({
           parsedTask.priority !== "MEDIUM" ||
           parsedTask.dueDate ||
           parsedTask.type === "RECURRING") && (
-          <div className="bg-white rounded-lg border-gray-200 p-4 space-y-3">
+          <div className="bg-white shadow-sm rounded-xl border-gray-200 p-4 space-y-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2 text-sm font-medium text-gray-700">
                 <Zap className="w-4 h-4" />
