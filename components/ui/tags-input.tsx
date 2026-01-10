@@ -35,7 +35,7 @@ export function TagsInput({
     (suggestion) =>
       suggestion.toLowerCase().includes(inputValue.toLowerCase()) &&
       !value.includes(suggestion) &&
-      inputValue.trim() !== ""
+      inputValue.trim() !== "",
   );
 
   // Handle input change
@@ -68,13 +68,13 @@ export function TagsInput({
       case "ArrowDown":
         e.preventDefault();
         setSelectedSuggestionIndex((prev) =>
-          prev < filteredSuggestions.length - 1 ? prev + 1 : 0
+          prev < filteredSuggestions.length - 1 ? prev + 1 : 0,
         );
         break;
       case "ArrowUp":
         e.preventDefault();
         setSelectedSuggestionIndex((prev) =>
-          prev > 0 ? prev - 1 : filteredSuggestions.length - 1
+          prev > 0 ? prev - 1 : filteredSuggestions.length - 1,
         );
         break;
       case "Escape":
@@ -140,14 +140,13 @@ export function TagsInput({
             key={index}
             className={cn(
               "inline-flex items-center gap-1 px-2 py-1 bg-blue-100 text-blue-800 text-sm rounded-md",
-              onTagClick && "cursor-pointer hover:bg-blue-200 transition-colors"
+              onTagClick &&
+                "cursor-pointer hover:bg-blue-200 transition-colors",
             )}
             onClick={onTagClick ? (e) => handleTagClick(tag, e) : undefined}
             title={onTagClick ? "Click to edit tag coefficient" : undefined}
           >
-            {onTagClick && (
-              <Edit2 className="w-3 h-3 opacity-60" />
-            )}
+            {onTagClick && <Edit2 className="w-3 h-3 opacity-60" />}
             {tag}
             <button
               type="button"
@@ -173,7 +172,7 @@ export function TagsInput({
           onFocus={handleFocus}
           placeholder={value.length === 0 ? placeholder : ""}
           disabled={disabled}
-          className="flex-1 min-w-[120px] border-none outline-none focus:ring-0 p-0 bg-transparent"
+          className="flex-1 min-w-[120px] border-none outline-none focus:ring-0 p-0 bg-transparent shadow-none"
         />
       </div>
 
@@ -190,7 +189,7 @@ export function TagsInput({
                 "px-3 py-2 cursor-pointer text-sm",
                 index === selectedSuggestionIndex
                   ? "bg-blue-100 text-blue-900"
-                  : "hover:bg-gray-100"
+                  : "hover:bg-gray-100",
               )}
               onClick={() => handleSuggestionClick(suggestion)}
             >
