@@ -155,7 +155,7 @@ export function TagsInput({
                 e.stopPropagation();
                 removeTag(index);
               }}
-              className="ml-1 hover:bg-blue-200 rounded-sm p-0.5 transition-colors"
+              className="hover:bg-blue-200 rounded-sm p-0.5 transition-colors"
               disabled={disabled}
             >
               <X className="w-3 h-3" />
