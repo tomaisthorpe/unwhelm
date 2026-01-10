@@ -774,7 +774,7 @@ export function TaskModal({
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="max-h-60">
                     {contextColors.map(({ value, label, color }) => (
                       <SelectItem key={value} value={value}>
                         <div className="flex items-center">
