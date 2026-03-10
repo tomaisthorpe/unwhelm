@@ -245,6 +245,7 @@ export function TaskCard({
               {((showContext && taskContext) ||
                 task.tags.length > 0 ||
                 task.notes ||
+                task.priority !== "MEDIUM" ||
                 (task.subtasks && task.subtasks.length > 0)) && (
                 <div className="flex flex-wrap items-center space-x-2 md:space-x-3 mt-1">
                   {showContext &&
@@ -279,6 +280,18 @@ export function TaskCard({
                         {taskContext.name}
                       </span>
                     ))}
+                  {task.priority !== "MEDIUM" && (
+                    <span
+                      className={cn(
+                        "inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium mb-1",
+                        task.priority === "HIGH"
+                          ? "bg-red-100 text-red-700"
+                          : "bg-gray-100 text-gray-500",
+                      )}
+                    >
+                      {task.priority === "HIGH" ? "↑ High" : "↓ Low"}
+                    </span>
+                  )}
                   {task.tags.map((tag) => (
                     <span
                       key={tag}
