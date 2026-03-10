@@ -313,7 +313,7 @@ export function SmartTaskInput({
       }
 
       // Parse date using chrono
-      const chronoResults = chrono.parse(workingText);
+      const chronoResults = chrono.parse(workingText, new Date(), { forwardDate: true });
       if (chronoResults.length > 0) {
         const chronoResult = chronoResults[0];
         if (!ignoredMatches.has(chronoResult.text.toLowerCase().trim())) {
