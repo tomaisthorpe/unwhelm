@@ -2,6 +2,17 @@ import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
 export function proxy(request: NextRequest) {
+  const canonicalDomain = process.env.CANONICAL_DOMAIN
+  if (canonicalDomain) {
+    const host = request.headers.get('host')
+    if (host && host !== canonicalDomain) {
+      const url = request.nextUrl.clone()
+      url.protocol = 'https:'
+      url.host = canonicalDomain
+      return NextResponse.redirect(url, { status: 301 })
+    }
+  }
+
   const response = NextResponse.next()
 
   // Prevent clickjacking
