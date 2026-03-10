@@ -609,7 +609,9 @@ export function SmartTaskInput({
     title: parsedTask.title,
     priority: parsedTask.priority,
     contextId: parsedTask.contextId || "",
-    dueDate: parsedTask.dueDate?.toISOString().slice(0, 16) || "",
+    dueDate: parsedTask.dueDate
+      ? `${parsedTask.dueDate.getFullYear()}-${String(parsedTask.dueDate.getMonth() + 1).padStart(2, "0")}-${String(parsedTask.dueDate.getDate()).padStart(2, "0")}`
+      : "",
     waitDays: undefined,
     type: parsedTask.type,
     habitType: undefined,
