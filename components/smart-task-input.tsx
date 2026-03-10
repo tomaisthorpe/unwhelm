@@ -844,7 +844,13 @@ export function SmartTaskInput({
                   {suggestion.type === "tag" ? (
                     <Hash className="w-3 h-3 text-green-500" />
                   ) : (
-                    <div className="w-3 h-3 rounded-full bg-blue-500" />
+                    <div
+                      className={cn(
+                        "w-3 h-3 rounded-full",
+                        contexts.find((c) => c.name === suggestion.text)
+                          ?.color ?? "bg-blue-500",
+                      )}
+                    />
                   )}
                   <span className="font-mono">{suggestion.displayText}</span>
                   {suggestion.type === "context" && (
