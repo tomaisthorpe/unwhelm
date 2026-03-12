@@ -674,6 +674,16 @@ export async function getUserUsageCounts(): Promise<{
   }
 }
 
+export async function getUserApiKey(): Promise<string | null> {
+  const session = await getAuthenticatedSession();
+  if (!session?.user?.id) return null;
+  const user = await prisma.user.findUnique({
+    where: { id: session.user.id },
+    select: { apiKey: true },
+  });
+  return user?.apiKey ?? null;
+}
+
 // Admin-only functions
 export interface UserStats {
   id: string;

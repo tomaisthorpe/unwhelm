@@ -709,3 +709,26 @@ export async function changePasswordAction(
     data: { password: hashedPassword },
   });
 }
+
+// Generate a new API key for the authenticated user
+export async function generateApiKeyAction(): Promise<string> {
+  const userId = await getAuthenticatedUser();
+  const { randomBytes } = await import("crypto");
+  const apiKey = randomBytes(32).toString("hex");
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  await (prisma.user as any).update({
+    where: { id: userId },
+    data: { apiKey },
+  });
+  return apiKey;
+}
+
+// Revoke the API key for the authenticated user
+export async function revokeApiKeyAction(): Promise<void> {
+  const userId = await getAuthenticatedUser();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  await (prisma.user as any).update({
+    where: { id: userId },
+    data: { apiKey: null },
+  });
+}

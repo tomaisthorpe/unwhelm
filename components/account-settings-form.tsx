@@ -5,7 +5,8 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { updateUserNameAction, changePasswordAction } from "@/lib/server-actions";
+import { updateUserNameAction, changePasswordAction, generateApiKeyAction, revokeApiKeyAction } from "@/lib/server-actions";
+import { Eye, EyeOff, Copy, Check, RefreshCw, Trash2 } from "lucide-react";
 
 interface AccountSettingsFormProps {
   user: {
@@ -21,9 +22,10 @@ interface AccountSettingsFormProps {
     maxTasks: number;
     maxContexts: number;
   };
+  apiKey: string | null;
 }
 
-export function AccountSettingsForm({ user, usageCounts, limits }: AccountSettingsFormProps) {
+export function AccountSettingsForm({ user, usageCounts, limits, apiKey: initialApiKey }: AccountSettingsFormProps) {
   const router = useRouter();
   const [name, setName] = useState(user.name || "");
   const [isPending, startTransition] = useTransition();
@@ -31,6 +33,52 @@ export function AccountSettingsForm({ user, usageCounts, limits }: AccountSettin
     type: "success" | "error";
     text: string;
   } | null>(null);
+
+  // API key state
+  const [currentApiKey, setCurrentApiKey] = useState<string | null>(initialApiKey);
+  const [isApiKeyVisible, setIsApiKeyVisible] = useState(false);
+  const [isCopied, setIsCopied] = useState(false);
+  const [isApiKeyPending, startApiKeyTransition] = useTransition();
+  const [apiKeyMessage, setApiKeyMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
+
+  const handleGenerateApiKey = () => {
+    setApiKeyMessage(null);
+    startApiKeyTransition(async () => {
+      try {
+        const newKey = await generateApiKeyAction();
+        setCurrentApiKey(newKey);
+        setIsApiKeyVisible(true);
+        setApiKeyMessage({ type: "success", text: currentApiKey ? "API key regenerated" : "API key generated" });
+      } catch {
+        setApiKeyMessage({ type: "error", text: "Failed to generate API key" });
+      }
+    });
+  };
+
+  const handleRevokeApiKey = () => {
+    setApiKeyMessage(null);
+    startApiKeyTransition(async () => {
+      try {
+        await revokeApiKeyAction();
+        setCurrentApiKey(null);
+        setIsApiKeyVisible(false);
+        setApiKeyMessage({ type: "success", text: "API key revoked" });
+      } catch {
+        setApiKeyMessage({ type: "error", text: "Failed to revoke API key" });
+      }
+    });
+  };
+
+  const handleCopyApiKey = async () => {
+    if (!currentApiKey) return;
+    await navigator.clipboard.writeText(currentApiKey);
+    setIsCopied(true);
+    setTimeout(() => setIsCopied(false), 2000);
+  };
+
+  const maskedKey = currentApiKey
+    ? "•".repeat(currentApiKey.length - 8) + currentApiKey.slice(-8)
+    : null;
 
   // Password change state
   const [currentPassword, setCurrentPassword] = useState("");
@@ -330,6 +378,93 @@ export function AccountSettingsForm({ user, usageCounts, limits }: AccountSettin
             {isPasswordPending ? "Changing..." : "Change Password"}
           </Button>
         </form>
+      </div>
+
+      {/* API Access Section */}
+      <div className="bg-white rounded-lg shadow-sm p-6">
+        <h3 className="text-lg font-semibold text-gray-900 mb-1">API Access</h3>
+        <p className="text-sm text-gray-500 mb-4">
+          Use this key to access your tasks from external apps (e.g. an e-ink dashboard).
+          Keep it secret — it provides read access to your task data.
+        </p>
+
+        {currentApiKey ? (
+          <div className="space-y-3">
+            <div>
+              <Label className="text-sm font-medium text-gray-700">API Key</Label>
+              <div className="mt-1 flex items-center gap-2">
+                <Input
+                  readOnly
+                  value={isApiKeyVisible ? currentApiKey : (maskedKey ?? "")}
+                  className="font-mono text-sm bg-gray-50"
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="icon"
+                  onClick={() => setIsApiKeyVisible((v) => !v)}
+                  title={isApiKeyVisible ? "Hide key" : "Show key"}
+                >
+                  {isApiKeyVisible ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="icon"
+                  onClick={handleCopyApiKey}
+                  title="Copy to clipboard"
+                >
+                  {isCopied ? <Check className="w-4 h-4 text-green-600" /> : <Copy className="w-4 h-4" />}
+                </Button>
+              </div>
+              <p className="mt-1 text-xs text-gray-500">
+                Use as: <code className="bg-gray-100 px-1 rounded">Authorization: Bearer &lt;key&gt;</code>
+              </p>
+            </div>
+
+            <div className="flex gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={handleGenerateApiKey}
+                disabled={isApiKeyPending}
+              >
+                <RefreshCw className="w-4 h-4 mr-2" />
+                {isApiKeyPending ? "Regenerating..." : "Regenerate"}
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={handleRevokeApiKey}
+                disabled={isApiKeyPending}
+                className="text-red-600 border-red-200 hover:bg-red-50"
+              >
+                <Trash2 className="w-4 h-4 mr-2" />
+                Revoke
+              </Button>
+            </div>
+          </div>
+        ) : (
+          <Button
+            type="button"
+            onClick={handleGenerateApiKey}
+            disabled={isApiKeyPending}
+          >
+            {isApiKeyPending ? "Generating..." : "Generate API Key"}
+          </Button>
+        )}
+
+        {apiKeyMessage && (
+          <div
+            className={`mt-3 p-3 rounded-lg text-sm ${
+              apiKeyMessage.type === "success"
+                ? "bg-green-50 text-green-800 border border-green-200"
+                : "bg-red-50 text-red-800 border border-red-200"
+            }`}
+          >
+            {apiKeyMessage.text}
+          </div>
+        )}
       </div>
     </div>
   );

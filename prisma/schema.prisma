@@ -48,6 +48,7 @@ model User {
   image         String?
   password      String?   // For credentials auth
   role          UserRole  @default(USER)
+  apiKey        String?   @unique // For read-only API access (e.g. e-ink dashboard)
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 

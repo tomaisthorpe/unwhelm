@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Metadata } from "next";
 import { AccountSettingsForm } from "@/components/account-settings-form";
-import { getUserUsageCounts } from "@/lib/data";
+import { getUserUsageCounts, getUserApiKey } from "@/lib/data";
 import { FEATURE_LIMITS } from "@/lib/feature-limits";
 
 export const metadata: Metadata = {
@@ -17,8 +17,11 @@ export default async function AccountSettingsPage() {
   // Get session for user data (guaranteed to exist due to layout auth check)
   const session = (await getServerSession(authOptions)) as Session;
 
-  // Get user's current usage counts
-  const usageCounts = await getUserUsageCounts();
+  // Get user's current usage counts and API key
+  const [usageCounts, apiKey] = await Promise.all([
+    getUserUsageCounts(),
+    getUserApiKey(),
+  ]);
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-6">
@@ -52,6 +55,7 @@ export default async function AccountSettingsPage() {
             maxTasks: FEATURE_LIMITS.MAX_TASKS,
             maxContexts: FEATURE_LIMITS.MAX_CONTEXTS,
           }}
+          apiKey={apiKey}
         />
     </div>
   );
