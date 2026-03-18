@@ -17,6 +17,9 @@ interface ContextsSectionProps {
   onCollapsedStateChange?: (collapsedState: Record<string, boolean>) => void;
   archivedContexts: Context[];
   onDataChange?: () => void;
+  readOnly?: boolean;
+  hideSearch?: boolean;
+  defaultCollapsed?: boolean;
 }
 
 export function ContextsSection({
@@ -27,6 +30,9 @@ export function ContextsSection({
   onCollapsedStateChange,
   archivedContexts,
   onDataChange,
+  readOnly,
+  hideSearch,
+  defaultCollapsed = false,
 }: ContextsSectionProps) {
   const [showArchivedContexts, setShowArchivedContexts] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -123,13 +129,15 @@ export function ContextsSection({
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">Contexts</h2>
-          <AddItemModal
-            contexts={contexts}
-            tags={tags}
-            addButtonSize="icon"
-            defaultTab="context"
-            onDataChange={onDataChange}
-          />
+          {!readOnly && (
+            <AddItemModal
+              contexts={contexts}
+              tags={tags}
+              addButtonSize="icon"
+              defaultTab="context"
+              onDataChange={onDataChange}
+            />
+          )}
         </div>
         <div className="flex items-center gap-2">
           <Button
@@ -154,32 +162,34 @@ export function ContextsSection({
       </div>
 
       {/* Search Input */}
-      <div ref={searchContainerRef} className="relative">
-        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
-        <Input
-          type="text"
-          placeholder="Search tasks, contexts, or tags..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="pl-10 pr-10 bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700 focus:bg-white dark:focus:bg-gray-900 dark:text-gray-100 dark:placeholder:text-gray-500"
-        />
-        {searchQuery && (
-          <button
-            onClick={() => setSearchQuery("")}
-            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
-            aria-label="Clear search"
-          >
-            <X className="w-4 h-4" />
-          </button>
-        )}
-      </div>
+      {!hideSearch && (
+        <div ref={searchContainerRef} className="relative">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+          <Input
+            type="text"
+            placeholder="Search tasks, contexts, or tags..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="pl-10 pr-10 bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700 focus:bg-white dark:focus:bg-gray-900 dark:text-gray-100 dark:placeholder:text-gray-500"
+          />
+          {searchQuery && (
+            <button
+              onClick={() => setSearchQuery("")}
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+              aria-label="Clear search"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          )}
+        </div>
+      )}
 
       {filteredContexts.length > 0 ? (
         <div className="grid grid-cols-1 gap-4">
           {filteredContexts.map((context) => {
             // Compute effective collapsed state
             // If search is active and context has task matches, temporarily expand it
-            const savedCollapsedValue = collapsedState[context.id] ?? false;
+            const savedCollapsedValue = collapsedState[context.id] ?? defaultCollapsed;
             const shouldTemporarilyExpand = hasTaskMatches(context);
             const effectiveCollapsed = shouldTemporarilyExpand
               ? false
@@ -201,6 +211,7 @@ export function ContextsSection({
                 }
                 searchQuery={searchQuery}
                 onDataChange={onDataChange}
+                readOnly={readOnly}
               />
             );
           })}
@@ -216,25 +227,29 @@ export function ContextsSection({
       )}
 
       {/* View Archived Contexts Button */}
-      <div className="flex justify-center mt-6">
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => setShowArchivedContexts(true)}
-          className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100"
-        >
-          <Archive className="w-4 h-4 mr-2" />
-          View Archived Contexts
-        </Button>
-      </div>
+      {!readOnly && (
+        <div className="flex justify-center mt-6">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setShowArchivedContexts(true)}
+            className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100"
+          >
+            <Archive className="w-4 h-4 mr-2" />
+            View Archived Contexts
+          </Button>
+        </div>
+      )}
 
       {/* Archived Contexts Modal */}
-      <ArchivedContexts
-        archivedContexts={archivedContexts}
-        isOpen={showArchivedContexts}
-        onClose={() => setShowArchivedContexts(false)}
-        onDataChange={onDataChange}
-      />
+      {!readOnly && (
+        <ArchivedContexts
+          archivedContexts={archivedContexts}
+          isOpen={showArchivedContexts}
+          onClose={() => setShowArchivedContexts(false)}
+          onDataChange={onDataChange}
+        />
+      )}
     </div>
   );
 }

@@ -1,56 +1,135 @@
 "use client";
 
+import { useState, useEffect } from "react";
+import { TodaySection } from "@/components/today-section";
+import { ContextsSection } from "@/components/contexts-section";
 import { useDashboardData } from "@/lib/hooks/use-dashboard-data";
-import { TaskCard } from "@/components/task-card";
-import { shouldHideCompletedTask, shouldHabitShowAsAvailable } from "@/lib/utils";
 import type { Task } from "@/lib/data";
 
-function isEffectivelyCompleted(task: Task): boolean {
-  if (task.type === "HABIT") {
-    return task.completed && !shouldHabitShowAsAvailable(task);
+const COLLAPSED_STATE_KEY = "unwhelm-kiosk-collapsed-contexts";
+
+function loadCollapsedState(): Record<string, boolean> {
+  if (typeof window === "undefined") return {};
+  try {
+    const saved = localStorage.getItem(COLLAPSED_STATE_KEY);
+    return saved ? JSON.parse(saved) : {};
+  } catch {
+    return {};
   }
-  return task.completed;
+}
+
+function saveCollapsedState(state: Record<string, boolean>): void {
+  if (typeof window === "undefined") return;
+  try {
+    localStorage.setItem(COLLAPSED_STATE_KEY, JSON.stringify(state));
+  } catch {
+    // ignore
+  }
 }
 
 export function KioskDashboard() {
-  const { tasks, contexts, archivedContexts, tags, isLoading, mutate } = useDashboardData();
+  const [collapsedState, setCollapsedState] = useState<Record<string, boolean>>(
+    () => loadCollapsedState(),
+  );
 
-  const allContexts = [...contexts, ...archivedContexts];
+  const { tasks, contexts, archivedContexts, tags, isLoading, isError, mutate } =
+    useDashboardData();
 
-  const sorted = [...tasks]
-    .filter((t) => !shouldHideCompletedTask(t))
-    .sort((a, b) => {
-      const aDone = isEffectivelyCompleted(a);
-      const bDone = isEffectivelyCompleted(b);
-      if (aDone !== bDone) return aDone ? 1 : -1;
-      return b.urgency - a.urgency;
-    });
+  useEffect(() => {
+    saveCollapsedState(collapsedState);
+  }, [collapsedState]);
 
   if (isLoading && tasks.length === 0) {
     return (
-      <div className="p-4 text-gray-400 text-sm text-center pt-12">Loading…</div>
+      <div className="max-w-4xl mx-auto px-4 py-6">
+        <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm p-6">
+          <div className="animate-pulse space-y-4">
+            <div className="h-12 bg-gray-200 dark:bg-gray-700 rounded"></div>
+            <div className="space-y-2">
+              <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4"></div>
+              <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div>
+            </div>
+          </div>
+        </div>
+      </div>
     );
   }
 
-  if (sorted.length === 0) {
+  if (isError) {
     return (
-      <div className="p-4 text-gray-500 text-sm text-center pt-12">No tasks</div>
+      <div className="max-w-4xl mx-auto px-4 py-6">
+        <div className="bg-red-50 dark:bg-red-950/50 border border-red-200 dark:border-red-800 rounded-xl p-6">
+          <p className="text-red-600 dark:text-red-400">
+            Failed to load dashboard data. Please refresh the page.
+          </p>
+        </div>
+      </div>
     );
   }
+
+  const sortedContexts = [...contexts].sort((a, b) => {
+    const aHabits = tasks.filter(
+      (task: Task) => task.contextId === a.id && task.type === "HABIT",
+    );
+    const bHabits = tasks.filter(
+      (task: Task) => task.contextId === b.id && task.type === "HABIT",
+    );
+
+    const aHealth =
+      aHabits.length === 0
+        ? 100
+        : Math.round(
+            (aHabits.filter((h: Task) => h.completed).length / aHabits.length) * 100,
+          );
+    const bHealth =
+      bHabits.length === 0
+        ? 100
+        : Math.round(
+            (bHabits.filter((h: Task) => h.completed).length / bHabits.length) * 100,
+          );
+
+    if (aHealth !== bHealth) return aHealth - bHealth;
+
+    const aMaxUrgency = Math.max(
+      ...tasks
+        .filter((task: Task) => task.contextId === a.id)
+        .map((task: Task) => task.urgency),
+      0,
+    );
+    const bMaxUrgency = Math.max(
+      ...tasks
+        .filter((task: Task) => task.contextId === b.id)
+        .map((task: Task) => task.urgency),
+      0,
+    );
+
+    return bMaxUrgency - aMaxUrgency;
+  });
+
+  const allContexts = [...contexts, ...archivedContexts];
 
   return (
-    <div className="overflow-y-auto h-full px-2 py-2 space-y-1">
-      {sorted.map((task) => (
-        <TaskCard
-          key={task.id}
-          task={task}
-          contexts={allContexts}
-          tags={tags}
-          showContext={true}
-          showUrgency={true}
-          onDataChange={mutate}
-        />
-      ))}
+    <div className="max-w-4xl mx-auto px-4 py-6 space-y-6">
+      <TodaySection
+        tasks={tasks}
+        contexts={allContexts}
+        tags={tags}
+        onDataChange={mutate}
+        readOnly={true}
+      />
+
+      <ContextsSection
+        contexts={sortedContexts}
+        tasks={tasks}
+        tags={tags}
+        collapsedState={collapsedState}
+        onCollapsedStateChange={setCollapsedState}
+        archivedContexts={archivedContexts}
+        onDataChange={mutate}
+        readOnly={true}
+        hideSearch={true}
+        defaultCollapsed={true}
+      />
     </div>
   );
 }

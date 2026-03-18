@@ -29,6 +29,7 @@ interface ContextGroupProps {
   onCollapsedChange?: (value: boolean) => void;
   searchQuery?: string;
   onDataChange?: () => void;
+  readOnly?: boolean;
 }
 
 function getContextCompletion(tasks: Task[]) {
@@ -55,6 +56,7 @@ function ContextGroupHeader({
   hasHabits,
   searchQuery,
   onDataChange,
+  readOnly,
 }: {
   context: Context;
   allContexts: Context[];
@@ -64,6 +66,7 @@ function ContextGroupHeader({
   hasHabits: boolean;
   searchQuery?: string;
   onDataChange?: () => void;
+  readOnly?: boolean;
 }) {
   const [isEditContextOpen, setIsEditContextOpen] = useState(false);
   const { isCollapsed } = useCollapsible();
@@ -98,7 +101,7 @@ function ContextGroupHeader({
                 className="ml-3 flex flex-wrap justify-end items-center gap-2 flex-shrink-0"
                 onClick={(e) => e.stopPropagation()}
               >
-                {!context.isInbox && (
+                {!readOnly && !context.isInbox && (
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
@@ -111,13 +114,15 @@ function ContextGroupHeader({
                     <span>Edit</span>
                   </button>
                 )}
-                <AddItemModal
-                  contexts={allContexts}
-                  tags={tags}
-                  defaultContextId={context.id}
-                  addButtonSize="sm"
-                  onDataChange={onDataChange}
-                />
+                {!readOnly && (
+                  <AddItemModal
+                    contexts={allContexts}
+                    tags={tags}
+                    defaultContextId={context.id}
+                    addButtonSize="sm"
+                    onDataChange={onDataChange}
+                  />
+                )}
               </div>
               {todayTasksInContext > 0 && (
                 <p className="text-xs opacity-90">
@@ -164,6 +169,7 @@ export function ContextGroup({
   onCollapsedChange,
   searchQuery,
   onDataChange,
+  readOnly,
 }: ContextGroupProps) {
   const contextTasks = tasks
     .filter((task) => {
@@ -223,6 +229,7 @@ export function ContextGroup({
           hasHabits={hasHabits}
           searchQuery={searchQuery}
           onDataChange={onDataChange}
+          readOnly={readOnly}
         />
         <ContextCollapsibleContent>
           <div className="p-2 md:p-4">
@@ -236,6 +243,7 @@ export function ContextGroup({
                     tags={tags}
                     searchQuery={searchQuery}
                     onDataChange={onDataChange}
+                    readOnly={readOnly}
                   />
                 ))}
               </div>

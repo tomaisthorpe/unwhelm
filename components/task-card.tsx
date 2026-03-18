@@ -47,6 +47,7 @@ interface TaskCardProps {
   showUrgency?: boolean;
   searchQuery?: string;
   onDataChange?: () => void;
+  readOnly?: boolean;
 }
 
 const renderHabitIcon = (iconType: string, className: string) => {
@@ -144,6 +145,7 @@ export function TaskCard({
   onContextClick,
   searchQuery,
   onDataChange,
+  readOnly,
 }: TaskCardProps) {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const dateInfo = formatDateForTask(task.dueDate);
@@ -197,13 +199,14 @@ export function TaskCard({
               <div className="flex items-center flex-wrap space-x-2">
                 <h3
                   className={cn(
-                    "font-normal text-base cursor-pointer hover:text-blue-600 transition-colors",
+                    "font-normal text-base transition-colors",
+                    !readOnly && "cursor-pointer hover:text-blue-600",
                     effectiveCompleted
                       ? "line-through text-gray-500"
                       : "text-gray-900 dark:text-gray-100",
                   )}
-                  onClick={() => setIsEditModalOpen(true)}
-                  title="Click to edit task"
+                  onClick={readOnly ? undefined : () => setIsEditModalOpen(true)}
+                  title={readOnly ? undefined : "Click to edit task"}
                 >
                   {searchQuery ? (
                     <HighlightedText
@@ -386,14 +389,16 @@ export function TaskCard({
         </div>
       </div>
 
-      <TaskModal
-        contexts={contexts}
-        tags={tags}
-        task={task}
-        isOpen={isEditModalOpen}
-        onClose={() => setIsEditModalOpen(false)}
-        onDataChange={onDataChange}
-      />
+      {!readOnly && (
+        <TaskModal
+          contexts={contexts}
+          tags={tags}
+          task={task}
+          isOpen={isEditModalOpen}
+          onClose={() => setIsEditModalOpen(false)}
+          onDataChange={onDataChange}
+        />
+      )}
     </TooltipProvider>
   );
 }
