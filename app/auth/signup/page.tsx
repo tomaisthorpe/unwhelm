@@ -7,7 +7,6 @@ import { CheckCircle2, Eye, EyeOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import Image from "next/image";
 import {
   Card,
   CardContent,
@@ -84,80 +83,27 @@ export default function SignUp() {
 
   if (success) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
-        {/* Header */}
-        <div className="bg-white dark:bg-gray-900 shadow-sm">
-          <div className="max-w-4xl mx-auto px-4 py-4">
-            <div className="flex items-center justify-between">
-              <Link
-                href="/"
-                className="flex items-center space-x-3 hover:opacity-80 transition-opacity"
-              >
-                <div className="w-8 h-8 flex items-center justify-center">
-                  <Image
-                    src="/unwhelm.svg"
-                    alt="unwhelm logo"
-                    width="32"
-                    height="32"
-                  />
-                </div>
-                <h1 className="hidden md:block text-2xl font-bold text-gray-900 dark:text-gray-100 font-brand">
-                  unwhelm
-                </h1>
-              </Link>
+      <div className="max-w-md mx-auto px-4 py-12">
+        <div className="text-center">
+          <div className="flex justify-center mb-4">
+            <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center">
+              <CheckCircle2 className="w-10 h-10 text-green-600" />
             </div>
           </div>
-        </div>
-
-        {/* Content */}
-        <div className="max-w-md mx-auto px-4 py-12">
-          <div className="text-center">
-            <div className="flex justify-center mb-4">
-              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center">
-                <CheckCircle2 className="w-10 h-10 text-green-600" />
-              </div>
-            </div>
-            <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100">
-              Account Created!
-            </h2>
-            <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
-              Your account has been created successfully. Redirecting to sign
-              in...
-            </p>
-          </div>
+          <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100">
+            Account Created!
+          </h2>
+          <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
+            Your account has been created successfully. Redirecting to sign
+            in...
+          </p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
-      {/* Header */}
-      <div className="bg-white dark:bg-gray-900 shadow-sm">
-        <div className="max-w-4xl mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <Link
-              href="/"
-              className="flex items-center space-x-3 hover:opacity-80 transition-opacity"
-            >
-              <div className="w-8 h-8 flex items-center justify-center">
-                <Image
-                  src="/unwhelm.svg"
-                  alt="unwhelm logo"
-                  width="32"
-                  height="32"
-                />
-              </div>
-              <h1 className="hidden md:block text-2xl font-bold text-gray-900 dark:text-gray-100 font-brand">
-                unwhelm
-              </h1>
-            </Link>
-          </div>
-        </div>
-      </div>
-
-      {/* Content */}
-      <div className="max-w-md mx-auto px-4 py-12">
+    <div className="max-w-md mx-auto px-4 py-12">
         <div className="text-center mb-8">
           <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100">Join unwhelm</h2>
           <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
@@ -282,6 +228,5 @@ export default function SignUp() {
           </CardContent>
         </Card>
       </div>
-    </div>
   );
 }

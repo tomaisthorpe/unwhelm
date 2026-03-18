@@ -25,8 +25,12 @@ export function useTheme() {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    applyTheme(theme);
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    applyTheme(theme);
 
     const mq = window.matchMedia("(prefers-color-scheme: dark)");
     const handler = () => {

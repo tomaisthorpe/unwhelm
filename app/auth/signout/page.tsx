@@ -4,8 +4,6 @@ import { useState } from "react";
 import { signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { LogOut } from "lucide-react";
-import Image from "next/image";
-import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -29,41 +27,15 @@ export default function SignOut() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <div className="bg-white shadow-sm">
-        <div className="max-w-4xl mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <Link
-              href="/"
-              className="flex items-center space-x-3 hover:opacity-80 transition-opacity"
-            >
-              <div className="w-8 h-8 flex items-center justify-center">
-                <Image
-                  src="/unwhelm.svg"
-                  alt="unwhelm logo"
-                  width="32"
-                  height="32"
-                />
-              </div>
-              <h1 className="hidden md:block text-2xl font-bold text-gray-900 font-brand">
-                unwhelm
-              </h1>
-            </Link>
-          </div>
-        </div>
-      </div>
-
-      {/* Content */}
-      <div className="max-w-md mx-auto px-4 py-12">
+    <div className="max-w-md mx-auto px-4 py-12">
         <div className="text-center mb-8">
           <div className="flex justify-center mb-4">
             <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center">
               <LogOut className="w-8 h-8 text-red-600" />
             </div>
           </div>
-          <h2 className="text-3xl font-bold text-gray-900">Sign Out</h2>
-          <p className="mt-2 text-sm text-gray-600">
+          <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100">Sign Out</h2>
+          <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
             Are you sure you want to sign out?
           </p>
         </div>
@@ -97,6 +69,5 @@ export default function SignOut() {
           </CardContent>
         </Card>
       </div>
-    </div>
   );
 }
