@@ -4,6 +4,7 @@ import { getCompletedTasks, getContexts, getArchivedContexts, getBurndownData } 
 import { Button } from "@/components/ui/button";
 import { Pagination } from "@/components/pagination";
 import { BurndownChart } from "@/components/burndown-chart";
+import { PageHeader } from "@/components/ui/page-header";
 import { startOfDay } from "@/lib/date-utils";
 import Link from "next/link";
 import { Metadata } from "next";
@@ -118,28 +119,12 @@ export default async function CompletedPage({
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-6">
-        {/* Page Header */}
-        <div className="mb-6">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
-                <Clock className="w-5 h-5 text-green-600" />
-              </div>
-              <div>
-                <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
-                  Completed Tasks
-                </h1>
-                <p className="text-sm text-gray-600 dark:text-gray-400">
-                  {completedResult.totalCount} tasks completed, ordered by
-                  completion date
-                </p>
-              </div>
-            </div>
-            <Link href="/tasks">
-              <Button variant="outline">Back to Dashboard</Button>
-            </Link>
-          </div>
-        </div>
+        <PageHeader
+          icon={<div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center"><Clock className="w-5 h-5 text-green-600" /></div>}
+          title="Completed Tasks"
+          subtitle={`${completedResult.totalCount} tasks completed, ordered by completion date`}
+          backHref="/tasks"
+        />
 
         {/* Burndown Chart */}
         <div className="mb-6">

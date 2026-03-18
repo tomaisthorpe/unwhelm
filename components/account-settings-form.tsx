@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { updateUserNameAction, changePasswordAction, generateApiKeyAction, revokeApiKeyAction } from "@/lib/server-actions";
 import { Eye, EyeOff, Copy, Check, RefreshCw, Trash2 } from "lucide-react";
+import { SectionPanel } from "@/components/ui/section-panel";
 
 interface AccountSettingsFormProps {
   user: {
@@ -151,11 +152,7 @@ export function AccountSettingsForm({ user, usageCounts, limits, apiKey: initial
   return (
     <div className="space-y-6">
       {/* Profile Information Section */}
-      <div className="bg-white dark:bg-gray-900 rounded-lg shadow-sm p-6">
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
-          Profile Information
-        </h3>
-
+      <SectionPanel title="Profile Information">
         {/* Email (read-only) */}
         <div className="mb-4">
           <Label htmlFor="email" className="text-sm font-medium text-gray-700">
@@ -211,13 +208,10 @@ export function AccountSettingsForm({ user, usageCounts, limits, apiKey: initial
             {isPending ? "Saving..." : "Save Changes"}
           </Button>
         </form>
-      </div>
+      </SectionPanel>
 
       {/* Usage & Limits Section */}
-      <div className="bg-white dark:bg-gray-900 rounded-lg shadow-sm p-6">
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
-          Usage & Limits
-        </h3>
+      <SectionPanel title="Usage & Limits">
 
         <div className="space-y-4">
           {/* Tasks Usage */}
@@ -278,11 +272,10 @@ export function AccountSettingsForm({ user, usageCounts, limits, apiKey: initial
             )}
           </div>
         </div>
-      </div>
+      </SectionPanel>
 
       {/* Security Section */}
-      <div className="bg-white dark:bg-gray-900 rounded-lg shadow-sm p-6">
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Security</h3>
+      <SectionPanel title="Security">
 
         <form onSubmit={handlePasswordChange}>
           {/* Current Password */}
@@ -378,15 +371,10 @@ export function AccountSettingsForm({ user, usageCounts, limits, apiKey: initial
             {isPasswordPending ? "Changing..." : "Change Password"}
           </Button>
         </form>
-      </div>
+      </SectionPanel>
 
       {/* API Access Section */}
-      <div className="bg-white dark:bg-gray-900 rounded-lg shadow-sm p-6">
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-1">API Access</h3>
-        <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
-          Use this key to access your tasks from external apps (e.g. an e-ink dashboard).
-          Keep it secret — it provides read access to your task data.
-        </p>
+      <SectionPanel title="API Access" description="Use this key to access your tasks from external apps (e.g. an e-ink dashboard). Keep it secret — it provides read access to your task data.">
 
         {currentApiKey ? (
           <div className="space-y-3">
@@ -465,7 +453,7 @@ export function AccountSettingsForm({ user, usageCounts, limits, apiKey: initial
             {apiKeyMessage.text}
           </div>
         )}
-      </div>
+      </SectionPanel>
     </div>
   );
 }

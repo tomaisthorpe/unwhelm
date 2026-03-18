@@ -2,10 +2,9 @@ import { User as UserIcon } from "lucide-react";
 import { getServerSession } from "next-auth/next";
 import { Session } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
 import { Metadata } from "next";
 import { AccountSettingsForm } from "@/components/account-settings-form";
+import { PageHeader } from "@/components/ui/page-header";
 import { getUserUsageCounts, getUserApiKey } from "@/lib/data";
 import { FEATURE_LIMITS } from "@/lib/feature-limits";
 
@@ -25,27 +24,12 @@ export default async function AccountSettingsPage() {
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-6">
-        {/* Page Header */}
-        <div className="mb-6">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                <UserIcon className="w-5 h-5 text-blue-600" />
-              </div>
-              <div>
-                <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
-                  Account Settings
-                </h1>
-                <p className="text-sm text-gray-600 dark:text-gray-400">
-                  Manage your profile information
-                </p>
-              </div>
-            </div>
-            <Link href="/tasks">
-              <Button variant="outline">Back to Dashboard</Button>
-            </Link>
-          </div>
-        </div>
+        <PageHeader
+          icon={<div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center"><UserIcon className="w-5 h-5 text-blue-600" /></div>}
+          title="Account Settings"
+          subtitle="Manage your profile information"
+          backHref="/tasks"
+        />
 
         {/* Account Settings Form */}
         <AccountSettingsForm
