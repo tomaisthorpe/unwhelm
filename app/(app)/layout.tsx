@@ -59,7 +59,6 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
                   </Button>
                 </Link>
               )}
-              <DarkModeToggle />
               <Link href="/settings">
                 <Button variant="ghost" size="sm">
                   <Settings className="w-4 h-4 md:mr-2" />
@@ -78,6 +77,11 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
       </div>
 
       {children}
+
+      {/* Dark mode toggle - fixed bottom corner */}
+      <div className="fixed bottom-4 right-4 z-50">
+        <DarkModeToggle />
+      </div>
     </div>
   );
 }

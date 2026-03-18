@@ -22,8 +22,7 @@ export function DarkModeToggle() {
 
   return (
     <Button variant="ghost" size="sm" onClick={cycle} title={`Theme: ${label}`}>
-      <Icon className="w-4 h-4 md:mr-2" />
-      <span className="hidden md:inline">{label}</span>
+      <Icon className="w-4 h-4" />
     </Button>
   );
 }
