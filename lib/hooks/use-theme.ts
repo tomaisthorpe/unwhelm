@@ -18,14 +18,14 @@ function applyTheme(theme: Theme) {
 }
 
 export function useTheme() {
-  const [theme, setThemeState] = useState<Theme>("system");
+  const [theme, setThemeState] = useState<Theme>(() => {
+    if (typeof window === "undefined") return "system";
+    return (localStorage.getItem("unwhelm-theme") as Theme) ?? "system";
+  });
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    const stored = localStorage.getItem("unwhelm-theme") as Theme | null;
-    const initial: Theme = stored ?? "system";
-    setThemeState(initial);
-    applyTheme(initial);
+    applyTheme(theme);
     setMounted(true);
 
     const mq = window.matchMedia("(prefers-color-scheme: dark)");
@@ -35,7 +35,7 @@ export function useTheme() {
     };
     mq.addEventListener("change", handler);
     return () => mq.removeEventListener("change", handler);
-  }, []);
+  }, [theme]);
 
   function setTheme(t: Theme) {
     setThemeState(t);
