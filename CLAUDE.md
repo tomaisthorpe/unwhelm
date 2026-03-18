@@ -471,3 +471,11 @@ interface BurndownDataPoint {
 - Archived contexts are hidden from main view but remain in database with all tasks intact
 - PWA badge shows count of due/overdue tasks (requires notification permission on iOS)
 - Service worker is disabled in development mode to avoid caching issues
+
+## Honeycomb MCP Usage
+
+When working with Honeycomb:
+- Always call `get_workspace_context` first to understand available environments and datasets
+- Use `find_columns` or `get_dataset_columns` to discover fields before running queries
+- Use human-readable time ranges (e.g., "last 2 hours", "24h") — avoid epoch timestamps
+- Specify the environment and dataset explicitly in every query

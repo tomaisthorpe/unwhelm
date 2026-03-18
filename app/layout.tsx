@@ -43,7 +43,10 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#ffffff",
+  themeColor: [
+    { color: "#ffffff", media: "(prefers-color-scheme: light)" },
+    { color: "#111827", media: "(prefers-color-scheme: dark)" },
+  ],
 };
 
 export default function RootLayout({
@@ -54,6 +57,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
+        {/* Anti-FOUC: apply dark class before first paint */}
+        <script dangerouslySetInnerHTML={{ __html: `(function(){try{var t=localStorage.getItem('unwhelm-theme');if(t==='dark'||((!t||t==='system')&&window.matchMedia('(prefers-color-scheme: dark)').matches)){document.documentElement.classList.add('dark')}}catch(e){}})()` }} />
         {/* PWA Meta Tags */}
         <meta name="application-name" content="unwhelm" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -126,7 +131,7 @@ export default function RootLayout({
         <link rel="shortcut icon" href="/favicon.ico" />
       </head>
       <body
-        className={`${zain.variable} ${inter.variable} font-[family-name:var(--font-inter)] text-base antialiased`}
+        className={`${zain.variable} ${inter.variable} font-[family-name:var(--font-inter)] text-base antialiased text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-900`}
       >
         <Providers>{children}</Providers>
       </body>

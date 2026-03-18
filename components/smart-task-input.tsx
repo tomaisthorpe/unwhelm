@@ -787,7 +787,7 @@ export function SmartTaskInput({
           {/* Highlight overlay - positioned to exactly match input text */}
           <div
             ref={highlightRef}
-            className="absolute inset-0 flex text-base leading-6 bg-white rounded-md font-mono pointer-events-none overflow-hidden whitespace-nowrap py-3 px-3"
+            className="absolute inset-0 flex text-base leading-6 bg-white dark:bg-gray-900 rounded-md font-mono pointer-events-none overflow-hidden whitespace-nowrap py-3 px-3"
             style={{
               zIndex: 1,
               border: "1px solid transparent", // matches Input border
@@ -808,7 +808,7 @@ export function SmartTaskInput({
             onBlur={handleInputBlur}
             onFocus={() => setIsInputFocused(true)}
             placeholder="Type your task naturally... e.g., 'Setup unwhelm !Homelab #sideprojects #setup p1 tomorrow' or 'Team standup every week !Work #meetings'"
-            className="relative text-base font-mono bg-transparent caret-gray-900 pr-8 h-12"
+            className="relative text-base font-mono bg-transparent caret-gray-900 dark:caret-gray-100 pr-8 h-12"
             style={{ zIndex: 2 }}
             disabled={isPending}
           />
@@ -828,7 +828,7 @@ export function SmartTaskInput({
           {showSuggestions && suggestions.length > 0 && (
             <div
               ref={suggestionsRef}
-              className="absolute z-[100] w-full mt-1 bg-white border border-gray-200 rounded-md shadow-lg max-h-48 overflow-y-auto"
+              className="absolute z-[100] w-full mt-1 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-md shadow-lg max-h-48 overflow-y-auto"
               style={{ top: "100%" }}
             >
               {suggestions.map((suggestion, index) => (
@@ -836,9 +836,9 @@ export function SmartTaskInput({
                   key={`${suggestion.type}-${suggestion.text}`}
                   type="button"
                   className={cn(
-                    "w-full px-3 py-2 text-left text-sm hover:bg-gray-100 hover:text-gray-900 focus:bg-gray-100 focus:text-gray-900 flex items-center gap-2",
+                    "w-full px-3 py-2 text-left text-sm hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-gray-100 focus:bg-gray-100 dark:focus:bg-gray-800 focus:text-gray-900 dark:focus:text-gray-100 flex items-center gap-2",
                     index === selectedSuggestionIndex &&
-                      "bg-blue-50 text-blue-900",
+                      "bg-blue-50 dark:bg-blue-950/50 text-blue-900 dark:text-blue-200",
                   )}
                   onClick={() => selectSuggestion(suggestion)}
                   onMouseEnter={() => setSelectedSuggestionIndex(index)}
@@ -875,9 +875,9 @@ export function SmartTaskInput({
           parsedTask.priority !== "MEDIUM" ||
           parsedTask.dueDate ||
           parsedTask.type === "RECURRING") && (
-          <div className="bg-white shadow-sm rounded-xl border-gray-200 p-4 space-y-3">
+          <div className="bg-white dark:bg-gray-900 shadow-sm rounded-xl border border-gray-200 dark:border-gray-700 p-4 space-y-3">
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2 text-sm font-medium text-gray-700">
+              <div className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300">
                 <Zap className="w-4 h-4" />
                 Task Preview
               </div>

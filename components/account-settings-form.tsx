@@ -151,8 +151,8 @@ export function AccountSettingsForm({ user, usageCounts, limits, apiKey: initial
   return (
     <div className="space-y-6">
       {/* Profile Information Section */}
-      <div className="bg-white rounded-lg shadow-sm p-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">
+      <div className="bg-white dark:bg-gray-900 rounded-lg shadow-sm p-6">
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
           Profile Information
         </h3>
 
@@ -166,9 +166,9 @@ export function AccountSettingsForm({ user, usageCounts, limits, apiKey: initial
             type="email"
             value={user.email || ""}
             disabled
-            className="mt-1 bg-gray-50"
+            className="mt-1 bg-gray-50 dark:bg-gray-800"
           />
-          <p className="mt-1 text-xs text-gray-500">
+          <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
             Email cannot be changed
           </p>
         </div>
@@ -195,8 +195,8 @@ export function AccountSettingsForm({ user, usageCounts, limits, apiKey: initial
             <div
               className={`mb-4 p-3 rounded-lg text-sm ${
                 message.type === "success"
-                  ? "bg-green-50 text-green-800 border border-green-200"
-                  : "bg-red-50 text-red-800 border border-red-200"
+                  ? "bg-green-50 dark:bg-green-950/50 text-green-800 dark:text-green-300 border border-green-200 dark:border-green-800"
+                  : "bg-red-50 dark:bg-red-950/50 text-red-800 dark:text-red-400 border border-red-200 dark:border-red-800"
               }`}
             >
               {message.text}
@@ -214,8 +214,8 @@ export function AccountSettingsForm({ user, usageCounts, limits, apiKey: initial
       </div>
 
       {/* Usage & Limits Section */}
-      <div className="bg-white rounded-lg shadow-sm p-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">
+      <div className="bg-white dark:bg-gray-900 rounded-lg shadow-sm p-6">
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
           Usage & Limits
         </h3>
 
@@ -224,12 +224,12 @@ export function AccountSettingsForm({ user, usageCounts, limits, apiKey: initial
           <div>
             <div className="flex items-center justify-between mb-2">
               <Label className="text-sm font-medium text-gray-700">Tasks</Label>
-              <span className="text-sm text-gray-600">
+              <span className="text-sm text-gray-600 dark:text-gray-400">
                 {usageCounts.tasksCount.toLocaleString()} {limits.maxTasks === Infinity ? "" : `/ ${limits.maxTasks.toLocaleString()}`}
               </span>
             </div>
             {limits.maxTasks !== Infinity && (
-              <div className="w-full bg-gray-200 rounded-full h-2">
+              <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
                 <div
                   className={`h-2 rounded-full transition-all ${
                     (usageCounts.tasksCount / limits.maxTasks) >= 0.9
@@ -245,7 +245,7 @@ export function AccountSettingsForm({ user, usageCounts, limits, apiKey: initial
               </div>
             )}
             {limits.maxTasks === Infinity && (
-              <p className="text-xs text-gray-500 mt-1">Unlimited</p>
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Unlimited</p>
             )}
           </div>
 
@@ -253,12 +253,12 @@ export function AccountSettingsForm({ user, usageCounts, limits, apiKey: initial
           <div>
             <div className="flex items-center justify-between mb-2">
               <Label className="text-sm font-medium text-gray-700">Contexts</Label>
-              <span className="text-sm text-gray-600">
+              <span className="text-sm text-gray-600 dark:text-gray-400">
                 {usageCounts.contextsCount.toLocaleString()} {limits.maxContexts === Infinity ? "" : `/ ${limits.maxContexts.toLocaleString()}`}
               </span>
             </div>
             {limits.maxContexts !== Infinity && (
-              <div className="w-full bg-gray-200 rounded-full h-2">
+              <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
                 <div
                   className={`h-2 rounded-full transition-all ${
                     (usageCounts.contextsCount / limits.maxContexts) >= 0.9
@@ -274,22 +274,22 @@ export function AccountSettingsForm({ user, usageCounts, limits, apiKey: initial
               </div>
             )}
             {limits.maxContexts === Infinity && (
-              <p className="text-xs text-gray-500 mt-1">Unlimited</p>
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Unlimited</p>
             )}
           </div>
         </div>
       </div>
 
       {/* Security Section */}
-      <div className="bg-white rounded-lg shadow-sm p-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">Security</h3>
+      <div className="bg-white dark:bg-gray-900 rounded-lg shadow-sm p-6">
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Security</h3>
 
         <form onSubmit={handlePasswordChange}>
           {/* Current Password */}
           <div className="mb-4">
             <Label
               htmlFor="currentPassword"
-              className="text-sm font-medium text-gray-700"
+              className="text-sm font-medium text-gray-700 dark:text-gray-300"
             >
               Current Password
             </Label>
@@ -308,7 +308,7 @@ export function AccountSettingsForm({ user, usageCounts, limits, apiKey: initial
           <div className="mb-4">
             <Label
               htmlFor="newPassword"
-              className="text-sm font-medium text-gray-700"
+              className="text-sm font-medium text-gray-700 dark:text-gray-300"
             >
               New Password
             </Label>
@@ -321,7 +321,7 @@ export function AccountSettingsForm({ user, usageCounts, limits, apiKey: initial
               className="mt-1"
               disabled={isPasswordPending}
             />
-            <div className="mt-2 text-xs text-gray-600 space-y-1">
+            <div className="mt-2 text-xs text-gray-600 dark:text-gray-400 space-y-1">
               <p className="font-medium">Password must contain:</p>
               <ul className="list-disc list-inside space-y-0.5 ml-2">
                 <li>At least 8 characters</li>
@@ -337,7 +337,7 @@ export function AccountSettingsForm({ user, usageCounts, limits, apiKey: initial
           <div className="mb-4">
             <Label
               htmlFor="confirmPassword"
-              className="text-sm font-medium text-gray-700"
+              className="text-sm font-medium text-gray-700 dark:text-gray-300"
             >
               Confirm New Password
             </Label>
@@ -357,8 +357,8 @@ export function AccountSettingsForm({ user, usageCounts, limits, apiKey: initial
             <div
               className={`mb-4 p-3 rounded-lg text-sm ${
                 passwordMessage.type === "success"
-                  ? "bg-green-50 text-green-800 border border-green-200"
-                  : "bg-red-50 text-red-800 border border-red-200"
+                  ? "bg-green-50 dark:bg-green-950/50 text-green-800 dark:text-green-300 border border-green-200 dark:border-green-800"
+                  : "bg-red-50 dark:bg-red-950/50 text-red-800 dark:text-red-400 border border-red-200 dark:border-red-800"
               }`}
             >
               {passwordMessage.text}
@@ -381,9 +381,9 @@ export function AccountSettingsForm({ user, usageCounts, limits, apiKey: initial
       </div>
 
       {/* API Access Section */}
-      <div className="bg-white rounded-lg shadow-sm p-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-1">API Access</h3>
-        <p className="text-sm text-gray-500 mb-4">
+      <div className="bg-white dark:bg-gray-900 rounded-lg shadow-sm p-6">
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-1">API Access</h3>
+        <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
           Use this key to access your tasks from external apps (e.g. an e-ink dashboard).
           Keep it secret — it provides read access to your task data.
         </p>
@@ -396,7 +396,7 @@ export function AccountSettingsForm({ user, usageCounts, limits, apiKey: initial
                 <Input
                   readOnly
                   value={isApiKeyVisible ? currentApiKey : (maskedKey ?? "")}
-                  className="font-mono text-sm bg-gray-50"
+                  className="font-mono text-sm bg-gray-50 dark:bg-gray-800"
                 />
                 <Button
                   type="button"
@@ -417,8 +417,8 @@ export function AccountSettingsForm({ user, usageCounts, limits, apiKey: initial
                   {isCopied ? <Check className="w-4 h-4 text-green-600" /> : <Copy className="w-4 h-4" />}
                 </Button>
               </div>
-              <p className="mt-1 text-xs text-gray-500">
-                Use as: <code className="bg-gray-100 px-1 rounded">Authorization: Bearer &lt;key&gt;</code>
+              <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                Use as: <code className="bg-gray-100 dark:bg-gray-800 px-1 rounded">Authorization: Bearer &lt;key&gt;</code>
               </p>
             </div>
 

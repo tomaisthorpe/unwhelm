@@ -559,7 +559,7 @@ export function TaskModal({
       }}
       modal={true}
     >
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto bg-white shadow-xl rounded-2xl border-0">
+      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto bg-white dark:bg-gray-900 shadow-xl rounded-2xl border-0">
         <DialogHeader>
           <div className="flex items-center justify-between">
             <DialogTitle>
@@ -615,14 +615,14 @@ export function TaskModal({
 
         {/* Tab Navigation - Only show when creating new items (not editing) */}
         {!isEditing && !isEditingContext && !isEditingTag ? (
-          <div className="flex gap-2 bg-gray-100 rounded-lg p-1 mt-2 mb-6">
+          <div className="flex gap-2 bg-gray-100 dark:bg-gray-800 rounded-lg p-1 mt-2 mb-6">
             <button
               onClick={() => setActiveTab("task")}
               className={`flex-1 px-4 py-2 text-sm font-medium rounded-lg transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400
                 ${
                   activeTab === "task"
-                    ? "bg-blue-50 text-blue-700 shadow-sm"
-                    : "bg-transparent text-gray-500 hover:text-gray-700"
+                    ? "bg-blue-50 dark:bg-blue-950/50 text-blue-700 dark:text-blue-300 shadow-sm"
+                    : "bg-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
                 }
               `}
               type="button"
@@ -635,8 +635,8 @@ export function TaskModal({
               className={`flex-1 px-4 py-2 text-sm font-medium rounded-lg transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400
                 ${
                   activeTab === "context"
-                    ? "bg-blue-50 text-blue-700 shadow-sm"
-                    : "bg-transparent text-gray-500 hover:text-gray-700"
+                    ? "bg-blue-50 dark:bg-blue-950/50 text-blue-700 dark:text-blue-300 shadow-sm"
+                    : "bg-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
                 }
               `}
               type="button"
@@ -649,8 +649,8 @@ export function TaskModal({
               className={`flex-1 px-4 py-2 text-sm font-medium rounded-lg transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400
                 ${
                   activeTab === "tag"
-                    ? "bg-blue-50 text-blue-700 shadow-sm"
-                    : "bg-transparent text-gray-500 hover:text-gray-700"
+                    ? "bg-blue-50 dark:bg-blue-950/50 text-blue-700 dark:text-blue-300 shadow-sm"
+                    : "bg-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
                 }
               `}
               type="button"
@@ -1007,7 +1007,7 @@ export function TaskModal({
           modal={true}
         >
           <DialogContent
-            className="bg-white z-[10001]"
+            className="bg-white dark:bg-gray-900 z-[10001]"
             overlayClassName="z-[10000]"
           >
             <DialogHeader>
@@ -1043,7 +1043,7 @@ export function TaskModal({
           modal={true}
         >
           <DialogContent
-            className="bg-white z-[10001]"
+            className="bg-white dark:bg-gray-900 z-[10001]"
             overlayClassName="z-[10000]"
           >
             <DialogHeader>
@@ -1054,8 +1054,8 @@ export function TaskModal({
             </DialogHeader>
             <div className="space-y-3">
               <p>Are you sure you want to archive this context?</p>
-              <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
-                <p className="text-sm text-yellow-800">
+              <div className="bg-yellow-50 dark:bg-yellow-950/50 border border-yellow-200 dark:border-yellow-800 rounded-lg p-3">
+                <p className="text-sm text-yellow-800 dark:text-yellow-300">
                   <strong>Note:</strong> Archiving will permanently delete all
                   incomplete tasks in this context. Completed tasks will be
                   preserved and visible in the completed tasks page.

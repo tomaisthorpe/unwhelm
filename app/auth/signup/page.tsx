@@ -84,9 +84,9 @@ export default function SignUp() {
 
   if (success) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
         {/* Header */}
-        <div className="bg-white shadow-sm">
+        <div className="bg-white dark:bg-gray-900 shadow-sm">
           <div className="max-w-4xl mx-auto px-4 py-4">
             <div className="flex items-center justify-between">
               <Link
@@ -101,7 +101,7 @@ export default function SignUp() {
                     height="32"
                   />
                 </div>
-                <h1 className="hidden md:block text-2xl font-bold text-gray-900 font-brand">
+                <h1 className="hidden md:block text-2xl font-bold text-gray-900 dark:text-gray-100 font-brand">
                   unwhelm
                 </h1>
               </Link>
@@ -117,10 +117,10 @@ export default function SignUp() {
                 <CheckCircle2 className="w-10 h-10 text-green-600" />
               </div>
             </div>
-            <h2 className="text-3xl font-bold text-gray-900">
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100">
               Account Created!
             </h2>
-            <p className="mt-2 text-sm text-gray-600">
+            <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
               Your account has been created successfully. Redirecting to sign
               in...
             </p>
@@ -131,9 +131,9 @@ export default function SignUp() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
       {/* Header */}
-      <div className="bg-white shadow-sm">
+      <div className="bg-white dark:bg-gray-900 shadow-sm">
         <div className="max-w-4xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <Link
@@ -148,7 +148,7 @@ export default function SignUp() {
                   height="32"
                 />
               </div>
-              <h1 className="hidden md:block text-2xl font-bold text-gray-900 font-brand">
+              <h1 className="hidden md:block text-2xl font-bold text-gray-900 dark:text-gray-100 font-brand">
                 unwhelm
               </h1>
             </Link>
@@ -159,8 +159,8 @@ export default function SignUp() {
       {/* Content */}
       <div className="max-w-md mx-auto px-4 py-12">
         <div className="text-center mb-8">
-          <h2 className="text-3xl font-bold text-gray-900">Join unwhelm</h2>
-          <p className="mt-2 text-sm text-gray-600">
+          <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100">Join unwhelm</h2>
+          <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
             Create your account to start managing your tasks
           </p>
         </div>
@@ -258,7 +258,7 @@ export default function SignUp() {
               </div>
 
               {error && (
-                <div className="text-sm text-red-600 bg-red-50 p-3 rounded-md">
+                <div className="text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-950/50 p-3 rounded-md">
                   {error}
                 </div>
               )}
@@ -269,7 +269,7 @@ export default function SignUp() {
             </form>
 
             <div className="mt-6 text-center">
-              <p className="text-sm text-gray-600">
+              <p className="text-sm text-gray-600 dark:text-gray-400">
                 Already have an account?{" "}
                 <Link
                   href="/auth/signin"

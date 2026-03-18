@@ -207,7 +207,7 @@ export function ContextGroup({
   return (
     <div
       id={`context-${context.id}`}
-      className="bg-white rounded-xl shadow-sm overflow-hidden"
+      className="bg-white dark:bg-gray-900 rounded-xl shadow-sm overflow-hidden"
     >
       <ContextCollapsible
         defaultCollapsed={contextTasks.length === 0}
@@ -240,7 +240,7 @@ export function ContextGroup({
                 ))}
               </div>
             ) : (
-              <p className="text-sm text-gray-500 text-center py-4">
+              <p className="text-sm text-gray-500 dark:text-gray-400 text-center py-4">
                 No tasks in this context
               </p>
             )}

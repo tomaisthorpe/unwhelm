@@ -122,7 +122,7 @@ export function ContextsSection({
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <h2 className="text-xl font-semibold text-gray-900">Contexts</h2>
+          <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">Contexts</h2>
           <AddItemModal
             contexts={contexts}
             tags={tags}
@@ -135,7 +135,7 @@ export function ContextsSection({
           <Button
             variant="ghost"
             size="sm"
-            className="text-gray-600 hover:text-gray-900"
+            className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100"
             onClick={handleExpandAll}
             disabled={allExpanded}
           >
@@ -144,7 +144,7 @@ export function ContextsSection({
           <Button
             variant="ghost"
             size="sm"
-            className="text-gray-600 hover:text-gray-900"
+            className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100"
             onClick={handleCollapseAll}
             disabled={allCollapsed}
           >
@@ -161,12 +161,12 @@ export function ContextsSection({
           placeholder="Search tasks, contexts, or tags..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="pl-10 pr-10 bg-gray-50 border-gray-200 focus:bg-white"
+          className="pl-10 pr-10 bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700 focus:bg-white dark:focus:bg-gray-900 dark:text-gray-100 dark:placeholder:text-gray-500"
         />
         {searchQuery && (
           <button
             onClick={() => setSearchQuery("")}
-            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
             aria-label="Clear search"
           >
             <X className="w-4 h-4" />
@@ -207,7 +207,7 @@ export function ContextsSection({
         </div>
       ) : (
         <div className="text-center py-8">
-          <p className="text-gray-500">
+          <p className="text-gray-500 dark:text-gray-400">
             {searchQuery.trim() === ""
               ? "No contexts yet. Create one to get started!"
               : `No contexts or tasks match "${searchQuery}"`}
@@ -221,7 +221,7 @@ export function ContextsSection({
           variant="ghost"
           size="sm"
           onClick={() => setShowArchivedContexts(true)}
-          className="text-gray-600 hover:text-gray-900"
+          className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100"
         >
           <Archive className="w-4 h-4 mr-2" />
           View Archived Contexts

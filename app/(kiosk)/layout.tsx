@@ -13,11 +13,11 @@ export default async function KioskLayout({ children }: { children: ReactNode })
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col overflow-hidden">
-      <div className="bg-white shadow-sm px-3 py-2 flex items-center">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-950 flex flex-col overflow-hidden">
+      <div className="bg-white dark:bg-gray-900 shadow-sm px-3 py-2 flex items-center">
         <Link href="/kiosk" className="flex items-center gap-2 opacity-70 hover:opacity-100 transition-opacity">
           <Image src="/unwhelm.svg" alt="unwhelm" width={20} height={20} />
-          <span className="text-sm font-semibold font-brand text-gray-900">unwhelm</span>
+          <span className="text-sm font-semibold font-brand text-gray-900 dark:text-gray-100">unwhelm</span>
         </Link>
       </div>
       <div className="flex-1 overflow-hidden">

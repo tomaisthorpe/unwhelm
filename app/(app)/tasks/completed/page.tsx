@@ -31,13 +31,13 @@ function TaskGroup({
   contexts: Awaited<ReturnType<typeof getContexts>>;
 }) {
   return (
-    <div className="bg-white rounded-lg shadow-sm mb-6">
-      <div className="px-4 py-3 border-b border-gray-200">
-        <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
-        <p className="text-sm text-gray-600">{tasks.length} tasks</p>
+    <div className="bg-white dark:bg-gray-900 rounded-lg shadow-sm mb-6">
+      <div className="px-4 py-3 border-b border-gray-200 dark:border-gray-700">
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">{title}</h3>
+        <p className="text-sm text-gray-600 dark:text-gray-400">{tasks.length} tasks</p>
       </div>
       {tasks.length > 0 ? (
-        <div className="divide-y divide-gray-200">
+        <div className="divide-y divide-gray-200 dark:divide-gray-700">
           {tasks.map((task) => {
             const completedDate = task.completedAt
               ? new Date(task.completedAt)
@@ -55,11 +55,11 @@ function TaskGroup({
                   </div>
                   {completedDate && (
                     <div className="ml-4 text-right flex-shrink-0">
-                      <div className="text-xs text-gray-500">Completed</div>
-                      <div className="text-sm font-medium text-gray-700">
+                      <div className="text-xs text-gray-500 dark:text-gray-400">Completed</div>
+                      <div className="text-sm font-medium text-gray-700 dark:text-gray-300">
                         {completedDate.toLocaleDateString()}
                       </div>
-                      <div className="text-xs text-gray-500">
+                      <div className="text-xs text-gray-500 dark:text-gray-400">
                         {completedDate.toLocaleTimeString([], {
                           hour: "2-digit",
                           minute: "2-digit",
@@ -74,7 +74,7 @@ function TaskGroup({
         </div>
       ) : (
         <div className="p-8 text-center">
-          <p className="text-gray-500">{emptyMessage}</p>
+          <p className="text-gray-500 dark:text-gray-400">{emptyMessage}</p>
         </div>
       )}
     </div>
@@ -126,10 +126,10 @@ export default async function CompletedPage({
                 <Clock className="w-5 h-5 text-green-600" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-gray-900">
+                <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
                   Completed Tasks
                 </h1>
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-gray-600 dark:text-gray-400">
                   {completedResult.totalCount} tasks completed, ordered by
                   completion date
                 </p>
@@ -177,15 +177,15 @@ export default async function CompletedPage({
           </>
         ) : (
           /* Empty State */
-          <div className="bg-white rounded-lg shadow-sm p-12">
+          <div className="bg-white dark:bg-gray-900 rounded-lg shadow-sm p-12">
             <div className="text-center">
-              <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <CheckCircle2 className="w-8 h-8 text-gray-400" />
+              <div className="w-16 h-16 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-4">
+                <CheckCircle2 className="w-8 h-8 text-gray-400 dark:text-gray-600" />
               </div>
-              <h3 className="text-lg font-medium text-gray-900 mb-2">
+              <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">
                 No completed tasks yet
               </h3>
-              <p className="text-gray-600 mb-6">
+              <p className="text-gray-600 dark:text-gray-400 mb-6">
                 Tasks you complete will appear here, ordered by when you
                 finished them.
               </p>

@@ -38,17 +38,17 @@ export function BadgePermissionBanner({
   };
 
   return (
-    <Card className="mb-6 border-blue-200 bg-blue-50/50">
+    <Card className="mb-6 border-blue-200 dark:border-blue-800 bg-blue-50/50 dark:bg-blue-950/30">
       <div className="p-4">
         <div className="flex items-start gap-3">
           <div className="flex-shrink-0">
             <Badge className="h-5 w-5 text-blue-600" />
           </div>
           <div className="flex-1 min-w-0">
-            <h3 className="text-sm font-medium text-blue-900">
+            <h3 className="text-sm font-medium text-blue-900 dark:text-blue-200">
               Enable Task Badges
             </h3>
-            <p className="text-sm text-blue-700 mt-1">
+            <p className="text-sm text-blue-700 dark:text-blue-300 mt-1">
               Show the number of due tasks ({taskCount}) on your home screen icon. 
               This helps you stay on top of your tasks even when the app is closed.
             </p>

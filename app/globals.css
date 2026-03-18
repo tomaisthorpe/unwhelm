@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@variant dark (&:is(.dark *));
+
 @theme {
   /* Primary colors */
   --color-primary: var(--color-blue-500);
@@ -50,5 +52,22 @@
 
 .font-brand {
   font-family: var(--font-zain), sans-serif;
+}
+
+.dark {
+  --color-background: #111827;
+  --color-foreground: #f3f4f6;
+  --color-accent: #1f2937;
+  --color-accent-foreground: #f3f4f6;
+  --color-muted-foreground: #9ca3af;
+  --color-input: #374151;
+}
+
+.dark .border-input {
+  border-color: #374151;
+}
+
+.dark .border-input:focus {
+  border-color: #3b82f6;
 }
 

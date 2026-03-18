@@ -1,4 +1,5 @@
 import { CheckCircle2, LogOut, Settings, ShieldCheck } from "lucide-react";
+import { DarkModeToggle } from "@/components/dark-mode-toggle";
 import { redirect } from "next/navigation";
 import { getServerSession } from "next-auth/next";
 import { Session } from "next-auth";
@@ -22,9 +23,9 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
   const adminStatus = await isAdmin();
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
       {/* Header */}
-      <div className="bg-white shadow-sm">
+      <div className="bg-white dark:bg-gray-900 shadow-sm">
         <div className="max-w-4xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <Link
@@ -39,7 +40,7 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
                   height="32"
                 />
               </div>
-              <h1 className="hidden md:block text-2xl font-bold text-gray-900 font-brand">
+              <h1 className="hidden md:block text-2xl font-bold text-gray-900 dark:text-gray-100 font-brand">
                 unwhelm
               </h1>
             </Link>
@@ -58,6 +59,7 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
                   </Button>
                 </Link>
               )}
+              <DarkModeToggle />
               <Link href="/settings">
                 <Button variant="ghost" size="sm">
                   <Settings className="w-4 h-4 md:mr-2" />

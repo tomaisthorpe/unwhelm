@@ -111,13 +111,13 @@ export default function SignInForm({ showDemoUser }: SignInFormProps) {
           </div>
 
           {error && (
-            <div className="text-sm text-red-600 bg-red-50 p-3 rounded-md">
+            <div className="text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-950/50 p-3 rounded-md">
               {error}
             </div>
           )}
 
           {successMessage && (
-            <div className="text-sm text-green-600 bg-green-50 p-3 rounded-md">
+            <div className="text-sm text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-950/50 p-3 rounded-md">
               {successMessage}
             </div>
           )}
@@ -128,9 +128,9 @@ export default function SignInForm({ showDemoUser }: SignInFormProps) {
         </form>
 
         {showDemoUser && (
-          <div className="mt-6 p-4 bg-blue-50 rounded-lg">
-            <h4 className="text-sm font-medium text-blue-900">Demo Account</h4>
-            <p className="text-sm text-blue-700 mt-1">
+          <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-950/50 rounded-lg">
+            <h4 className="text-sm font-medium text-blue-900 dark:text-blue-200">Demo Account</h4>
+            <p className="text-sm text-blue-700 dark:text-blue-300 mt-1">
               Email: demo@unwhelm.app
               <br />
               Password: password123
@@ -139,7 +139,7 @@ export default function SignInForm({ showDemoUser }: SignInFormProps) {
               type="button"
               variant="outline"
               size="sm"
-              className="mt-2 bg-white"
+              className="mt-2 bg-white dark:bg-gray-800"
               onClick={() => {
                 setEmail("demo@unwhelm.app");
                 setPassword("password123");

@@ -77,13 +77,13 @@ const renderSubtaskDisplay = (
   return (
     <Tooltip>
       <TooltipTrigger>
-        <div className="flex items-center space-x-1 text-xs text-gray-500 mb-1">
+        <div className="flex items-center space-x-1 text-xs text-gray-500 dark:text-gray-400 mb-1">
           <CheckSquare className="w-3 h-3" />
           <span>
             {completedCount}/{totalCount}
           </span>
           {totalCount > 0 && (
-            <div className="w-12 h-1.5 bg-gray-200 rounded-full overflow-hidden">
+            <div className="w-12 h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
               <div
                 className="h-full bg-green-500 transition-all duration-300"
                 style={{ width: `${completionPercentage}%` }}
@@ -186,7 +186,7 @@ export function TaskCard({
 
   return (
     <TooltipProvider>
-      <div className="flex items-start space-x-3 py-2 sm:px-3 hover:bg-gray-50 rounded-lg">
+      <div className="flex items-start space-x-3 py-2 sm:px-3 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg">
         <div className={cn(effectiveCompleted && "opacity-60")}>
           <TaskToggleButton taskId={task.id} completed={effectiveCompleted} />
         </div>
@@ -200,7 +200,7 @@ export function TaskCard({
                     "font-normal text-base cursor-pointer hover:text-blue-600 transition-colors",
                     effectiveCompleted
                       ? "line-through text-gray-500"
-                      : "text-gray-900",
+                      : "text-gray-900 dark:text-gray-100",
                   )}
                   onClick={() => setIsEditModalOpen(true)}
                   title="Click to edit task"
@@ -230,11 +230,11 @@ export function TaskCard({
                       habitDisplay.iconType,
                       cn("w-3 h-3", habitDisplay.iconColor),
                     )}
-                    <span className="text-xs font-medium text-gray-600">
+                    <span className="text-xs font-medium text-gray-600 dark:text-gray-400">
                       {habitDisplay.primaryText}
                     </span>
                     {habitDisplay.secondaryText && (
-                      <span className="text-xs text-gray-500">
+                      <span className="text-xs text-gray-500 dark:text-gray-400">
                         {habitDisplay.secondaryText}
                       </span>
                     )}
@@ -285,8 +285,8 @@ export function TaskCard({
                       className={cn(
                         "inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium mb-1",
                         task.priority === "HIGH"
-                          ? "bg-red-100 text-red-700"
-                          : "bg-gray-100 text-gray-500",
+                          ? "bg-red-100 dark:bg-red-950/50 text-red-700 dark:text-red-400"
+                          : "bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400",
                       )}
                     >
                       {task.priority === "HIGH" ? "↑ High" : "↓ Low"}
@@ -295,7 +295,7 @@ export function TaskCard({
                   {task.tags.map((tag) => (
                     <span
                       key={tag}
-                      className="block items-center px-1.5 py-0.5 rounded text-xs bg-gray-100 text-gray-600 mb-1"
+                      className="block items-center px-1.5 py-0.5 rounded text-xs bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 mb-1"
                     >
                       #<HighlightedText text={tag} searchQuery={searchQuery} />
                     </span>
@@ -303,7 +303,7 @@ export function TaskCard({
                   {task.notes && (
                     <Tooltip>
                       <TooltipTrigger>
-                        <FileText className="w-3 h-3 text-gray-500 mb-1" />
+                        <FileText className="w-3 h-3 text-gray-500 dark:text-gray-400 mb-1" />
                       </TooltipTrigger>
                       <TooltipContent>
                         <p className="text-xs max-w-xs">

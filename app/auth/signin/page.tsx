@@ -15,9 +15,9 @@ export default function SignIn() {
   const showDemoUser = process.env.ENABLE_DEMO_USER === "true";
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
       {/* Header */}
-      <div className="bg-white shadow-sm">
+      <div className="bg-white dark:bg-gray-900 shadow-sm">
         <div className="max-w-4xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <Link
@@ -32,7 +32,7 @@ export default function SignIn() {
                   height="32"
                 />
               </div>
-              <h1 className="hidden md:block text-2xl font-bold text-gray-900 font-brand">
+              <h1 className="hidden md:block text-2xl font-bold text-gray-900 dark:text-gray-100 font-brand">
                 unwhelm
               </h1>
             </Link>
@@ -43,8 +43,8 @@ export default function SignIn() {
       {/* Content */}
       <div className="max-w-md mx-auto px-4 py-12">
         <div className="text-center mb-8">
-          <h2 className="text-3xl font-bold text-gray-900">Welcome back</h2>
-          <p className="mt-2 text-sm text-gray-600">
+          <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100">Welcome back</h2>
+          <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
             Sign in to your account to manage your tasks
           </p>
         </div>
@@ -58,9 +58,9 @@ export default function SignIn() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  <div className="h-10 bg-gray-200 rounded animate-pulse" />
-                  <div className="h-10 bg-gray-200 rounded animate-pulse" />
-                  <div className="h-10 bg-gray-200 rounded animate-pulse" />
+                  <div className="h-10 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
+                  <div className="h-10 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
+                  <div className="h-10 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
                 </div>
               </CardContent>
             </Card>
@@ -70,7 +70,7 @@ export default function SignIn() {
         </Suspense>
 
         <div className="mt-6 text-center">
-          <p className="text-sm text-gray-600">
+          <p className="text-sm text-gray-600 dark:text-gray-400">
             Don&apos;t have an account?{" "}
             <Link
               href="/auth/signup"
