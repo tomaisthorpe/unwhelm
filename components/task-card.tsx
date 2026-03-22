@@ -386,16 +386,34 @@ export function TaskCard({
                       {task.urgency.toFixed(1)}
                     </div>
                   </TooltipTrigger>
-                  <TooltipContent className="max-w-xs">
-                    <div className="text-sm">
-                      <div className="font-semibold mb-1">
-                        Urgency Calculation:
+                  <TooltipContent className="max-w-xs w-56">
+                    <div className="text-xs space-y-1.5">
+                      <div className="text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wide pb-0.5">
+                        Urgency breakdown
                       </div>
-                      {urgencyExplanation.explanation.map((line, index) => (
-                        <div key={index} className="text-xs">
-                          {line}
-                        </div>
-                      ))}
+                      {urgencyExplanation.explanation
+                        .map((line) => {
+                          const match = line.match(/^(.+):\s*([+-]?\d+\.?\d*)$/);
+                          if (!match) return null;
+                          const value = parseFloat(match[2]);
+                          if (value === 0) return null;
+                          return { label: match[1], value };
+                        })
+                        .filter((r): r is { label: string; value: number } => r !== null)
+                        .map(({ label, value }) => (
+                          <div key={label} className="flex justify-between gap-4">
+                            <span className="text-gray-500 dark:text-gray-400">{label}</span>
+                            <span className="font-medium tabular-nums text-gray-900 dark:text-gray-100">
+                              {value >= 0 ? "+" : ""}{value.toFixed(2)}
+                            </span>
+                          </div>
+                        ))}
+                      <div className="flex justify-between gap-4 pt-1 border-t border-gray-100 dark:border-gray-700">
+                        <span className="font-medium text-gray-700 dark:text-gray-300">Total</span>
+                        <span className="font-semibold tabular-nums text-gray-900 dark:text-gray-100">
+                          {urgencyExplanation.score.toFixed(1)}
+                        </span>
+                      </div>
                     </div>
                   </TooltipContent>
                 </Tooltip>
