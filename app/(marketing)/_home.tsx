@@ -12,7 +12,9 @@ import {
   CheckCircle,
   LogOut,
   Settings,
+  ArrowRight,
 } from "lucide-react";
+import { useSession } from "next-auth/react";
 import { DarkModeToggle } from "@/components/dark-mode-toggle";
 import { ContextGroup } from "@/components/context-group";
 import { calculateUrgency, evaluateUrgency } from "@/lib/utils";
@@ -192,6 +194,9 @@ const breakdownMax = Math.max(...breakdownRows.map((r) => Math.abs(r.value)));
 // ---------------------------------------------------------------------------
 
 export default function MarketingHome() {
+  const { status } = useSession();
+  const isSignedIn = status === "authenticated";
+
   return (
     <div className="min-h-screen bg-white dark:bg-gray-900">
       {/* Nav */}
@@ -204,18 +209,29 @@ export default function MarketingHome() {
             </span>
           </div>
           <nav className="flex items-center gap-3">
-            <Link
-              href="/auth/signin"
-              className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 transition-colors px-3 py-1.5"
-            >
-              Sign in
-            </Link>
-            <Link
-              href="/auth/signup"
-              className="text-sm bg-blue-500 hover:bg-blue-600 text-white px-4 py-1.5 rounded-md transition-colors"
-            >
-              Get started
-            </Link>
+            {isSignedIn ? (
+              <Link
+                href="/tasks"
+                className="text-sm bg-blue-500 hover:bg-blue-600 text-white px-4 py-1.5 rounded-md transition-colors inline-flex items-center gap-1.5"
+              >
+                Go to tasks <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
+            ) : (
+              <>
+                <Link
+                  href="/auth/signin"
+                  className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 transition-colors px-3 py-1.5"
+                >
+                  Sign in
+                </Link>
+                <Link
+                  href="/auth/signup"
+                  className="text-sm bg-blue-500 hover:bg-blue-600 text-white px-4 py-1.5 rounded-md transition-colors"
+                >
+                  Get started
+                </Link>
+              </>
+            )}
           </nav>
         </div>
       </header>

@@ -1,4 +1,7 @@
 import { Suspense } from "react";
+import { redirect } from "next/navigation";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/lib/auth";
 import Link from "next/link";
 import {
   Card,
@@ -9,7 +12,10 @@ import {
 } from "@/components/ui/card";
 import SignInForm from "./signin-form";
 
-export default function SignIn() {
+export default async function SignIn() {
+  const session = await getServerSession(authOptions);
+  if (session) redirect("/tasks");
+
   // Check server-side environment variable at runtime
   const showDemoUser = process.env.ENABLE_DEMO_USER === "true";
 
