@@ -18,7 +18,7 @@ import { useSession } from "next-auth/react";
 import { DarkModeToggle } from "@/components/dark-mode-toggle";
 import { ContextGroup } from "@/components/context-group";
 import { calculateUrgency, evaluateUrgency } from "@/lib/utils";
-import type { Task, Context } from "@/lib/data";
+import type { Task, Context, Tag } from "@/lib/data";
 
 // ---------------------------------------------------------------------------
 // Mock data
@@ -55,6 +55,15 @@ const CONTEXTS: Context[] = [
   },
 ];
 
+const TAGS: Tag[] = [
+  {
+    id: "tag-client", name: "client", coefficient: 1.5, color: "bg-purple-500",
+    userId: "demo", createdAt: daysAgo(30), updatedAt: daysAgo(30),
+  },
+];
+
+const TAG_COEFFICIENTS = Object.fromEntries(TAGS.map((t) => [t.name, t.coefficient]));
+
 function makeTask(overrides: Partial<Task> & { title: string; contextId: string }): Task {
   const base: Task = {
     id: Math.random().toString(36).slice(2),
@@ -84,7 +93,7 @@ function makeTask(overrides: Partial<Task> & { title: string; contextId: string 
     createdAt: base.createdAt,
     tags: base.tags,
     contextCoefficient: 0,
-    tagCoefficients: { client: 1.5 },
+    tagCoefficients: TAG_COEFFICIENTS,
   });
   return base;
 }
@@ -177,7 +186,7 @@ const adminBreakdown = evaluateUrgency({
   createdAt: adminTask.createdAt,
   tags: adminTask.tags,
   contextCoefficient: 0,
-  tagCoefficients: { client: 1.5 },
+  tagCoefficients: TAG_COEFFICIENTS,
 });
 // Parse "Label: +X.XX" lines into { label, value } pairs, dropping zero contributions
 const breakdownRows = adminBreakdown.explanation
@@ -299,14 +308,14 @@ export default function MarketingHome() {
                 context={ctxCoding}
                 tasks={ALL_TASKS}
                 allContexts={CONTEXTS}
-                tags={[]}
+                tags={TAGS}
                 readOnly
               />
               <ContextGroup
                 context={ctxKitchen}
                 tasks={ALL_TASKS}
                 allContexts={CONTEXTS}
-                tags={[]}
+                tags={TAGS}
                 readOnly
               />
             </div>
@@ -403,7 +412,7 @@ export default function MarketingHome() {
                 context={ctxAdmin}
                 tasks={ALL_TASKS}
                 allContexts={CONTEXTS}
-                tags={[]}
+                tags={TAGS}
                 readOnly
               />
               <div className="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-5 space-y-4">
@@ -445,7 +454,7 @@ export default function MarketingHome() {
                 context={ctxWellness}
                 tasks={ALL_TASKS}
                 allContexts={CONTEXTS}
-                tags={[]}
+                tags={TAGS}
                 readOnly
               />
               <div>
