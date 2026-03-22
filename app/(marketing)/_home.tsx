@@ -245,10 +245,12 @@ export default function MarketingHome() {
             <span className="text-blue-500">turn into a guilt machine.</span>
           </h1>
           <p className="mt-6 text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto leading-relaxed">
-            unwhelm calculates urgency scores so you always know what to work on
-            next, organises tasks by context so you only see what&apos;s
-            relevant right now, and handles habits without punishing you for
-            broken streaks.
+            Task lists are overwhelming. unwhelm scores every task by urgency so
+            you always know what to work on next, and organises by context so
+            you only see what&apos;s relevant right now.
+          </p>
+          <p className="mt-3 text-sm text-gray-400 dark:text-gray-500">
+            <span className="font-medium text-gray-600 dark:text-gray-400">Free to use.</span> If paid plans are ever introduced, existing users will be grandfathered in.
           </p>
           <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link
@@ -318,8 +320,7 @@ export default function MarketingHome() {
               Built for personal life, not project management
             </h2>
             <p className="text-center text-gray-500 dark:text-gray-400 mb-12 max-w-xl mx-auto">
-              Not generic project management with the branding removed. No AI
-              summaries, no gamification, no shame language.
+              No AI summaries, no gamification, no shame language.
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {[
@@ -387,10 +388,10 @@ export default function MarketingHome() {
                 No more staring at a list wondering where to start
               </h2>
               <p className="text-gray-600 dark:text-gray-400 leading-relaxed mb-6">
-                Urgency is calculated from priority, age, due date, and tags.
-                Each factor is visible, not hidden behind an algorithm. If the
-                score doesn&apos;t match your gut, you can tune the
-                coefficients.
+                Inspired by TaskWarrior&apos;s urgency model, scores are
+                calculated from priority, age, due date, and tags. Each factor
+                is visible, not hidden behind an algorithm. If the score
+                doesn&apos;t match your gut, you can tune the coefficients.
               </p>
               <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
                 Tasks sort by urgency. Completed items drop to the bottom.
@@ -493,8 +494,7 @@ export default function MarketingHome() {
             Give it a go
           </h2>
           <p className="text-gray-600 dark:text-gray-400 mb-10 max-w-md mx-auto">
-            No credit card, no onboarding wizard. Sign up and start adding
-            tasks.
+            No onboarding wizard. Sign up and start adding tasks.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
