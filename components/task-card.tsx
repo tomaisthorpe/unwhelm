@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   RotateCcw,
   Dumbbell,
@@ -9,6 +9,8 @@ import {
   Wrench,
   FileText,
   CheckSquare,
+  Circle,
+  CheckCircle2,
 } from "lucide-react";
 import {
   formatDateForTask,
@@ -19,7 +21,7 @@ import {
 import { getHabitStatus, getHabitDisplay } from "@/lib/habits";
 import { ContextIcon } from "@/lib/context-icons";
 import { cn } from "@/lib/utils";
-import { TaskToggleButton } from "./task-toggle-button";
+import { Button } from "@/components/ui/button";
 import { TaskModal } from "./add-item-modal";
 import { MarkdownText } from "@/components/ui/markdown-text";
 import { HighlightedText } from "@/components/ui/highlighted-text";
@@ -48,6 +50,8 @@ interface TaskCardProps {
   searchQuery?: string;
   onDataChange?: () => void;
   readOnly?: boolean;
+  onToggle?: () => void;
+  isTogglePending?: boolean;
 }
 
 const renderHabitIcon = (iconType: string, className: string) => {
@@ -146,6 +150,8 @@ export function TaskCard({
   searchQuery,
   onDataChange,
   readOnly,
+  onToggle,
+  isTogglePending,
 }: TaskCardProps) {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const dateInfo = formatDateForTask(task.dueDate);
@@ -189,9 +195,19 @@ export function TaskCard({
   return (
     <TooltipProvider>
       <div className="flex items-start space-x-3 py-2 sm:px-3 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg">
-        <div className={cn(effectiveCompleted && "opacity-60")}>
-          <TaskToggleButton taskId={task.id} completed={effectiveCompleted} />
-        </div>
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={onToggle}
+          disabled={isTogglePending || !onToggle}
+          className="mt-0.5 py-0.5 px-0 h-auto hover:bg-transparent"
+        >
+          {effectiveCompleted ? (
+            <CheckCircle2 className="w-5 h-5 text-green-600" />
+          ) : (
+            <Circle className="w-5 h-5 text-gray-400 hover:text-gray-600" />
+          )}
+        </Button>
 
         <div className="flex-1 min-w-0">
           <div className="flex items-start justify-between">

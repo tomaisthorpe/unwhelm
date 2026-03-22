@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { Calendar, ChevronDown, ChevronUp } from "lucide-react";
 import { TaskCard } from "./task-card";
+import { TaskCardContainer } from "./task-card-container";
 import {
   shouldHideCompletedTask,
   shouldHabitShowAsAvailable,
@@ -175,18 +176,29 @@ export function TodaySection({
       <div className="py-4 px-2 md:p-6">
         {currentTasks.length > 0 ? (
           <div className="space-y-1">
-            {visibleTasks.map((task) => (
-              <TaskCard
-                key={task.id}
-                task={task}
-                contexts={contexts}
-                tags={tags}
-                showContext={true}
-                onContextClick={onContextClick}
-                onDataChange={onDataChange}
-                readOnly={readOnly}
-              />
-            ))}
+            {visibleTasks.map((task) =>
+              readOnly ? (
+                <TaskCard
+                  key={task.id}
+                  task={task}
+                  contexts={contexts}
+                  tags={tags}
+                  showContext={true}
+                  onContextClick={onContextClick}
+                  readOnly
+                />
+              ) : (
+                <TaskCardContainer
+                  key={task.id}
+                  task={task}
+                  contexts={contexts}
+                  tags={tags}
+                  showContext={true}
+                  onContextClick={onContextClick}
+                  onDataChange={onDataChange}
+                />
+              )
+            )}
             {currentTasks.length > 5 && (
               <div className="pt-2 text-center">
                 <Button

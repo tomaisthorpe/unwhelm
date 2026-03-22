@@ -1,5 +1,5 @@
 import { CheckCircle2, Clock } from "lucide-react";
-import { TaskCard } from "@/components/task-card";
+import { TaskCardContainer } from "@/components/task-card-container";
 import { getCompletedTasks, getContexts, getArchivedContexts, getBurndownData } from "@/lib/data";
 import { Button } from "@/components/ui/button";
 import { Pagination } from "@/components/pagination";
@@ -47,7 +47,7 @@ function TaskGroup({
               <div key={task.id} className="p-4">
                 <div className="flex items-start justify-between mb-2">
                   <div className="flex-1 min-w-0">
-                    <TaskCard
+                    <TaskCardContainer
                       task={task}
                       contexts={contexts}
                       showContext={true}

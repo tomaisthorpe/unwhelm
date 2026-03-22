@@ -1,5 +1,1 @@
-import { redirect } from "next/navigation";
-
-export default function HomePage() {
-  redirect("/tasks");
-}
+export { default } from "./(marketing)/_home";

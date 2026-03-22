@@ -1,9 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
+import { ReactNode } from "react";
 import { TaskCard } from "./task-card";
-import { AddItemModal } from "./add-item-modal";
-import { TaskModal } from "./add-item-modal";
+import { TaskCardContainer } from "./task-card-container";
 import {
   cn,
   shouldHideCompletedTask,
@@ -30,45 +29,37 @@ interface ContextGroupProps {
   searchQuery?: string;
   onDataChange?: () => void;
   readOnly?: boolean;
+  onEditContext?: () => void;
+  addTaskNode?: ReactNode;
 }
 
 function getContextCompletion(tasks: Task[]) {
-  // Only habits contribute to context health, not one-off tasks
   const contextHabits = tasks.filter((task) => task.type === "HABIT");
   if (contextHabits.length === 0) {
     return { percentage: 100, completed: 0, total: 0 };
   }
-
   const completed = contextHabits.filter((task) => task.completed).length;
   const total = contextHabits.length;
-  const percentage = Math.round((completed / total) * 100);
-
-  return { percentage, completed, total };
+  return { percentage: Math.round((completed / total) * 100), completed, total };
 }
 
-// Inner component to access the collapsed state
 function ContextGroupHeader({
   context,
-  allContexts,
-  tags,
   completion,
   todayTasksInContext,
   hasHabits,
   searchQuery,
-  onDataChange,
-  readOnly,
+  onEditContext,
+  addTaskNode,
 }: {
   context: Context;
-  allContexts: Context[];
-  tags: Tag[];
   completion: { percentage: number; completed: number; total: number };
   todayTasksInContext: number;
   hasHabits: boolean;
   searchQuery?: string;
-  onDataChange?: () => void;
-  readOnly?: boolean;
+  onEditContext?: () => void;
+  addTaskNode?: ReactNode;
 }) {
-  const [isEditContextOpen, setIsEditContextOpen] = useState(false);
   const { isCollapsed } = useCollapsible();
 
   return (
@@ -101,11 +92,11 @@ function ContextGroupHeader({
                 className="ml-3 flex flex-wrap justify-end items-center gap-2 flex-shrink-0"
                 onClick={(e) => e.stopPropagation()}
               >
-                {!readOnly && !context.isInbox && (
+                {onEditContext && !context.isInbox && (
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
-                      setIsEditContextOpen(true);
+                      onEditContext();
                     }}
                     className="flex items-center space-x-2 px-2 py-1 text-xs bg-white/20 hover:bg-white/30 rounded-md transition-colors"
                     title="Edit context"
@@ -114,15 +105,7 @@ function ContextGroupHeader({
                     <span>Edit</span>
                   </button>
                 )}
-                {!readOnly && (
-                  <AddItemModal
-                    contexts={allContexts}
-                    tags={tags}
-                    defaultContextId={context.id}
-                    addButtonSize="sm"
-                    onDataChange={onDataChange}
-                  />
-                )}
+                {addTaskNode}
               </div>
               {todayTasksInContext > 0 && (
                 <p className="text-xs opacity-90">
@@ -147,15 +130,6 @@ function ContextGroupHeader({
           </p>
         </div>
       )}
-
-      <TaskModal
-        contexts={allContexts}
-        tags={tags}
-        contextToEdit={context}
-        isOpen={isEditContextOpen}
-        onClose={() => setIsEditContextOpen(false)}
-        onDataChange={onDataChange}
-      />
     </div>
   );
 }
@@ -170,28 +144,20 @@ export function ContextGroup({
   searchQuery,
   onDataChange,
   readOnly,
+  onEditContext,
+  addTaskNode,
 }: ContextGroupProps) {
   const contextTasks = tasks
     .filter((task) => {
-      // Only include tasks in this context
       if (task.contextId !== context.id) return false;
-
-      // Hide completed tasks from previous days (except if completed within the last hour)
       if (shouldHideCompletedTask(task)) return false;
-
       return true;
     })
     .sort((a, b) => {
-      // For habits, consider them incomplete if they're available for completion
       const aEffectivelyCompleted =
-        a.type === "HABIT"
-          ? a.completed && !shouldHabitShowAsAvailable(a)
-          : a.completed;
+        a.type === "HABIT" ? a.completed && !shouldHabitShowAsAvailable(a) : a.completed;
       const bEffectivelyCompleted =
-        b.type === "HABIT"
-          ? b.completed && !shouldHabitShowAsAvailable(b)
-          : b.completed;
-
+        b.type === "HABIT" ? b.completed && !shouldHabitShowAsAvailable(b) : b.completed;
       if (aEffectivelyCompleted !== bEffectivelyCompleted)
         return aEffectivelyCompleted ? 1 : -1;
       return b.urgency - a.urgency;
@@ -200,7 +166,6 @@ export function ContextGroup({
   const completion = getContextCompletion(contextTasks);
   const hasHabits = completion.total > 0;
 
-  // Count tasks scheduled for today
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   const todayTasksInContext = contextTasks.filter((task) => {
@@ -222,30 +187,38 @@ export function ContextGroup({
       >
         <ContextGroupHeader
           context={context}
-          allContexts={allContexts}
-          tags={tags}
           completion={completion}
           todayTasksInContext={todayTasksInContext}
           hasHabits={hasHabits}
           searchQuery={searchQuery}
-          onDataChange={onDataChange}
-          readOnly={readOnly}
+          onEditContext={onEditContext}
+          addTaskNode={addTaskNode}
         />
         <ContextCollapsibleContent>
           <div className="p-2 md:p-4">
             {contextTasks.length > 0 ? (
               <div className="space-y-1">
-                {contextTasks.map((task) => (
-                  <TaskCard
-                    key={task.id}
-                    task={task}
-                    contexts={allContexts}
-                    tags={tags}
-                    searchQuery={searchQuery}
-                    onDataChange={onDataChange}
-                    readOnly={readOnly}
-                  />
-                ))}
+                {contextTasks.map((task) =>
+                  readOnly ? (
+                    <TaskCard
+                      key={task.id}
+                      task={task}
+                      contexts={allContexts}
+                      tags={tags}
+                      searchQuery={searchQuery}
+                      readOnly
+                    />
+                  ) : (
+                    <TaskCardContainer
+                      key={task.id}
+                      task={task}
+                      contexts={allContexts}
+                      tags={tags}
+                      searchQuery={searchQuery}
+                      onDataChange={onDataChange}
+                    />
+                  )
+                )}
               </div>
             ) : (
               <p className="text-sm text-gray-500 dark:text-gray-400 text-center py-4">

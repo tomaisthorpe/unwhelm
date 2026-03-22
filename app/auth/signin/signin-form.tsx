@@ -47,7 +47,7 @@ export default function SignInForm({ showDemoUser }: SignInFormProps) {
         // Check if session is established
         const session = await getSession();
         if (session) {
-          router.push("/");
+          router.push("/tasks");
           router.refresh();
         }
       }

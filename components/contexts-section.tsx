@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { ChevronDown, ChevronUp, Archive, Search, X } from "lucide-react";
 import type { Context, Task, Tag } from "@/lib/data";
 import { ContextGroup } from "@/components/context-group";
+import { ContextGroupContainer } from "@/components/context-group-container";
 import { ArchivedContexts } from "@/components/archived-contexts";
 import { AddItemModal } from "@/components/add-item-modal";
 
@@ -195,7 +196,7 @@ export function ContextsSection({
               ? false
               : savedCollapsedValue;
 
-            return (
+            return readOnly ? (
               <ContextGroup
                 key={context.id}
                 context={context}
@@ -210,8 +211,24 @@ export function ContextsSection({
                   })
                 }
                 searchQuery={searchQuery}
+                readOnly
+              />
+            ) : (
+              <ContextGroupContainer
+                key={context.id}
+                context={context}
+                tasks={tasks}
+                allContexts={contexts}
+                tags={tags}
+                collapsed={effectiveCollapsed}
+                onCollapsedChange={(value: boolean) =>
+                  onCollapsedStateChange?.({
+                    ...collapsedState,
+                    [context.id]: value,
+                  })
+                }
+                searchQuery={searchQuery}
                 onDataChange={onDataChange}
-                readOnly={readOnly}
               />
             );
           })}
