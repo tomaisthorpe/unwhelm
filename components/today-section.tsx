@@ -25,6 +25,7 @@ interface TodaySectionProps {
   onContextClick?: (contextId: string) => void;
   onDataChange?: () => void;
   readOnly?: boolean;
+  hideTabs?: boolean;
 }
 
 function getTodayTasks(tasks: Task[]): Task[] {
@@ -98,6 +99,7 @@ export function TodaySection({
   onContextClick,
   onDataChange,
   readOnly,
+  hideTabs,
 }: TodaySectionProps) {
   const [activeTab, setActiveTab] = useState<"urgency" | "today">("urgency");
 
@@ -143,34 +145,36 @@ export function TodaySection({
             </div>
           </div>
         </div>
-        <div className="mt-4">
-          <div className="inline-flex rounded-lg bg-gray-100 dark:bg-gray-800 p-1">
-            <button
-              type="button"
-              onClick={() => setActiveTab("urgency")}
-              className={
-                "px-3 py-1.5 text-sm rounded-md transition-colors " +
-                (activeTab === "urgency"
-                  ? "bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow"
-                  : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100")
-              }
-            >
-              Urgency
-            </button>
-            <button
-              type="button"
-              onClick={() => setActiveTab("today")}
-              className={
-                "px-3 py-1.5 text-sm rounded-md transition-colors " +
-                (activeTab === "today"
-                  ? "bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow"
-                  : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100")
-              }
-            >
-              Today & Overdue
-            </button>
+        {!hideTabs && (
+          <div className="mt-4">
+            <div className="inline-flex rounded-lg bg-gray-100 dark:bg-gray-800 p-1">
+              <button
+                type="button"
+                onClick={() => setActiveTab("urgency")}
+                className={
+                  "px-3 py-1.5 text-sm rounded-md transition-colors " +
+                  (activeTab === "urgency"
+                    ? "bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow"
+                    : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100")
+                }
+              >
+                Urgency
+              </button>
+              <button
+                type="button"
+                onClick={() => setActiveTab("today")}
+                className={
+                  "px-3 py-1.5 text-sm rounded-md transition-colors " +
+                  (activeTab === "today"
+                    ? "bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow"
+                    : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100")
+                }
+              >
+                Today & Overdue
+              </button>
+            </div>
           </div>
-        </div>
+        )}
       </div>
 
       <div className="py-4 px-2 md:p-6">

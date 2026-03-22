@@ -17,6 +17,7 @@ import {
 import { useSession } from "next-auth/react";
 import { DarkModeToggle } from "@/components/dark-mode-toggle";
 import { ContextGroup } from "@/components/context-group";
+import { TodaySection } from "@/components/today-section";
 import { calculateUrgency, evaluateUrgency } from "@/lib/utils";
 import type { Task, Context, Tag } from "@/lib/data";
 
@@ -174,8 +175,6 @@ const ALL_TASKS: Task[] = [
   }),
 ];
 
-const ctxCoding = CONTEXTS[0];
-const ctxKitchen = CONTEXTS[1];
 const ctxAdmin = CONTEXTS[2];
 const ctxWellness = CONTEXTS[3];
 
@@ -188,6 +187,7 @@ const adminBreakdown = evaluateUrgency({
   contextCoefficient: 0,
   tagCoefficients: TAG_COEFFICIENTS,
 });
+
 // Parse "Label: +X.XX" lines into { label, value } pairs, dropping zero contributions
 const breakdownRows = adminBreakdown.explanation
   .map((line) => {
@@ -304,20 +304,27 @@ export default function MarketingHome() {
               </div>
             </div>
             <div className="bg-gray-50 dark:bg-gray-950 p-4 space-y-4">
-              <ContextGroup
-                context={ctxCoding}
+              <TodaySection
                 tasks={ALL_TASKS}
-                allContexts={CONTEXTS}
+                contexts={CONTEXTS}
                 tags={TAGS}
                 readOnly
+                hideTabs
               />
-              <ContextGroup
-                context={ctxKitchen}
-                tasks={ALL_TASKS}
-                allContexts={CONTEXTS}
-                tags={TAGS}
-                readOnly
-              />
+              <div className="space-y-4">
+                <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">Contexts</h2>
+                {CONTEXTS.map((ctx) => (
+                  <ContextGroup
+                    key={ctx.id}
+                    context={ctx}
+                    tasks={ALL_TASKS}
+                    allContexts={CONTEXTS}
+                    tags={TAGS}
+                    collapsed
+                    readOnly
+                  />
+                ))}
+              </div>
             </div>
           </div>
         </section>
