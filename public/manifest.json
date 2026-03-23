@@ -2,7 +2,7 @@
   "name": "unwhelm",
   "short_name": "unwhelm",
   "description": "A context-based task management app with customizable urgency scoring and flexible habit tracking.",
-  "start_url": "/",
+  "start_url": "/tasks",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#ffffff",
