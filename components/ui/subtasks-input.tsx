@@ -64,7 +64,7 @@ function SortableSubtaskItem({
     <div
       ref={setNodeRef}
       style={style}
-      className={`flex items-center gap-0 px-0 py-1 hover:bg-gray-50 rounded-md group ${
+      className={`flex items-center gap-0 px-0 py-1 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-md group ${
         isDragging ? "opacity-50" : ""
       }`}
     >

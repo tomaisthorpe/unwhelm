@@ -140,7 +140,7 @@ export function TaskForm({
         {!compact && isEditing && task && (
           <div className="col-span-2">
             <Label>Created On</Label>
-            <div className="flex items-center space-x-2 px-3 py-2 bg-gray-50 rounded-md text-sm text-gray-600">
+            <div className="flex items-center space-x-2 px-3 py-2 bg-gray-50 dark:bg-gray-800 rounded-md text-sm text-gray-600 dark:text-gray-400">
               <Calendar className="w-4 h-4" />
               <span>{new Date(task.createdAt).toLocaleString()}</span>
             </div>
