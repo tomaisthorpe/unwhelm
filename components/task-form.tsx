@@ -102,7 +102,7 @@ export function TaskForm({
     recurring?: boolean;
   }>({});
 
-  const gridCols = "grid-cols-2";
+  const gridCols = "grid-cols-1 sm:grid-cols-2";
   const gap = compact ? "gap-2" : "gap-4";
   const spacing = compact ? "space-y-2" : "space-y-4";
 
@@ -117,7 +117,7 @@ export function TaskForm({
     <div className={spacing}>
       <div className={`grid ${gridCols} ${gap}`}>
         {/* Title */}
-        <div className={compact ? "" : "col-span-2"}>
+        <div className={compact ? "" : "sm:col-span-2"}>
           <Label
             htmlFor={getFieldId("title")}
             className={compact ? "text-xs" : ""}
@@ -138,7 +138,7 @@ export function TaskForm({
 
         {/* Show creation date when editing in full mode */}
         {!compact && isEditing && task && (
-          <div className="col-span-2">
+          <div className="sm:col-span-2">
             <Label>Created On</Label>
             <div className="flex items-center space-x-2 px-3 py-2 bg-gray-50 dark:bg-gray-800 rounded-md text-sm text-gray-600 dark:text-gray-400">
               <Calendar className="w-4 h-4" />
@@ -595,7 +595,7 @@ export function TaskForm({
 
         {/* Notes - only in full mode */}
         {!compact && (
-          <div className="col-span-2">
+          <div className="sm:col-span-2">
             <Label htmlFor={getFieldId("notes")}>Notes</Label>
             <Textarea
               id={getFieldId("notes")}
@@ -609,7 +609,7 @@ export function TaskForm({
 
         {/* Subtasks - only in full mode */}
         {!compact && (
-          <div className="col-span-2">
+          <div className="sm:col-span-2">
             <Label htmlFor={getFieldId("subtasks")}>Subtasks</Label>
             <SubtasksInput
               value={data.subtasks}
@@ -620,7 +620,7 @@ export function TaskForm({
         )}
 
         {/* Tags */}
-        <div className={compact ? "col-span-2" : "col-span-2"}>
+        <div className={compact ? "sm:col-span-2" : "sm:col-span-2"}>
           <Label htmlFor={getFieldId("tags")}>Tags</Label>
           <TagsInput
             value={data.tags}
