@@ -4,7 +4,7 @@
   # https://devenv.sh/packages/
   packages = with pkgs; [
     nodejs_24
-    nodePackages.prisma
+    prisma
   ];
 
   # https://devenv.sh/scripts/
