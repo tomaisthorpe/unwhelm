@@ -3,6 +3,7 @@ const config = {
   preset: 'ts-jest',
   testEnvironment: 'node',
   setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
+  modulePathIgnorePatterns: ['<rootDir>/.next/'],
   testMatch: ['**/__tests__/**/*.test.ts', '**/*.test.ts'],
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/$1',
