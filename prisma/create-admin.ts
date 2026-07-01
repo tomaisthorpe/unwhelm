@@ -1,9 +1,11 @@
-/* eslint-disable @typescript-eslint/no-require-imports */
-const { PrismaClient } = require("@prisma/client");
-const bcrypt = require("bcryptjs");
-/* eslint-enable @typescript-eslint/no-require-imports */
+import { Pool } from "pg";
+import { PrismaPg } from "@prisma/adapter-pg";
+import bcrypt from "bcryptjs";
+import { PrismaClient } from "../generated/prisma/client";
 
-const prisma = new PrismaClient();
+const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+const adapter = new PrismaPg(pool);
+const prisma = new PrismaClient({ adapter });
 
 async function createAdmin() {
   const email = process.env.ADMIN_EMAIL;
@@ -16,7 +18,6 @@ async function createAdmin() {
   }
 
   try {
-    // Check if user already exists
     const existingUser = await prisma.user.findUnique({
       where: { email },
     });
@@ -26,7 +27,6 @@ async function createAdmin() {
       return;
     }
 
-    // Create new admin user
     const hashedPassword = await bcrypt.hash(password, 10);
     await prisma.user.create({
       data: {
@@ -40,10 +40,11 @@ async function createAdmin() {
     console.log(`Admin user ${email} created successfully`);
   } catch (error) {
     console.error("Error creating admin user:", error);
-    process.exit(1);
+    process.exitCode = 1;
   } finally {
     await prisma.$disconnect();
+    await pool.end();
   }
 }
 
-createAdmin();
+void createAdmin();
