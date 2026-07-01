@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Zain, Inter } from "next/font/google";
+import { SerwistProvider } from "@serwist/turbopack/react";
 import "./globals.css";
 import { Providers } from "@/components/providers";
 
@@ -133,7 +134,13 @@ export default function RootLayout({
       <body
         className={`${zain.variable} ${inter.variable} font-[family-name:var(--font-inter)] text-base antialiased text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-900`}
       >
-        <Providers>{children}</Providers>
+        <SerwistProvider
+          swUrl="/serwist/sw.js"
+          cacheOnNavigation={false}
+          disable={process.env.NODE_ENV === "development"}
+        >
+          <Providers>{children}</Providers>
+        </SerwistProvider>
       </body>
     </html>
   );

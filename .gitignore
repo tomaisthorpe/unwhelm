@@ -46,8 +46,6 @@ next-env.d.ts
 
 .direnv
 
-public/sw.js
-
 # Devenv
 .devenv*
 devenv.local.nix
