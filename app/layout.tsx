@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Zain, Inter } from "next/font/google";
 import { SerwistProvider } from "@serwist/turbopack/react";
+import { headers } from "next/headers";
 import "./globals.css";
 import { Providers } from "@/components/providers";
 
@@ -50,16 +51,21 @@ export const viewport: Viewport = {
   ],
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const nonce = (await headers()).get("x-nonce") ?? undefined;
+
   return (
     <html lang="en">
       <head>
         {/* Anti-FOUC: apply dark class before first paint */}
-        <script dangerouslySetInnerHTML={{ __html: `(function(){try{var t=localStorage.getItem('unwhelm-theme');if(t==='dark'||((!t||t==='system')&&window.matchMedia('(prefers-color-scheme: dark)').matches)){document.documentElement.classList.add('dark')}}catch(e){}})()` }} />
+        <script
+          nonce={nonce}
+          dangerouslySetInnerHTML={{ __html: `(function(){try{var t=localStorage.getItem('unwhelm-theme');if(t==='dark'||((!t||t==='system')&&window.matchMedia('(prefers-color-scheme: dark)').matches)){document.documentElement.classList.add('dark')}}catch(e){}})()` }}
+        />
         {/* PWA Meta Tags */}
         <meta name="application-name" content="unwhelm" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
