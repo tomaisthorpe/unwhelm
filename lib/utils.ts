@@ -35,15 +35,14 @@ export function evaluateUrgency(task: UrgencyInput): UrgencyResult {
     explanation.push(`${label}: ${delta >= 0 ? "+" : ""}${delta.toFixed(2)}`);
   };
 
-  // Check if we should wait before calculating any urgency
-  const waitDays = task.waitDays; // Keep as null/undefined if not specified
+  // Track whether a waiting period should cancel the calculated urgency.
+  const waitDays = task.waitDays;
+  let isWaiting = false;
 
   if (task.dueDate && waitDays != null && waitDays > 0) {
     const daysUntilDue = diffInLocalCalendarDays(task.dueDate);
-    // If waitDays is set and we're still outside the wait period, set urgency to 0
     if (daysUntilDue > waitDays) {
-      add(0, `Waiting ${waitDays} days (${daysUntilDue} days until due)`);
-      return { score: 0, explanation };
+      isWaiting = true;
     }
   }
 
@@ -120,6 +119,10 @@ export function evaluateUrgency(task: UrgencyInput): UrgencyResult {
         add(coefficient, `Tag "${tag}" coefficient`);
       }
     }
+  }
+
+  if (isWaiting) {
+    add(-urgency, "Waiting");
   }
 
   return { score: urgency, explanation };

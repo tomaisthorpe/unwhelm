@@ -230,6 +230,10 @@ describe("waitDays functionality", () => {
     expect(
       urgencyWithWait.explanation.some((exp) => exp.includes("Waiting")),
     ).toBe(true);
+    expect(urgencyWithWait.explanation.length).toBeGreaterThan(1);
+    expect(urgencyWithWait.explanation.at(-1)).toContain(
+      `-${urgencyWithoutWait.score.toFixed(2)}`,
+    );
     // Task without wait should have normal urgency
     expect(urgencyWithoutWait.score).toBeGreaterThan(0);
   });
@@ -713,4 +717,3 @@ describe("shouldHabitShowAsAvailable", () => {
     expect(result).toBe(true);
   });
 });
-

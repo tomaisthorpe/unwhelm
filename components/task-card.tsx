@@ -188,6 +188,7 @@ export function TaskCard({
   const urgencyExplanation = evaluateUrgency({
     priority: task.priority,
     dueDate: task.dueDate,
+    waitDays: task.waitDays,
     createdAt: task.createdAt,
     tags: task.tags,
     contextCoefficient: taskContext?.coefficient || 0,
@@ -424,7 +425,8 @@ export function TaskCard({
                           <div key={label} className="flex justify-between gap-4">
                             <span className="text-gray-500 dark:text-gray-400">{label}</span>
                             <span className="font-medium tabular-nums text-gray-900 dark:text-gray-100">
-                              {value >= 0 ? "+" : ""}{value.toFixed(2)}
+                              {value >= 0 ? "+" : ""}
+                              {value.toFixed(2)}
                             </span>
                           </div>
                         ))}
