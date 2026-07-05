@@ -112,6 +112,7 @@ export function TodaySection({
 
   const tabTasks = activeTab === "urgency" ? urgentTasks : todayTasks;
   const normalizedSearchQuery = searchQuery?.trim().toLowerCase() ?? "";
+  const normalizedTagSearchQuery = normalizedSearchQuery.replace(/^#+/, "");
   const currentTasks = normalizedSearchQuery
     ? tabTasks.filter((task) => {
         const contextName = contexts.find(
@@ -121,9 +122,10 @@ export function TodaySection({
         return (
           task.title.toLowerCase().includes(normalizedSearchQuery) ||
           task.notes?.toLowerCase().includes(normalizedSearchQuery) ||
-          task.tags.some((tag) =>
-            tag.toLowerCase().includes(normalizedSearchQuery),
-          ) ||
+          (normalizedTagSearchQuery.length > 0 &&
+            task.tags.some((tag) =>
+              tag.toLowerCase().includes(normalizedTagSearchQuery),
+            )) ||
           contextName?.toLowerCase().includes(normalizedSearchQuery)
         );
       })

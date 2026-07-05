@@ -63,12 +63,14 @@ export function ContextsSection({
 
     const contextTasks = tasks.filter((task) => task.contextId === context.id);
     const searchLower = searchQuery.toLowerCase();
+    const tagSearchLower = searchLower.replace(/^#+/, "");
 
     return contextTasks.some(
       (task) =>
         task.title.toLowerCase().includes(searchLower) ||
         task.notes?.toLowerCase().includes(searchLower) ||
-        task.tags.some((tag) => tag.toLowerCase().includes(searchLower)),
+        (tagSearchLower.length > 0 &&
+          task.tags.some((tag) => tag.toLowerCase().includes(tagSearchLower))),
     );
   };
 
@@ -217,7 +219,9 @@ export function ContextsSection({
                   })
                 }
                 searchQuery={searchQuery}
-                onTagClick={hideSearch ? undefined : setSearchQuery}
+                onTagClick={
+                  hideSearch ? undefined : (tag) => setSearchQuery(`#${tag}`)
+                }
                 readOnly
               />
             ) : (
@@ -235,7 +239,9 @@ export function ContextsSection({
                   })
                 }
                 searchQuery={searchQuery}
-                onTagClick={hideSearch ? undefined : setSearchQuery}
+                onTagClick={
+                  hideSearch ? undefined : (tag) => setSearchQuery(`#${tag}`)
+                }
                 onDataChange={onDataChange}
               />
             );

@@ -322,14 +322,20 @@ export function TaskCard({
                         className="inline-flex items-center px-1.5 py-0.5 rounded text-xs bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 mb-1"
                         title={`Search for #${tag}`}
                       >
-                        #<HighlightedText text={tag} searchQuery={searchQuery} />
+                        <HighlightedText
+                          text={`#${tag}`}
+                          searchQuery={searchQuery}
+                        />
                       </button>
                     ) : (
                       <span
                         key={tag}
                         className="inline-flex items-center px-1.5 py-0.5 rounded text-xs bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 mb-1"
                       >
-                        #<HighlightedText text={tag} searchQuery={searchQuery} />
+                        <HighlightedText
+                          text={`#${tag}`}
+                          searchQuery={searchQuery}
+                        />
                       </span>
                     ),
                   )}

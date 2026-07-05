@@ -183,7 +183,7 @@ export function DashboardClient() {
           contexts={allContexts}
           tags={tags}
           onContextClick={scrollToContext}
-          onTagClick={setSearchQuery}
+          onTagClick={(tag) => setSearchQuery(`#${tag}`)}
           searchQuery={searchQuery}
           onDataChange={mutate}
         />
