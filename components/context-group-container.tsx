@@ -13,6 +13,7 @@ interface ContextGroupContainerProps {
   collapsed?: boolean;
   onCollapsedChange?: (value: boolean) => void;
   searchQuery?: string;
+  onTagClick?: (tag: string) => void;
   onDataChange?: () => void;
 }
 
@@ -24,6 +25,7 @@ export function ContextGroupContainer({
   collapsed,
   onCollapsedChange,
   searchQuery,
+  onTagClick,
   onDataChange,
 }: ContextGroupContainerProps) {
   const [isEditContextOpen, setIsEditContextOpen] = useState(false);
@@ -38,6 +40,7 @@ export function ContextGroupContainer({
         collapsed={collapsed}
         onCollapsedChange={onCollapsedChange}
         searchQuery={searchQuery}
+        onTagClick={onTagClick}
         onDataChange={onDataChange}
         onEditContext={context.isInbox ? undefined : () => setIsEditContextOpen(true)}
         addTaskNode={

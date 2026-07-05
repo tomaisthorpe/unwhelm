@@ -23,6 +23,8 @@ interface TodaySectionProps {
   }>;
   tags: Tag[];
   onContextClick?: (contextId: string) => void;
+  onTagClick?: (tag: string) => void;
+  searchQuery?: string;
   onDataChange?: () => void;
   readOnly?: boolean;
   hideTabs?: boolean;
@@ -97,6 +99,8 @@ export function TodaySection({
   contexts,
   tags,
   onContextClick,
+  onTagClick,
+  searchQuery,
   onDataChange,
   readOnly,
   hideTabs,
@@ -106,12 +110,29 @@ export function TodaySection({
   const urgentTasks = getUrgentTasks(tasks);
   const todayTasks = getTodayTasks(tasks);
 
-  const currentTasks = activeTab === "urgency" ? urgentTasks : todayTasks;
+  const tabTasks = activeTab === "urgency" ? urgentTasks : todayTasks;
+  const normalizedSearchQuery = searchQuery?.trim().toLowerCase() ?? "";
+  const currentTasks = normalizedSearchQuery
+    ? tabTasks.filter((task) => {
+        const contextName = contexts.find(
+          (context) => context.id === task.contextId,
+        )?.name;
+
+        return (
+          task.title.toLowerCase().includes(normalizedSearchQuery) ||
+          task.notes?.toLowerCase().includes(normalizedSearchQuery) ||
+          task.tags.some((tag) =>
+            tag.toLowerCase().includes(normalizedSearchQuery),
+          ) ||
+          contextName?.toLowerCase().includes(normalizedSearchQuery)
+        );
+      })
+    : tabTasks;
 
   const completedCount = currentTasks.filter((task) => task.completed).length;
   const overdueCount =
     activeTab === "today"
-      ? todayTasks.filter((task) => {
+      ? currentTasks.filter((task) => {
           if (!task.dueDate || task.completed) return false;
           const today = new Date();
           today.setHours(0, 0, 0, 0);
@@ -189,6 +210,8 @@ export function TodaySection({
                   tags={tags}
                   showContext={true}
                   onContextClick={onContextClick}
+                  onTagClick={onTagClick}
+                  searchQuery={searchQuery}
                   readOnly
                 />
               ) : (
@@ -199,6 +222,8 @@ export function TodaySection({
                   tags={tags}
                   showContext={true}
                   onContextClick={onContextClick}
+                  onTagClick={onTagClick}
+                  searchQuery={searchQuery}
                   onDataChange={onDataChange}
                 />
               )

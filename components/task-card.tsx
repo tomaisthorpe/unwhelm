@@ -48,6 +48,7 @@ interface TaskCardProps {
   onContextClick?: (contextId: string) => void;
   showUrgency?: boolean;
   searchQuery?: string;
+  onTagClick?: (tag: string) => void;
   onDataChange?: () => void;
   readOnly?: boolean;
   onToggle?: () => void;
@@ -148,6 +149,7 @@ export function TaskCard({
   showUrgency = true,
   onContextClick,
   searchQuery,
+  onTagClick,
   onDataChange,
   readOnly,
   onToggle,
@@ -311,14 +313,26 @@ export function TaskCard({
                       {task.priority === "HIGH" ? "↑ High" : "↓ Low"}
                     </span>
                   )}
-                  {task.tags.map((tag) => (
-                    <span
-                      key={tag}
-                      className="block items-center px-1.5 py-0.5 rounded text-xs bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 mb-1"
-                    >
-                      #<HighlightedText text={tag} searchQuery={searchQuery} />
-                    </span>
-                  ))}
+                  {task.tags.map((tag) =>
+                    onTagClick ? (
+                      <button
+                        key={tag}
+                        type="button"
+                        onClick={() => onTagClick(tag)}
+                        className="inline-flex items-center px-1.5 py-0.5 rounded text-xs bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 mb-1"
+                        title={`Search for #${tag}`}
+                      >
+                        #<HighlightedText text={tag} searchQuery={searchQuery} />
+                      </button>
+                    ) : (
+                      <span
+                        key={tag}
+                        className="inline-flex items-center px-1.5 py-0.5 rounded text-xs bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 mb-1"
+                      >
+                        #<HighlightedText text={tag} searchQuery={searchQuery} />
+                      </span>
+                    ),
+                  )}
                   {task.notes && (
                     <Tooltip>
                       <TooltipTrigger>

@@ -36,6 +36,7 @@ export function DashboardClient() {
   const [collapsedState, setCollapsedState] = useState<Record<string, boolean>>(
     () => loadCollapsedState(),
   );
+  const [searchQuery, setSearchQuery] = useState("");
 
   // Use SWR hook for client-side data fetching
   const {
@@ -182,6 +183,8 @@ export function DashboardClient() {
           contexts={allContexts}
           tags={tags}
           onContextClick={scrollToContext}
+          onTagClick={setSearchQuery}
+          searchQuery={searchQuery}
           onDataChange={mutate}
         />
 
@@ -194,6 +197,8 @@ export function DashboardClient() {
           onCollapsedStateChange={setCollapsedState}
           archivedContexts={archivedContexts}
           onDataChange={mutate}
+          searchQuery={searchQuery}
+          onSearchQueryChange={setSearchQuery}
         />
       </div>
       <div className="flex justify-center mt-2 pb-16">
@@ -202,4 +207,3 @@ export function DashboardClient() {
     </>
   );
 }
-

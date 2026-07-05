@@ -20,6 +20,7 @@ interface TaskCardContainerProps {
   onContextClick?: (contextId: string) => void;
   showUrgency?: boolean;
   searchQuery?: string;
+  onTagClick?: (tag: string) => void;
   onDataChange?: () => void;
 }
 
@@ -31,6 +32,7 @@ export function TaskCardContainer({
   onContextClick,
   showUrgency,
   searchQuery,
+  onTagClick,
   onDataChange,
 }: TaskCardContainerProps) {
   const [isPending, startTransition] = useTransition();
@@ -52,6 +54,7 @@ export function TaskCardContainer({
       onContextClick={onContextClick}
       showUrgency={showUrgency}
       searchQuery={searchQuery}
+      onTagClick={onTagClick}
       onDataChange={onDataChange}
       onToggle={handleToggle}
       isTogglePending={isPending}

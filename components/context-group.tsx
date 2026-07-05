@@ -27,6 +27,7 @@ interface ContextGroupProps {
   collapsed?: boolean;
   onCollapsedChange?: (value: boolean) => void;
   searchQuery?: string;
+  onTagClick?: (tag: string) => void;
   onDataChange?: () => void;
   readOnly?: boolean;
   onEditContext?: () => void;
@@ -142,6 +143,7 @@ export function ContextGroup({
   collapsed,
   onCollapsedChange,
   searchQuery,
+  onTagClick,
   onDataChange,
   readOnly,
   onEditContext,
@@ -206,6 +208,7 @@ export function ContextGroup({
                       contexts={allContexts}
                       tags={tags}
                       searchQuery={searchQuery}
+                      onTagClick={onTagClick}
                       readOnly
                     />
                   ) : (
@@ -215,6 +218,7 @@ export function ContextGroup({
                       contexts={allContexts}
                       tags={tags}
                       searchQuery={searchQuery}
+                      onTagClick={onTagClick}
                       onDataChange={onDataChange}
                     />
                   )

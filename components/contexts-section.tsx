@@ -21,6 +21,8 @@ interface ContextsSectionProps {
   readOnly?: boolean;
   hideSearch?: boolean;
   defaultCollapsed?: boolean;
+  searchQuery?: string;
+  onSearchQueryChange?: (query: string) => void;
 }
 
 export function ContextsSection({
@@ -34,9 +36,13 @@ export function ContextsSection({
   readOnly,
   hideSearch,
   defaultCollapsed = false,
+  searchQuery: controlledSearchQuery,
+  onSearchQueryChange,
 }: ContextsSectionProps) {
   const [showArchivedContexts, setShowArchivedContexts] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [internalSearchQuery, setInternalSearchQuery] = useState("");
+  const searchQuery = controlledSearchQuery ?? internalSearchQuery;
+  const setSearchQuery = onSearchQueryChange ?? setInternalSearchQuery;
   const searchContainerRef = useRef<HTMLDivElement>(null);
 
   const handleExpandAll = () => {
@@ -211,6 +217,7 @@ export function ContextsSection({
                   })
                 }
                 searchQuery={searchQuery}
+                onTagClick={hideSearch ? undefined : setSearchQuery}
                 readOnly
               />
             ) : (
@@ -228,6 +235,7 @@ export function ContextsSection({
                   })
                 }
                 searchQuery={searchQuery}
+                onTagClick={hideSearch ? undefined : setSearchQuery}
                 onDataChange={onDataChange}
               />
             );
