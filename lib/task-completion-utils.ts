@@ -20,6 +20,7 @@ export interface TaskForCompletion {
   waitDays: number | null;
   type: "TASK" | "HABIT" | "RECURRING";
   notes: string | null;
+  subtasks: Array<{ id: string; text: string; completed: boolean }> | null;
   userId: string;
   frequency: number | null;
   completed: boolean;
@@ -59,6 +60,11 @@ export async function completeRecurringTask(
     dueDate: nextDueDate,
     waitDays: task.waitDays,
     notes: task.notes,
+    subtasks:
+      task.subtasks?.map((subtask) => ({
+        ...subtask,
+        completed: false,
+      })) ?? [],
     type: task.type,
     userId: task.userId,
     frequency: task.frequency,
