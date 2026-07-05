@@ -557,7 +557,8 @@ export function SmartTaskInput({
       }
     }
 
-    // Handle backspace to remove matches
+    // Allow parsed matches to be converted back to title text before editing.
+    // Tags are explicit syntax, so Backspace should edit them normally.
     if (e.key === "Backspace" && inputRef.current) {
       const cursorPos = inputRef.current.selectionStart || 0;
       const selectionEnd = inputRef.current.selectionEnd || 0;
@@ -566,7 +567,10 @@ export function SmartTaskInput({
       if (cursorPos === selectionEnd && cursorPos > 0) {
         // Find if cursor is at the end of a matched segment
         const matchedSegment = segments.find(
-          (seg) => seg.type !== "text" && seg.endIndex === cursorPos,
+          (seg) =>
+            seg.type !== "text" &&
+            seg.type !== "tag" &&
+            seg.endIndex === cursorPos,
         );
 
         if (matchedSegment) {
