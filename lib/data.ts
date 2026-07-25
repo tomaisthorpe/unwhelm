@@ -684,6 +684,42 @@ export async function getUserApiKey(): Promise<string | null> {
   return user?.apiKey ?? null;
 }
 
+export type TaskReminderPreferences = {
+  enabled: boolean;
+  pushoverUserKey: string;
+  timeZone: string;
+  hour: number;
+};
+
+export async function getTaskReminderPreferences(): Promise<TaskReminderPreferences> {
+  const session = await getAuthenticatedSession();
+  if (!session?.user?.id) {
+    return {
+      enabled: false,
+      pushoverUserKey: "",
+      timeZone: "Europe/London",
+      hour: 9,
+    };
+  }
+
+  const user = await prisma.user.findUnique({
+    where: { id: session.user.id },
+    select: {
+      taskReminderEnabled: true,
+      pushoverUserKey: true,
+      taskReminderTimeZone: true,
+      taskReminderHour: true,
+    },
+  });
+
+  return {
+    enabled: user?.taskReminderEnabled ?? false,
+    pushoverUserKey: user?.pushoverUserKey ?? "",
+    timeZone: user?.taskReminderTimeZone ?? "Europe/London",
+    hour: user?.taskReminderHour ?? 9,
+  };
+}
+
 // Admin-only functions
 export interface UserStats {
   id: string;

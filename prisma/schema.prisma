@@ -6,7 +6,7 @@
 
 generator client {
   provider = "prisma-client"
-  output = "../generated/prisma"
+  output   = "../generated/prisma"
 }
 
 datasource db {
@@ -41,16 +41,21 @@ model Session {
 }
 
 model User {
-  id            String    @id @default(cuid())
-  name          String?
-  email         String    @unique
-  emailVerified DateTime?
-  image         String?
-  password      String?   // For credentials auth
-  role          UserRole  @default(USER)
-  apiKey        String?   @unique // For read-only API access (e.g. e-ink dashboard)
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  id                     String    @id @default(cuid())
+  name                   String?
+  email                  String    @unique
+  emailVerified          DateTime?
+  image                  String?
+  password               String? // For credentials auth
+  role                   UserRole  @default(USER)
+  apiKey                 String?   @unique // For read-only API access (e.g. e-ink dashboard)
+  taskReminderEnabled    Boolean   @default(false)
+  pushoverUserKey        String?
+  taskReminderTimeZone   String    @default("Europe/London")
+  taskReminderHour       Int       @default(9)
+  taskReminderLastSentAt DateTime?
+  createdAt              DateTime  @default(now())
+  updatedAt              DateTime  @updatedAt
 
   accounts Account[]
   sessions Session[]
@@ -98,7 +103,7 @@ model Tag {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  user  User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   tasks TaskTag[]
 
   @@unique([name, userId])
@@ -130,28 +135,28 @@ enum UserRole {
 }
 
 model Task {
-  id        String    @id @default(cuid())
-  title     String
-  priority  Priority  @default(MEDIUM)
-  tags      String[]  @default([]) // Keep for backward compatibility during migration
-  contextId String
-  dueDate   DateTime?
-  waitDays  Int?      // Number of days before due date to start increasing urgency
-  urgency   Float     @default(5.0)
-  completed Boolean   @default(false)
+  id          String    @id @default(cuid())
+  title       String
+  priority    Priority  @default(MEDIUM)
+  tags        String[]  @default([]) // Keep for backward compatibility during migration
+  contextId   String
+  dueDate     DateTime?
+  waitDays    Int? // Number of days before due date to start increasing urgency
+  urgency     Float     @default(5.0)
+  completed   Boolean   @default(false)
   completedAt DateTime? // When the task was marked complete
-  type      TaskType  @default(TASK)
-  notes     String?   // Optional notes for the task
-  subtasks  Json?     @default("[]") // Array of subtask objects: {id: string, text: string, completed: boolean}
-  userId    String
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  type        TaskType  @default(TASK)
+  notes       String? // Optional notes for the task
+  subtasks    Json?     @default("[]") // Array of subtask objects: {id: string, text: string, completed: boolean}
+  userId      String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 
   // Habit-specific fields
   habitType     HabitType?
   streak        Int?       @default(0)
   longestStreak Int?       @default(0)
-  frequency     Int?       // frequency in days (1 = daily, 7 = weekly)
+  frequency     Int? // frequency in days (1 = daily, 7 = weekly)
 
   // Recurring-specific fields  
   nextDue DateTime?

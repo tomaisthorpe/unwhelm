@@ -5,7 +5,11 @@ import { authOptions } from "@/lib/auth";
 import { Metadata } from "next";
 import { AccountSettingsForm } from "@/components/account-settings-form";
 import { PageHeader } from "@/components/ui/page-header";
-import { getUserUsageCounts, getUserApiKey } from "@/lib/data";
+import {
+  getUserUsageCounts,
+  getUserApiKey,
+  getTaskReminderPreferences,
+} from "@/lib/data";
 import { FEATURE_LIMITS } from "@/lib/feature-limits";
 
 export const metadata: Metadata = {
@@ -17,9 +21,10 @@ export default async function AccountSettingsPage() {
   const session = (await getServerSession(authOptions)) as Session;
 
   // Get user's current usage counts and API key
-  const [usageCounts, apiKey] = await Promise.all([
+  const [usageCounts, apiKey, taskReminderPreferences] = await Promise.all([
     getUserUsageCounts(),
     getUserApiKey(),
+    getTaskReminderPreferences(),
   ]);
 
   return (
@@ -40,6 +45,7 @@ export default async function AccountSettingsPage() {
             maxContexts: FEATURE_LIMITS.MAX_CONTEXTS,
           }}
           apiKey={apiKey}
+          taskReminderPreferences={taskReminderPreferences}
         />
     </div>
   );

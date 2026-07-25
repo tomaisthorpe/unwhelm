@@ -44,3 +44,36 @@ export function diffInLocalCalendarDays(
   const baseUTC = Date.UTC(base.getFullYear(), base.getMonth(), base.getDate());
   return Math.round((targetUTC - baseUTC) / 86400000);
 }
+
+/**
+ * Returns the number of calendar days between two dates in a specific timezone.
+ */
+export function diffInCalendarDays(
+  target: Date,
+  base: Date = new Date(),
+  timeZone?: string
+): number {
+  if (!timeZone) {
+    return diffInLocalCalendarDays(target, base);
+  }
+
+  const formatter = new Intl.DateTimeFormat("en-GB", {
+    timeZone,
+    year: "numeric",
+    month: "numeric",
+    day: "numeric",
+  });
+
+  const toUtcCalendarDate = (date: Date) => {
+    const parts = formatter.formatToParts(date);
+    const year = Number(parts.find((part) => part.type === "year")?.value);
+    const month = Number(parts.find((part) => part.type === "month")?.value);
+    const day = Number(parts.find((part) => part.type === "day")?.value);
+
+    return Date.UTC(year, month - 1, day);
+  };
+
+  return Math.round(
+    (toUtcCalendarDate(target) - toUtcCalendarDate(base)) / 86400000
+  );
+}

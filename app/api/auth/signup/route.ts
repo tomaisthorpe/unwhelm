@@ -38,7 +38,7 @@ export async function POST(request: NextRequest) {
     await createInboxContext(user.id);
 
     // Return user without password
-    const userWithoutPassword: Omit<typeof user, 'password'> = {
+    const userWithoutPassword = {
       id: user.id,
       name: user.name,
       email: user.email,

@@ -664,6 +664,71 @@ export async function updateUserNameAction(name: string) {
   revalidatePath("/", "layout");
 }
 
+export async function updateTaskReminderPreferencesAction(preferences: {
+  enabled: boolean;
+  pushoverUserKey: string;
+  timeZone: string;
+  hour: number;
+}) {
+  const userId = await getAuthenticatedUser();
+  const pushoverUserKey = preferences.pushoverUserKey.trim();
+  const timeZone = preferences.timeZone.trim();
+
+  if (preferences.enabled && !pushoverUserKey) {
+    throw new Error("A Pushover user key is required");
+  }
+  if (pushoverUserKey.length > 128) {
+    throw new Error("Pushover user key is too long");
+  }
+  if (!Number.isInteger(preferences.hour) || preferences.hour < 0 || preferences.hour > 23) {
+    throw new Error("Reminder hour must be between 0 and 23");
+  }
+  try {
+    new Intl.DateTimeFormat("en-GB", { timeZone }).format();
+  } catch {
+    throw new Error("Enter a valid IANA timezone, such as Europe/London");
+  }
+
+  await prisma.user.update({
+    where: { id: userId },
+    data: {
+      taskReminderEnabled: preferences.enabled,
+      pushoverUserKey: pushoverUserKey || null,
+      taskReminderTimeZone: timeZone,
+      taskReminderHour: preferences.hour,
+      taskReminderLastSentAt: null,
+    },
+  });
+
+  revalidatePath("/settings/account");
+}
+
+export async function sendTestTaskReminderAction(pushoverUserKey: string) {
+  await getAuthenticatedUser();
+  const userKey = pushoverUserKey.trim();
+  if (!userKey) {
+    throw new Error("Enter your Pushover user key first");
+  }
+  if (userKey.length > 128) {
+    throw new Error("Pushover user key is too long");
+  }
+
+  const { sendPushoverMessage } = await import("./pushover");
+  const baseUrl = (
+    process.env.APP_BASE_URL ||
+    process.env.NEXTAUTH_URL ||
+    "https://unwhelm.app"
+  ).replace(/\/$/, "");
+
+  await sendPushoverMessage({
+    user: userKey,
+    title: "Unwhelm test notification",
+    message: "Pushover is connected. Daily task reminders can reach you.",
+    url: `${baseUrl}/settings/account`,
+    urlTitle: "Open reminder settings",
+  });
+}
+
 // Change password action
 export async function changePasswordAction(
   currentPassword: string,

@@ -5,7 +5,14 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { updateUserNameAction, changePasswordAction, generateApiKeyAction, revokeApiKeyAction } from "@/lib/server-actions";
+import {
+  updateUserNameAction,
+  changePasswordAction,
+  generateApiKeyAction,
+  revokeApiKeyAction,
+  updateTaskReminderPreferencesAction,
+  sendTestTaskReminderAction,
+} from "@/lib/server-actions";
 import { Eye, EyeOff, Copy, Check, RefreshCw, Trash2 } from "lucide-react";
 import { SectionPanel } from "@/components/ui/section-panel";
 
@@ -24,9 +31,21 @@ interface AccountSettingsFormProps {
     maxContexts: number;
   };
   apiKey: string | null;
+  taskReminderPreferences: {
+    enabled: boolean;
+    pushoverUserKey: string;
+    timeZone: string;
+    hour: number;
+  };
 }
 
-export function AccountSettingsForm({ user, usageCounts, limits, apiKey: initialApiKey }: AccountSettingsFormProps) {
+export function AccountSettingsForm({
+  user,
+  usageCounts,
+  limits,
+  apiKey: initialApiKey,
+  taskReminderPreferences,
+}: AccountSettingsFormProps) {
   const router = useRouter();
   const [name, setName] = useState(user.name || "");
   const [isPending, startTransition] = useTransition();
@@ -41,6 +60,52 @@ export function AccountSettingsForm({ user, usageCounts, limits, apiKey: initial
   const [isCopied, setIsCopied] = useState(false);
   const [isApiKeyPending, startApiKeyTransition] = useTransition();
   const [apiKeyMessage, setApiKeyMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
+  const [reminderEnabled, setReminderEnabled] = useState(taskReminderPreferences.enabled);
+  const [pushoverUserKey, setPushoverUserKey] = useState(taskReminderPreferences.pushoverUserKey);
+  const [reminderTimeZone, setReminderTimeZone] = useState(taskReminderPreferences.timeZone);
+  const [reminderHour, setReminderHour] = useState(taskReminderPreferences.hour);
+  const [isReminderPending, startReminderTransition] = useTransition();
+  const [isReminderTestPending, startReminderTestTransition] = useTransition();
+  const [reminderMessage, setReminderMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
+
+  const handleReminderSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
+    setReminderMessage(null);
+    startReminderTransition(async () => {
+      try {
+        await updateTaskReminderPreferencesAction({
+          enabled: reminderEnabled,
+          pushoverUserKey,
+          timeZone: reminderTimeZone,
+          hour: reminderHour,
+        });
+        setReminderMessage({ type: "success", text: "Reminder settings saved" });
+      } catch (error) {
+        setReminderMessage({
+          type: "error",
+          text: error instanceof Error ? error.message : "Failed to save reminder settings",
+        });
+      }
+    });
+  };
+
+  const handleReminderTest = () => {
+    setReminderMessage(null);
+    startReminderTestTransition(async () => {
+      try {
+        await sendTestTaskReminderAction(pushoverUserKey);
+        setReminderMessage({
+          type: "success",
+          text: "Test notification sent",
+        });
+      } catch (error) {
+        setReminderMessage({
+          type: "error",
+          text: error instanceof Error ? error.message : "Failed to send test notification",
+        });
+      }
+    });
+  };
 
   const handleGenerateApiKey = () => {
     setApiKeyMessage(null);
@@ -207,6 +272,100 @@ export function AccountSettingsForm({ user, usageCounts, limits, apiKey: initial
           >
             {isPending ? "Saving..." : "Save Changes"}
           </Button>
+        </form>
+      </SectionPanel>
+
+      <SectionPanel
+        title="Task Reminders"
+        description="Receive a daily Pushover notification when you have tasks due today or overdue."
+      >
+        <form onSubmit={handleReminderSubmit} className="space-y-4">
+          <label className="flex items-center gap-3 text-sm font-medium text-gray-700 dark:text-gray-300">
+            <input
+              type="checkbox"
+              checked={reminderEnabled}
+              onChange={(event) => setReminderEnabled(event.target.checked)}
+              disabled={isReminderPending}
+              className="h-4 w-4"
+            />
+            Enable daily task reminders
+          </label>
+
+          <div>
+            <Label htmlFor="pushoverUserKey">Pushover user key</Label>
+            <Input
+              id="pushoverUserKey"
+              type="password"
+              value={pushoverUserKey}
+              onChange={(event) => setPushoverUserKey(event.target.value)}
+              placeholder="Your Pushover user key"
+              className="mt-1 font-mono"
+              disabled={isReminderPending}
+            />
+            <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+              Find this key on your Pushover dashboard.
+            </p>
+          </div>
+
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div>
+              <Label htmlFor="reminderTimeZone">Timezone</Label>
+              <Input
+                id="reminderTimeZone"
+                value={reminderTimeZone}
+                onChange={(event) => setReminderTimeZone(event.target.value)}
+                placeholder="Europe/London"
+                className="mt-1"
+                disabled={isReminderPending}
+              />
+            </div>
+            <div>
+              <Label htmlFor="reminderHour">Hour of day</Label>
+              <Input
+                id="reminderHour"
+                type="number"
+                min={0}
+                max={23}
+                value={reminderHour}
+                onChange={(event) => setReminderHour(Number(event.target.value))}
+                className="mt-1"
+                disabled={isReminderPending}
+              />
+            </div>
+          </div>
+
+          {reminderMessage && (
+            <div
+              className={`p-3 rounded-lg text-sm ${
+                reminderMessage.type === "success"
+                  ? "bg-green-50 dark:bg-green-950/50 text-green-800 dark:text-green-300 border border-green-200 dark:border-green-800"
+                  : "bg-red-50 dark:bg-red-950/50 text-red-800 dark:text-red-400 border border-red-200 dark:border-red-800"
+              }`}
+            >
+              {reminderMessage.text}
+            </div>
+          )}
+
+          <div className="flex flex-wrap gap-2">
+            <Button
+              type="submit"
+              disabled={isReminderPending || isReminderTestPending}
+            >
+              {isReminderPending ? "Saving..." : "Save Reminder Settings"}
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={handleReminderTest}
+              disabled={
+                isReminderPending ||
+                isReminderTestPending ||
+                !pushoverUserKey.trim()
+              }
+            >
+              {isReminderTestPending ? "Sending..." : "Send Test Notification"}
+            </Button>
+          </div>
         </form>
       </SectionPanel>
 

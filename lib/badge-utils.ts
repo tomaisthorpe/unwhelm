@@ -3,39 +3,57 @@
  */
 
 import { Task } from "@/lib/data";
-import { diffInLocalCalendarDays } from "@/lib/date-utils";
+import { diffInCalendarDays } from "@/lib/date-utils";
 import { shouldHideCompletedTask, shouldHabitShowAsAvailable } from "@/lib/utils";
+
+type DueTask = Pick<
+  Task,
+  "completed" | "completedAt" | "dueDate" | "type"
+>;
+
+export type DueAndOverdueTaskCounts = {
+  dueToday: number;
+  overdue: number;
+  total: number;
+};
+
+/**
+ * Counts due and overdue tasks separately.
+ */
+export function getDueAndOverdueTaskCounts(
+  tasks: DueTask[],
+  now: Date = new Date(),
+  timeZone?: string
+): DueAndOverdueTaskCounts {
+  let dueToday = 0;
+  let overdue = 0;
+
+  for (const task of tasks) {
+    if (shouldHideCompletedTask(task)) continue;
+
+    if (task.type === "HABIT") {
+      const effectivelyCompleted =
+        task.completed && !shouldHabitShowAsAvailable(task);
+      if (effectivelyCompleted) continue;
+    } else if (task.completed) {
+      continue;
+    }
+
+    if (!task.dueDate) continue;
+
+    const diffDays = diffInCalendarDays(task.dueDate, now, timeZone);
+    if (diffDays === 0) dueToday += 1;
+    if (diffDays < 0) overdue += 1;
+  }
+
+  return { dueToday, overdue, total: dueToday + overdue };
+}
 
 /**
  * Counts tasks that are due today or overdue and not completed
  */
 export function countDueAndOverdueTasks(tasks: Task[]): number {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-
-  return tasks.filter((task) => {
-    // Skip tasks that should be hidden
-    if (shouldHideCompletedTask(task)) {
-      return false;
-    }
-
-    // For habits, check if they're effectively incomplete
-    if (task.type === "HABIT") {
-      const effectivelyCompleted = task.completed && !shouldHabitShowAsAvailable(task);
-      if (effectivelyCompleted) {
-        return false;
-      }
-    } else if (task.completed) {
-      // Regular completed tasks don't count
-      return false;
-    }
-
-    // Check if task has a due date and is due today or overdue
-    if (!task.dueDate) return false;
-    
-    const diffDays = diffInLocalCalendarDays(task.dueDate);
-    return diffDays <= 0; // Due today (0) or overdue (negative)
-  }).length;
+  return getDueAndOverdueTaskCounts(tasks).total;
 }
 
 // Extend Navigator interface to include Badge API
