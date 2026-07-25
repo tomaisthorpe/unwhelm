@@ -620,6 +620,7 @@ export function SmartTaskInput({
     type: parsedTask.type,
     habitType: undefined,
     frequency: parsedTask.frequency,
+    recurrenceBasis: "DUE_DATE",
     tags: parsedTask.tags,
     subtasks: [],
   });
@@ -683,6 +684,7 @@ export function SmartTaskInput({
       if (parsedTask.frequency) {
         formData.append("frequency", parsedTask.frequency.toString());
       }
+      formData.append("recurrenceBasis", "DUE_DATE");
       formData.append("tags", parsedTask.tags.join(", "));
       formData.append("notes", parsedTask.notes || "");
 

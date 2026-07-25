@@ -165,6 +165,10 @@ export async function createTaskAction(formData: FormData) {
   const frequency = formData.get("frequency")
     ? parseInt(formData.get("frequency") as string)
     : null;
+  const recurrenceBasis =
+    (formData.get("recurrenceBasis") as
+      | "DUE_DATE"
+      | "COMPLETION_DATE") || "DUE_DATE";
   const tagsString = formData.get("tags") as string;
   const notes = formData.get("notes") as string;
   const subtasksString = formData.get("subtasks") as string;
@@ -223,6 +227,7 @@ export async function createTaskAction(formData: FormData) {
     taskData.frequency = frequency;
   } else if (type === "RECURRING") {
     taskData.frequency = frequency;
+    taskData.recurrenceBasis = recurrenceBasis;
     if (dueDate) {
       taskData.nextDue = new Date(dueDate);
     }
@@ -258,6 +263,10 @@ export async function updateTaskAction(formData: FormData) {
   const frequency = formData.get("frequency")
     ? parseInt(formData.get("frequency") as string)
     : null;
+  const recurrenceBasis =
+    (formData.get("recurrenceBasis") as
+      | "DUE_DATE"
+      | "COMPLETION_DATE") || "DUE_DATE";
   const tagsString = formData.get("tags") as string;
   const notes = formData.get("notes") as string;
   const subtasksString = formData.get("subtasks") as string;
@@ -332,6 +341,7 @@ export async function updateTaskAction(formData: FormData) {
     updateData.frequency = frequency;
   } else if (type === "RECURRING") {
     updateData.frequency = frequency;
+    updateData.recurrenceBasis = recurrenceBasis;
     if (dueDate) {
       updateData.nextDue = new Date(dueDate);
     }

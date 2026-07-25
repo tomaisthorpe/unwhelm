@@ -42,6 +42,7 @@ export interface Task {
   streak: number | null;
   longestStreak: number | null;
   frequency: number | null;
+  recurrenceBasis: "DUE_DATE" | "COMPLETION_DATE";
 
   nextDue: Date | null;
 }

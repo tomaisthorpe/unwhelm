@@ -150,6 +150,7 @@ export function TaskModal({
     type: "TASK",
     habitType: undefined,
     frequency: undefined,
+    recurrenceBasis: "DUE_DATE",
     tags: [],
     notes: "",
     subtasks: [],
@@ -200,6 +201,7 @@ export function TaskModal({
           type: task.type,
           habitType: task.habitType || undefined,
           frequency: task.frequency || undefined,
+          recurrenceBasis: task.recurrenceBasis,
           tags: task.tags,
           notes: task.notes || "",
           subtasks: task.subtasks || [],
@@ -238,6 +240,7 @@ export function TaskModal({
           type: "TASK" as const,
           habitType: undefined,
           frequency: undefined,
+          recurrenceBasis: "DUE_DATE" as const,
           tags: [],
           notes: "",
           subtasks: [],
@@ -278,6 +281,7 @@ export function TaskModal({
       taskFormData.type !== initialTaskFormData.type ||
       taskFormData.habitType !== initialTaskFormData.habitType ||
       taskFormData.frequency !== initialTaskFormData.frequency ||
+      taskFormData.recurrenceBasis !== initialTaskFormData.recurrenceBasis ||
       taskFormData.notes !== initialTaskFormData.notes ||
       JSON.stringify(taskFormData.tags) !==
         JSON.stringify(initialTaskFormData.tags) ||
@@ -364,6 +368,7 @@ export function TaskModal({
       formData.append("habitType", taskFormData.habitType);
     if (taskFormData.frequency)
       formData.append("frequency", taskFormData.frequency.toString());
+    formData.append("recurrenceBasis", taskFormData.recurrenceBasis);
 
     // Convert tags array to comma-separated string for form data
     formData.append("tags", taskFormData.tags.join(", "));

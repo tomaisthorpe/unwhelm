@@ -23,6 +23,7 @@ export interface TaskForCompletion {
   subtasks: Array<{ id: string; text: string; completed: boolean }> | null;
   userId: string;
   frequency: number | null;
+  recurrenceBasis: "DUE_DATE" | "COMPLETION_DATE";
   completed: boolean;
   completedAt: Date | null;
   streak: number | null;
@@ -42,11 +43,12 @@ export async function completeRecurringTask(
 
   let nextDueDate: Date;
 
-  if (task.dueDate) {
-    // If task has a due date, calculate next due date from the original due date
+  if (task.recurrenceBasis === "DUE_DATE" && task.dueDate) {
     nextDueDate = addDays(new Date(task.dueDate), task.frequency);
+    while (nextDueDate <= completionDate) {
+      nextDueDate = addDays(nextDueDate, task.frequency);
+    }
   } else {
-    // If task has no due date, calculate next due date from completion date
     nextDueDate = addDays(new Date(completionDate), task.frequency);
   }
 
@@ -68,6 +70,7 @@ export async function completeRecurringTask(
     type: task.type,
     userId: task.userId,
     frequency: task.frequency,
+    recurrenceBasis: task.recurrenceBasis,
     nextDue: nextDueDate,
   };
 

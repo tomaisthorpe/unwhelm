@@ -45,6 +45,7 @@ export interface TaskFormData {
   type: "TASK" | "HABIT" | "RECURRING";
   habitType?: "STREAK" | "LEARNING" | "WELLNESS" | "MAINTENANCE";
   frequency?: number;
+  recurrenceBasis: "DUE_DATE" | "COMPLETION_DATE";
   tags: string[];
   notes?: string;
   subtasks: Subtask[];
@@ -515,6 +516,59 @@ export function TaskForm({
                 How often this task should repeat (in days)
               </p>
             </div>
+
+            <fieldset className="sm:col-span-2">
+              <legend className="text-sm font-medium mb-2">
+                Repeat based on
+              </legend>
+              <div className="grid gap-2 sm:grid-cols-2">
+                {[
+                  {
+                    value: "DUE_DATE" as const,
+                    label: "Due date",
+                    description:
+                      "Keep the original schedule and skip missed dates.",
+                  },
+                  {
+                    value: "COMPLETION_DATE" as const,
+                    label: "Completion date",
+                    description:
+                      "Start the next interval when you complete the task.",
+                  },
+                ].map((option) => (
+                  <label
+                    key={option.value}
+                    className={`flex cursor-pointer gap-3 rounded-md border p-3 ${
+                      data.recurrenceBasis === option.value
+                        ? "border-blue-500 bg-blue-50"
+                        : "border-gray-200 hover:bg-gray-50"
+                    }`}
+                  >
+                    <input
+                      type="radio"
+                      name={getFieldId("recurrenceBasis")}
+                      value={option.value}
+                      checked={data.recurrenceBasis === option.value}
+                      onChange={() => onChange("recurrenceBasis", option.value)}
+                      className="mt-1"
+                    />
+                    <span>
+                      <span className="block text-sm font-medium">
+                        {option.label}
+                      </span>
+                      <span className="block text-xs text-gray-500">
+                        {option.description}
+                      </span>
+                    </span>
+                  </label>
+                ))}
+              </div>
+              <p className="mt-2 text-xs text-gray-500">
+                {data.recurrenceBasis === "COMPLETION_DATE"
+                  ? `The next task will be due ${data.frequency || "the selected number of"} days after completion.`
+                  : "The next task will follow the due-date schedule."}
+              </p>
+            </fieldset>
 
             {/* Wait Days for recurring tasks - show after frequency */}
             {data.dueDate && (

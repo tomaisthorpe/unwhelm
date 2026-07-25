@@ -129,6 +129,11 @@ enum HabitType {
   MAINTENANCE
 }
 
+enum RecurrenceBasis {
+  DUE_DATE
+  COMPLETION_DATE
+}
+
 enum UserRole {
   USER
   ADMIN
@@ -158,8 +163,9 @@ model Task {
   longestStreak Int?       @default(0)
   frequency     Int? // frequency in days (1 = daily, 7 = weekly)
 
-  // Recurring-specific fields  
-  nextDue DateTime?
+  // Recurring-specific fields
+  nextDue         DateTime?
+  recurrenceBasis RecurrenceBasis @default(DUE_DATE)
 
   user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   context Context @relation(fields: [contextId], references: [id], onDelete: Cascade)

@@ -85,6 +85,7 @@ function makeTask(overrides: Partial<Task> & { title: string; contextId: string 
     streak: null,
     longestStreak: null,
     frequency: null,
+    recurrenceBasis: "DUE_DATE",
     nextDue: null,
     ...overrides,
   };
