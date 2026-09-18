@@ -1172,10 +1172,12 @@ export function AddItemModal({
       ) : addButtonSize === "sm" ? (
         <button
           onClick={() => setIsOpen(true)}
-          className="flex items-center space-x-2 px-2 py-1 text-xs bg-white/20 hover:bg-white/30 rounded-md transition-colors"
+          className="flex items-center p-1.5 text-xs bg-white/20 hover:bg-white/30 rounded-md transition-colors sm:space-x-2 sm:px-2 sm:py-1"
+          aria-label="Add task"
+          title="Add task"
         >
           <Plus className="w-3 h-3" />
-          <span>Add</span>
+          <span className="hidden sm:inline">Add</span>
         </button>
       ) : (
         <Button onClick={() => setIsOpen(true)} variant="default" size="lg">

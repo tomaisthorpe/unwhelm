@@ -70,9 +70,9 @@ function ContextGroupHeader({
   return (
     <div className={cn("py-2 px-4 text-white", context.color)}>
       <ContextCollapsibleTrigger>
-        <div className="w-full flex items-center justify-between rounded-lg py-2 sm:px-2 transition-colors">
-          <div className="flex items-center space-x-3">
-            <div className="flex items-center space-x-2">
+        <div className="w-full flex items-start justify-between rounded-lg py-2 sm:items-center sm:px-2 transition-colors">
+          <div className="flex min-w-0 items-start space-x-2 sm:items-center sm:space-x-3">
+            <div className="flex shrink-0 items-center space-x-1 pt-0.5 sm:space-x-2 sm:pt-0">
               <ChevronDown
                 className={`w-4 h-4 transition-transform ${
                   isCollapsed ? "-rotate-90" : "rotate-0"
@@ -80,7 +80,7 @@ function ContextGroupHeader({
               />
               <ContextIcon iconName={context.icon} className="w-5 h-5" />
             </div>
-            <div className="text-left">
+            <div className="min-w-0 text-left">
               <h3 className="font-semibold">
                 <HighlightedText
                   text={context.name}
@@ -100,7 +100,7 @@ function ContextGroupHeader({
           <div className="text-right">
             <div className="flex flex-col items-end gap-1">
               <div
-                className="ml-3 flex flex-wrap justify-end items-center gap-2 flex-shrink-0"
+                className="ml-2 flex items-center justify-end gap-1 flex-shrink-0 sm:ml-3 sm:gap-2"
                 onClick={(e) => e.stopPropagation()}
               >
                 {onEditContext && !context.isInbox && (
@@ -109,18 +109,20 @@ function ContextGroupHeader({
                       e.stopPropagation();
                       onEditContext();
                     }}
-                    className="flex items-center space-x-2 px-2 py-1 text-xs bg-white/20 hover:bg-white/30 rounded-md transition-colors"
+                    className="flex items-center p-1.5 text-xs bg-white/20 hover:bg-white/30 rounded-md transition-colors sm:space-x-2 sm:px-2 sm:py-1"
                     title="Edit context"
+                    aria-label="Edit context"
                   >
                     <Pencil className="w-3 h-3" />
-                    <span>Edit</span>
+                    <span className="hidden sm:inline">Edit</span>
                   </button>
                 )}
                 {addTaskNode}
               </div>
               {todayTasksInContext > 0 && (
                 <p className="text-xs opacity-90">
-                  {todayTasksInContext} tasks due
+                  {todayTasksInContext}{" "}
+                  {todayTasksInContext === 1 ? "task" : "tasks"} due
                 </p>
               )}
             </div>
