@@ -41,7 +41,11 @@ function getContextCompletion(tasks: Task[]) {
   }
   const completed = contextHabits.filter((task) => task.completed).length;
   const total = contextHabits.length;
-  return { percentage: Math.round((completed / total) * 100), completed, total };
+  return {
+    percentage: Math.round((completed / total) * 100),
+    completed,
+    total,
+  };
 }
 
 function ContextGroupHeader({
@@ -66,7 +70,7 @@ function ContextGroupHeader({
   return (
     <div className={cn("py-2 px-4 text-white", context.color)}>
       <ContextCollapsibleTrigger>
-        <div className="w-full flex items-center justify-between rounded-lg p-2 transition-colors">
+        <div className="w-full flex items-center justify-between rounded-lg py-2 sm:px-2 transition-colors">
           <div className="flex items-center space-x-3">
             <div className="flex items-center space-x-2">
               <ChevronDown
@@ -78,11 +82,17 @@ function ContextGroupHeader({
             </div>
             <div className="text-left">
               <h3 className="font-semibold">
-                <HighlightedText text={context.name} searchQuery={searchQuery} />
+                <HighlightedText
+                  text={context.name}
+                  searchQuery={searchQuery}
+                />
               </h3>
               {context.description && (
                 <p className="text-sm opacity-90">
-                  <HighlightedText text={context.description} searchQuery={searchQuery} />
+                  <HighlightedText
+                    text={context.description}
+                    searchQuery={searchQuery}
+                  />
                 </p>
               )}
             </div>
@@ -157,9 +167,13 @@ export function ContextGroup({
     })
     .sort((a, b) => {
       const aEffectivelyCompleted =
-        a.type === "HABIT" ? a.completed && !shouldHabitShowAsAvailable(a) : a.completed;
+        a.type === "HABIT"
+          ? a.completed && !shouldHabitShowAsAvailable(a)
+          : a.completed;
       const bEffectivelyCompleted =
-        b.type === "HABIT" ? b.completed && !shouldHabitShowAsAvailable(b) : b.completed;
+        b.type === "HABIT"
+          ? b.completed && !shouldHabitShowAsAvailable(b)
+          : b.completed;
       if (aEffectivelyCompleted !== bEffectivelyCompleted)
         return aEffectivelyCompleted ? 1 : -1;
       return b.urgency - a.urgency;
@@ -221,7 +235,7 @@ export function ContextGroup({
                       onTagClick={onTagClick}
                       onDataChange={onDataChange}
                     />
-                  )
+                  ),
                 )}
               </div>
             ) : (

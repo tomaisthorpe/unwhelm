@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Calendar, ChevronDown, ChevronUp } from "lucide-react";
+import { Calendar, ChevronDown, ChevronUp, ListTodo } from "lucide-react";
 import { TaskCard } from "./task-card";
 import { TaskCardContainer } from "./task-card-container";
 import {
@@ -149,15 +149,45 @@ export function TodaySection({
 
   return (
     <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm">
-      <div className="p-6 border-b border-gray-200 dark:border-gray-700">
-        <div className="flex items-center justify-between">
+      <div className="py-4 px-4 md:p-6 border-b border-gray-200 dark:border-gray-700">
+        <div className="grid grid-cols-[1fr_auto] items-center gap-x-3 gap-y-4 md:grid-cols-[auto_auto_1fr_auto]">
           <div className="flex items-center space-x-3">
-            <Calendar className="w-5 h-5 text-blue-600" />
+            <ListTodo className="w-5 h-5 text-blue-600" />
             <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
-              {activeTab === "urgency" ? "Top by Urgency" : "Today & Overdue"}
+              Focus
             </h2>
           </div>
-          <div className="flex items-center gap-3">
+          {!hideTabs && (
+            <div className="col-span-2 row-start-2 md:col-span-1 md:col-start-2 md:row-start-1">
+              <div className="inline-flex rounded-lg bg-gray-100 dark:bg-gray-800 p-1">
+                <button
+                  type="button"
+                  onClick={() => setActiveTab("urgency")}
+                  className={
+                    "px-3 py-1.5 text-sm rounded-md transition-colors " +
+                    (activeTab === "urgency"
+                      ? "bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow"
+                      : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100")
+                  }
+                >
+                  Urgency
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setActiveTab("today")}
+                  className={
+                    "px-3 py-1.5 text-sm rounded-md transition-colors " +
+                    (activeTab === "today"
+                      ? "bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow"
+                      : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100")
+                  }
+                >
+                  Due
+                </button>
+              </div>
+            </div>
+          )}
+          <div className="col-start-2 row-start-1 flex items-center gap-3 md:col-start-4">
             <div className="text-sm text-gray-500 dark:text-gray-400">
               {completedCount}/{currentTasks.length} completed
               {activeTab === "today" && overdueCount > 0 && (
@@ -168,36 +198,6 @@ export function TodaySection({
             </div>
           </div>
         </div>
-        {!hideTabs && (
-          <div className="mt-4">
-            <div className="inline-flex rounded-lg bg-gray-100 dark:bg-gray-800 p-1">
-              <button
-                type="button"
-                onClick={() => setActiveTab("urgency")}
-                className={
-                  "px-3 py-1.5 text-sm rounded-md transition-colors " +
-                  (activeTab === "urgency"
-                    ? "bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow"
-                    : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100")
-                }
-              >
-                Urgency
-              </button>
-              <button
-                type="button"
-                onClick={() => setActiveTab("today")}
-                className={
-                  "px-3 py-1.5 text-sm rounded-md transition-colors " +
-                  (activeTab === "today"
-                    ? "bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow"
-                    : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100")
-                }
-              >
-                Today & Overdue
-              </button>
-            </div>
-          </div>
-        )}
       </div>
 
       <div className="py-4 px-2 md:p-6">
@@ -228,7 +228,7 @@ export function TodaySection({
                   searchQuery={searchQuery}
                   onDataChange={onDataChange}
                 />
-              )
+              ),
             )}
             {currentTasks.length > 5 && (
               <div className="pt-2 text-center">

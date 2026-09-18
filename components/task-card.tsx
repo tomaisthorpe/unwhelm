@@ -197,7 +197,7 @@ export function TaskCard({
 
   return (
     <TooltipProvider>
-      <div className="flex items-start space-x-3 py-2 sm:px-3 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg">
+      <div className="flex items-start space-x-1 sm:space-x-3 py-2 sm:px-3 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg">
         <Button
           variant="ghost"
           size="sm"
@@ -224,7 +224,9 @@ export function TaskCard({
                       ? "line-through text-gray-500"
                       : "text-gray-900 dark:text-gray-100",
                   )}
-                  onClick={readOnly ? undefined : () => setIsEditModalOpen(true)}
+                  onClick={
+                    readOnly ? undefined : () => setIsEditModalOpen(true)
+                  }
                   title={readOnly ? undefined : "Click to edit task"}
                 >
                   {searchQuery ? (
@@ -414,16 +416,26 @@ export function TaskCard({
                       </div>
                       {urgencyExplanation.explanation
                         .map((line) => {
-                          const match = line.match(/^(.+):\s*([+-]?\d+\.?\d*)$/);
+                          const match = line.match(
+                            /^(.+):\s*([+-]?\d+\.?\d*)$/,
+                          );
                           if (!match) return null;
                           const value = parseFloat(match[2]);
                           if (value === 0) return null;
                           return { label: match[1], value };
                         })
-                        .filter((r): r is { label: string; value: number } => r !== null)
+                        .filter(
+                          (r): r is { label: string; value: number } =>
+                            r !== null,
+                        )
                         .map(({ label, value }) => (
-                          <div key={label} className="flex justify-between gap-4">
-                            <span className="text-gray-500 dark:text-gray-400">{label}</span>
+                          <div
+                            key={label}
+                            className="flex justify-between gap-4"
+                          >
+                            <span className="text-gray-500 dark:text-gray-400">
+                              {label}
+                            </span>
                             <span className="font-medium tabular-nums text-gray-900 dark:text-gray-100">
                               {value >= 0 ? "+" : ""}
                               {value.toFixed(2)}
@@ -431,7 +443,9 @@ export function TaskCard({
                           </div>
                         ))}
                       <div className="flex justify-between gap-4 pt-1 border-t border-gray-100 dark:border-gray-700">
-                        <span className="font-medium text-gray-700 dark:text-gray-300">Total</span>
+                        <span className="font-medium text-gray-700 dark:text-gray-300">
+                          Total
+                        </span>
                         <span className="font-semibold tabular-nums text-gray-900 dark:text-gray-100">
                           {urgencyExplanation.score.toFixed(1)}
                         </span>

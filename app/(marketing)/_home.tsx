@@ -26,46 +26,89 @@ import type { Task, Context, Tag } from "@/lib/data";
 // ---------------------------------------------------------------------------
 
 const now = new Date();
-const daysAgo = (d: number) => new Date(now.getTime() - d * 24 * 60 * 60 * 1000);
-const daysFromNow = (d: number) => new Date(now.getTime() + d * 24 * 60 * 60 * 1000);
+const daysAgo = (d: number) =>
+  new Date(now.getTime() - d * 24 * 60 * 60 * 1000);
+const daysFromNow = (d: number) =>
+  new Date(now.getTime() + d * 24 * 60 * 60 * 1000);
 
 const CONTEXTS: Context[] = [
   {
-    id: "ctx-coding", name: "Coding", description: null,
-    icon: "code-2", color: "bg-blue-600", coefficient: 0,
-    shared: false, archived: false, isInbox: false,
-    userId: "demo", createdAt: daysAgo(30), updatedAt: daysAgo(30),
+    id: "ctx-coding",
+    name: "Coding",
+    description: null,
+    icon: "code-2",
+    color: "bg-blue-600",
+    coefficient: 0,
+    shared: false,
+    archived: false,
+    isInbox: false,
+    userId: "demo",
+    createdAt: daysAgo(30),
+    updatedAt: daysAgo(30),
   },
   {
-    id: "ctx-kitchen", name: "Kitchen", description: null,
-    icon: "utensils", color: "bg-green-600", coefficient: 0,
-    shared: false, archived: false, isInbox: false,
-    userId: "demo", createdAt: daysAgo(30), updatedAt: daysAgo(30),
+    id: "ctx-kitchen",
+    name: "Kitchen",
+    description: null,
+    icon: "utensils",
+    color: "bg-green-600",
+    coefficient: 0,
+    shared: false,
+    archived: false,
+    isInbox: false,
+    userId: "demo",
+    createdAt: daysAgo(30),
+    updatedAt: daysAgo(30),
   },
   {
-    id: "ctx-admin", name: "Admin", description: null,
-    icon: "briefcase", color: "bg-indigo-600", coefficient: 0,
-    shared: false, archived: false, isInbox: false,
-    userId: "demo", createdAt: daysAgo(30), updatedAt: daysAgo(30),
+    id: "ctx-admin",
+    name: "Admin",
+    description: null,
+    icon: "briefcase",
+    color: "bg-indigo-600",
+    coefficient: 0,
+    shared: false,
+    archived: false,
+    isInbox: false,
+    userId: "demo",
+    createdAt: daysAgo(30),
+    updatedAt: daysAgo(30),
   },
   {
-    id: "ctx-wellness", name: "Wellness", description: null,
-    icon: "dumbbell", color: "bg-emerald-600", coefficient: 0,
-    shared: false, archived: false, isInbox: false,
-    userId: "demo", createdAt: daysAgo(30), updatedAt: daysAgo(30),
+    id: "ctx-wellness",
+    name: "Wellness",
+    description: null,
+    icon: "dumbbell",
+    color: "bg-emerald-600",
+    coefficient: 0,
+    shared: false,
+    archived: false,
+    isInbox: false,
+    userId: "demo",
+    createdAt: daysAgo(30),
+    updatedAt: daysAgo(30),
   },
 ];
 
 const TAGS: Tag[] = [
   {
-    id: "tag-client", name: "client", coefficient: 1.5, color: "bg-purple-500",
-    userId: "demo", createdAt: daysAgo(30), updatedAt: daysAgo(30),
+    id: "tag-client",
+    name: "client",
+    coefficient: 1.5,
+    color: "bg-purple-500",
+    userId: "demo",
+    createdAt: daysAgo(30),
+    updatedAt: daysAgo(30),
   },
 ];
 
-const TAG_COEFFICIENTS = Object.fromEntries(TAGS.map((t) => [t.name, t.coefficient]));
+const TAG_COEFFICIENTS = Object.fromEntries(
+  TAGS.map((t) => [t.name, t.coefficient]),
+);
 
-function makeTask(overrides: Partial<Task> & { title: string; contextId: string }): Task {
+function makeTask(
+  overrides: Partial<Task> & { title: string; contextId: string },
+): Task {
   const base: Task = {
     id: Math.random().toString(36).slice(2),
     priority: "MEDIUM",
@@ -104,75 +147,114 @@ const ALL_TASKS: Task[] = [
   // Coding
   makeTask({
     title: "Set up auth middleware for API v2",
-    priority: "HIGH", tags: ["backend"],
-    dueDate: daysFromNow(0), createdAt: daysAgo(12),
+    priority: "HIGH",
+    tags: ["backend"],
+    dueDate: daysFromNow(0),
+    createdAt: daysAgo(12),
     contextId: "ctx-coding",
   }),
   makeTask({
     title: "Write tests for invoice parser",
     tags: ["client"],
-    dueDate: daysFromNow(2), createdAt: daysAgo(5),
+    dueDate: daysFromNow(2),
+    createdAt: daysAgo(5),
     contextId: "ctx-coding",
   }),
   makeTask({
     title: "Update README with new env vars",
-    priority: "LOW", createdAt: daysAgo(1),
+    priority: "LOW",
+    createdAt: daysAgo(1),
     contextId: "ctx-coding",
   }),
   makeTask({
     title: "Refactor database connection pooling",
-    completed: true, completedAt: daysAgo(0), createdAt: daysAgo(8),
+    completed: true,
+    completedAt: daysAgo(0),
+    createdAt: daysAgo(8),
     contextId: "ctx-coding",
   }),
   // Kitchen
   makeTask({
     title: "Meal prep for the week",
-    dueDate: daysFromNow(0), createdAt: daysAgo(2),
+    dueDate: daysFromNow(0),
+    createdAt: daysAgo(2),
     contextId: "ctx-kitchen",
   }),
   makeTask({
     title: "Morning run",
-    type: "HABIT", habitType: "STREAK", frequency: 1,
-    completedAt: daysAgo(0), completed: true, streak: 4,
-    createdAt: daysAgo(30), contextId: "ctx-kitchen",
+    type: "HABIT",
+    habitType: "STREAK",
+    frequency: 1,
+    completedAt: daysAgo(0),
+    completed: true,
+    streak: 4,
+    createdAt: daysAgo(30),
+    contextId: "ctx-kitchen",
   }),
   makeTask({
     title: "Vitamins",
-    type: "HABIT", habitType: "WELLNESS", frequency: 1,
-    completedAt: daysAgo(1), completed: true, streak: 2,
-    createdAt: daysAgo(14), contextId: "ctx-kitchen",
+    type: "HABIT",
+    habitType: "WELLNESS",
+    frequency: 1,
+    completedAt: daysAgo(1),
+    completed: true,
+    streak: 2,
+    createdAt: daysAgo(14),
+    contextId: "ctx-kitchen",
   }),
   // Admin
   makeTask({
     title: "Send invoice to client",
-    priority: "HIGH", tags: ["client"],
-    dueDate: daysFromNow(2), createdAt: daysAgo(12),
+    priority: "HIGH",
+    tags: ["client"],
+    dueDate: daysFromNow(2),
+    createdAt: daysAgo(12),
     contextId: "ctx-admin",
   }),
   // Wellness
   makeTask({
     title: "Morning run",
-    type: "HABIT", habitType: "STREAK", frequency: 1,
-    completedAt: daysAgo(0), completed: true, streak: 4,
-    createdAt: daysAgo(30), contextId: "ctx-wellness",
+    type: "HABIT",
+    habitType: "STREAK",
+    frequency: 1,
+    completedAt: daysAgo(0),
+    completed: true,
+    streak: 4,
+    createdAt: daysAgo(30),
+    contextId: "ctx-wellness",
   }),
   makeTask({
     title: "Skincare routine",
-    type: "HABIT", habitType: "WELLNESS", frequency: 1,
-    completedAt: daysAgo(2), completed: true, streak: 0,
-    createdAt: daysAgo(20), contextId: "ctx-wellness",
+    type: "HABIT",
+    habitType: "WELLNESS",
+    frequency: 1,
+    completedAt: daysAgo(2),
+    completed: true,
+    streak: 0,
+    createdAt: daysAgo(20),
+    contextId: "ctx-wellness",
   }),
   makeTask({
     title: "10 min stretch",
-    type: "HABIT", habitType: "WELLNESS", frequency: 1,
-    completedAt: null, completed: false, streak: 0,
-    createdAt: daysAgo(10), contextId: "ctx-wellness",
+    type: "HABIT",
+    habitType: "WELLNESS",
+    frequency: 1,
+    completedAt: null,
+    completed: false,
+    streak: 0,
+    createdAt: daysAgo(10),
+    contextId: "ctx-wellness",
   }),
   makeTask({
     title: "Vitamins",
-    type: "HABIT", habitType: "WELLNESS", frequency: 1,
-    completedAt: daysAgo(0), completed: true, streak: 7,
-    createdAt: daysAgo(14), contextId: "ctx-wellness",
+    type: "HABIT",
+    habitType: "WELLNESS",
+    frequency: 1,
+    completedAt: daysAgo(0),
+    completed: true,
+    streak: 7,
+    createdAt: daysAgo(14),
+    contextId: "ctx-wellness",
   }),
 ];
 
@@ -196,7 +278,9 @@ const breakdownRows = adminBreakdown.explanation
     if (!match) return null;
     return { label: match[1], value: parseFloat(match[2]) };
   })
-  .filter((r): r is { label: string; value: number } => r !== null && r.value !== 0);
+  .filter(
+    (r): r is { label: string; value: number } => r !== null && r.value !== 0,
+  );
 const breakdownMax = Math.max(...breakdownRows.map((r) => Math.abs(r.value)));
 
 // ---------------------------------------------------------------------------
@@ -260,7 +344,11 @@ export default function MarketingHome() {
             you only see what&apos;s relevant right now.
           </p>
           <p className="mt-3 text-sm text-gray-400 dark:text-gray-500">
-            <span className="font-medium text-gray-600 dark:text-gray-400">Free to use.</span> If paid plans are ever introduced, existing users will be grandfathered in.
+            <span className="font-medium text-gray-600 dark:text-gray-400">
+              Free to use.
+            </span>{" "}
+            If paid plans are ever introduced, existing users will be
+            grandfathered in.
           </p>
           <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link
@@ -285,7 +373,12 @@ export default function MarketingHome() {
             <div className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 px-4 py-4">
               <div className="flex items-center justify-between max-w-4xl mx-auto">
                 <div className="flex items-center space-x-3">
-                  <Image src="/unwhelm.svg" alt="unwhelm" width={32} height={32} />
+                  <Image
+                    src="/unwhelm.svg"
+                    alt="unwhelm"
+                    width={32}
+                    height={32}
+                  />
                   <span className="text-2xl font-bold font-brand text-gray-900 dark:text-gray-100">
                     unwhelm
                   </span>
@@ -310,10 +403,12 @@ export default function MarketingHome() {
                 contexts={CONTEXTS}
                 tags={TAGS}
                 readOnly
-                hideTabs
+                // hideTabs
               />
               <div className="space-y-4">
-                <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">Contexts</h2>
+                <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
+                  Contexts
+                </h2>
                 {CONTEXTS.map((ctx) => (
                   <ContextGroup
                     key={ctx.id}
@@ -357,13 +452,13 @@ export default function MarketingHome() {
                   icon: RefreshCw,
                   title: "Habits without broken streaks",
                   description:
-                    "A habit you haven't done in a while is \"getting due\", not overdue. No streak to protect, no shame when life gets in the way.",
+                    'A habit you haven\'t done in a while is "getting due", not overdue. No streak to protect, no shame when life gets in the way.',
                 },
                 {
                   icon: Languages,
                   title: "Natural language input",
                   description:
-                    "Type \"call dentist !phone p1 next friday\" and it parses the context, priority, and date. Quick capture, no form.",
+                    'Type "call dentist !phone p1 next friday" and it parses the context, priority, and date. Quick capture, no form.',
                 },
                 {
                   icon: BarChart2,
@@ -430,21 +525,28 @@ export default function MarketingHome() {
                 {breakdownRows.map(({ label, value }) => (
                   <div key={label} className="space-y-1.5">
                     <div className="flex justify-between text-sm">
-                      <span className="text-gray-600 dark:text-gray-400">{label}</span>
+                      <span className="text-gray-600 dark:text-gray-400">
+                        {label}
+                      </span>
                       <span className="font-medium tabular-nums text-gray-900 dark:text-gray-100">
-                        {value >= 0 ? "+" : ""}{value.toFixed(2)}
+                        {value >= 0 ? "+" : ""}
+                        {value.toFixed(2)}
                       </span>
                     </div>
                     <div className="h-1.5 rounded-full bg-gray-100 dark:bg-gray-800 overflow-hidden">
                       <div
                         className="h-full rounded-full bg-blue-500"
-                        style={{ width: `${(Math.abs(value) / breakdownMax) * 100}%` }}
+                        style={{
+                          width: `${(Math.abs(value) / breakdownMax) * 100}%`,
+                        }}
                       />
                     </div>
                   </div>
                 ))}
                 <div className="pt-2 border-t border-gray-100 dark:border-gray-800 flex justify-between text-sm font-semibold">
-                  <span className="text-gray-900 dark:text-gray-100">Total</span>
+                  <span className="text-gray-900 dark:text-gray-100">
+                    Total
+                  </span>
                   <span className="px-1.5 py-0.5 rounded tabular-nums text-red-600 bg-red-100 dark:bg-red-950/50 dark:text-red-400">
                     {adminBreakdown.score.toFixed(1)}
                   </span>
@@ -492,15 +594,15 @@ export default function MarketingHome() {
               Your workflows won&apos;t break overnight
             </h2>
             <p className="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto leading-relaxed mb-6">
-              Most productivity apps redesign themselves every 18 months. Layouts
-              change, features move, things you relied on quietly disappear. The
-              mental overhead of keeping up with the tool defeats the point of
-              having one.
+              Most productivity apps redesign themselves every 18 months.
+              Layouts change, features move, things you relied on quietly
+              disappear. The mental overhead of keeping up with the tool defeats
+              the point of having one.
             </p>
             <p className="text-gray-700 dark:text-gray-300 font-medium max-w-xl mx-auto">
-              unwhelm is a small, focused app. The UI stays stable. The
-              core concepts don&apos;t shift. What works today will still work
-              next year.
+              unwhelm is a small, focused app. The UI stays stable. The core
+              concepts don&apos;t shift. What works today will still work next
+              year.
             </p>
           </div>
         </section>
