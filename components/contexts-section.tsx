@@ -148,15 +148,18 @@ export function ContextsSection({
             />
           )}
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1 sm:gap-2">
           <Button
             variant="ghost"
             size="sm"
             className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100"
             onClick={handleExpandAll}
             disabled={allExpanded}
+            aria-label="Expand all contexts"
+            title="Expand all contexts"
           >
-            <ChevronDown className="w-4 h-4 mr-1" /> Expand all
+            <ChevronDown className="w-4 h-4 sm:mr-1" />
+            <span className="hidden sm:inline">Expand all</span>
           </Button>
           <Button
             variant="ghost"
@@ -164,8 +167,11 @@ export function ContextsSection({
             className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100"
             onClick={handleCollapseAll}
             disabled={allCollapsed}
+            aria-label="Collapse all contexts"
+            title="Collapse all contexts"
           >
-            <ChevronUp className="w-4 h-4 mr-1" /> Collapse all
+            <ChevronUp className="w-4 h-4 sm:mr-1" />
+            <span className="hidden sm:inline">Collapse all</span>
           </Button>
         </div>
       </div>
