@@ -628,10 +628,10 @@ export function TaskModal({
 
         {/* Tab Navigation - Only show when creating new items (not editing) */}
         {!isEditing && !isEditingContext && !isEditingTag ? (
-          <div className="flex gap-2 bg-gray-100 dark:bg-gray-800 rounded-lg p-1 mt-2 mb-6">
+          <div className="flex gap-1 bg-gray-100 dark:bg-gray-800 rounded-lg p-1 mt-2 mb-6 sm:gap-2">
             <button
               onClick={() => setActiveTab("task")}
-              className={`flex-1 px-4 py-2 text-sm font-medium rounded-lg transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400
+              className={`flex min-w-0 flex-1 items-center justify-center gap-1.5 px-2 py-2 text-sm font-medium rounded-lg transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 sm:px-4
                 ${
                   activeTab === "task"
                     ? "bg-blue-50 dark:bg-blue-950/50 text-blue-700 dark:text-blue-300 shadow-sm"
@@ -640,12 +640,12 @@ export function TaskModal({
               `}
               type="button"
             >
-              <CheckSquare className="w-4 h-4 inline mr-2" />
-              Add Task
+              <CheckSquare className="w-4 h-4 shrink-0" />
+              <span>Task</span>
             </button>
             <button
               onClick={() => setActiveTab("context")}
-              className={`flex-1 px-4 py-2 text-sm font-medium rounded-lg transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400
+              className={`flex min-w-0 flex-1 items-center justify-center gap-1.5 px-2 py-2 text-sm font-medium rounded-lg transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 sm:px-4
                 ${
                   activeTab === "context"
                     ? "bg-blue-50 dark:bg-blue-950/50 text-blue-700 dark:text-blue-300 shadow-sm"
@@ -654,12 +654,12 @@ export function TaskModal({
               `}
               type="button"
             >
-              <Home className="w-4 h-4 inline mr-2" />
-              Add Context
+              <Home className="w-4 h-4 shrink-0" />
+              <span>Context</span>
             </button>
             <button
               onClick={() => setActiveTab("tag")}
-              className={`flex-1 px-4 py-2 text-sm font-medium rounded-lg transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400
+              className={`flex min-w-0 flex-1 items-center justify-center gap-1.5 px-2 py-2 text-sm font-medium rounded-lg transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 sm:px-4
                 ${
                   activeTab === "tag"
                     ? "bg-blue-50 dark:bg-blue-950/50 text-blue-700 dark:text-blue-300 shadow-sm"
@@ -668,8 +668,8 @@ export function TaskModal({
               `}
               type="button"
             >
-              <TagIcon className="w-4 h-4 inline mr-2" />
-              Add Tag
+              <TagIcon className="w-4 h-4 shrink-0" />
+              <span>Tag</span>
             </button>
           </div>
         ) : (
