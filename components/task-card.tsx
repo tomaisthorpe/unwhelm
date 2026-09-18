@@ -195,6 +195,87 @@ export function TaskCard({
     tagCoefficients,
   });
 
+  const renderUrgencyScore = () => (
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <div
+          className={cn(
+            "px-1.5 py-0.5 rounded text-xs font-semibold cursor-help",
+            getUrgencyColor(task.urgency),
+          )}
+        >
+          {task.urgency.toFixed(1)}
+        </div>
+      </TooltipTrigger>
+      <TooltipContent className="max-w-xs w-56">
+        <div className="text-xs space-y-1.5">
+          <div className="text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wide pb-0.5">
+            Urgency breakdown
+          </div>
+          {urgencyExplanation.explanation
+            .map((line) => {
+              const match = line.match(/^(.+):\s*([+-]?\d+\.?\d*)$/);
+              if (!match) return null;
+              const value = parseFloat(match[2]);
+              if (value === 0) return null;
+              return { label: match[1], value };
+            })
+            .filter((r): r is { label: string; value: number } => r !== null)
+            .map(({ label, value }) => (
+              <div key={label} className="flex justify-between gap-4">
+                <span className="text-gray-500 dark:text-gray-400">
+                  {label}
+                </span>
+                <span className="font-medium tabular-nums text-gray-900 dark:text-gray-100">
+                  {value >= 0 ? "+" : ""}
+                  {value.toFixed(2)}
+                </span>
+              </div>
+            ))}
+          <div className="flex justify-between gap-4 pt-1 border-t border-gray-100 dark:border-gray-700">
+            <span className="font-medium text-gray-700 dark:text-gray-300">
+              Total
+            </span>
+            <span className="font-semibold tabular-nums text-gray-900 dark:text-gray-100">
+              {urgencyExplanation.score.toFixed(1)}
+            </span>
+          </div>
+        </div>
+      </TooltipContent>
+    </Tooltip>
+  );
+
+  const renderUrgencyBadges = (className: string) => (
+    <div
+      className={cn(
+        "items-center justify-end flex-wrap gap-2",
+        className,
+      )}
+    >
+      {habitStatus && (
+        <div
+          className={cn(
+            "text-xs font-medium whitespace-nowrap",
+            habitStatus.color,
+          )}
+        >
+          {habitStatus.text}
+        </div>
+      )}
+      {dateInfo && (
+        <div
+          className={cn(
+            "px-1.5 py-0.5 rounded text-xs font-medium whitespace-nowrap",
+            dateInfo.color,
+          )}
+        >
+          {dateInfo.text}
+        </div>
+      )}
+      {renderUrgencyScore()}
+    </div>
+  );
+
   return (
     <TooltipProvider>
       <div className="flex items-start space-x-1 sm:space-x-3 py-2 sm:px-3 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg">
@@ -213,9 +294,9 @@ export function TaskCard({
         </Button>
 
         <div className="flex-1 min-w-0">
-          <div className="flex items-start justify-between">
+          <div className="relative flex items-start justify-between">
             <div className={cn("flex-1", effectiveCompleted && "opacity-60")}>
-              <div className="flex items-center flex-wrap space-x-2">
+              <div className="flex items-center flex-wrap space-x-2 pr-12 sm:pr-0">
                 <h3
                   className={cn(
                     "font-normal text-base transition-colors",
@@ -266,12 +347,13 @@ export function TaskCard({
                 )}
               </div>
 
-              {((showContext && taskContext) ||
+              {(showUrgency ||
+                (showContext && taskContext) ||
                 task.tags.length > 0 ||
                 task.notes ||
                 task.priority !== "MEDIUM" ||
                 (task.subtasks && task.subtasks.length > 0)) && (
-                <div className="flex flex-wrap items-center space-x-2 md:space-x-3 mt-1">
+                <div className="flex flex-wrap items-center gap-x-2 md:gap-x-3 mt-1">
                   {showContext &&
                     taskContext &&
                     (onContextClick ? (
@@ -316,13 +398,39 @@ export function TaskCard({
                       {task.priority === "HIGH" ? "↑ High" : "↓ Low"}
                     </span>
                   )}
+                  {showUrgency && habitStatus && (
+                    <span
+                      className={cn(
+                        "sm:hidden text-xs font-medium whitespace-nowrap mb-1",
+                        habitStatus.color,
+                      )}
+                    >
+                      {habitStatus.text}
+                    </span>
+                  )}
+                  {showUrgency && dateInfo && (
+                    <span
+                      className={cn(
+                        "sm:hidden px-1.5 py-0.5 rounded text-xs font-medium whitespace-nowrap mb-1",
+                        dateInfo.color,
+                      )}
+                    >
+                      {dateInfo.text}
+                    </span>
+                  )}
+                  {task.tags.length > 0 &&
+                    (showUrgency ||
+                      (showContext && taskContext) ||
+                      task.priority !== "MEDIUM") && (
+                      <span className="basis-full h-0 sm:hidden" />
+                    )}
                   {task.tags.map((tag) =>
                     onTagClick ? (
                       <button
                         key={tag}
                         type="button"
                         onClick={() => onTagClick(tag)}
-                        className="inline-flex items-center px-1.5 py-0.5 rounded text-xs bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 mb-1"
+                        className="inline-flex items-center text-xs text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 mb-1 transition-colors"
                         title={`Search for #${tag}`}
                       >
                         <HighlightedText
@@ -333,7 +441,7 @@ export function TaskCard({
                     ) : (
                       <span
                         key={tag}
-                        className="inline-flex items-center px-1.5 py-0.5 rounded text-xs bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 mb-1"
+                        className="inline-flex items-center text-xs text-gray-500 dark:text-gray-400 mb-1"
                       >
                         <HighlightedText
                           text={`#${tag}`}
@@ -377,84 +485,12 @@ export function TaskCard({
             </div>
 
             {showUrgency && (
-              <div className="flex items-center ml-2 justify-end flex-wrap gap-2 max-w-1/2">
-                {habitStatus && (
-                  <div
-                    className={cn(
-                      "text-xs font-medium whitespace-nowrap",
-                      habitStatus.color,
-                    )}
-                  >
-                    {habitStatus.text}
-                  </div>
-                )}
-                {dateInfo && (
-                  <div
-                    className={cn(
-                      "px-1.5 py-0.5 rounded text-xs font-medium whitespace-nowrap",
-                      dateInfo.color,
-                    )}
-                  >
-                    {dateInfo.text}
-                  </div>
-                )}
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <div
-                      className={cn(
-                        "px-1.5 py-0.5 rounded text-xs font-semibold cursor-help",
-                        getUrgencyColor(task.urgency),
-                      )}
-                    >
-                      {task.urgency.toFixed(1)}
-                    </div>
-                  </TooltipTrigger>
-                  <TooltipContent className="max-w-xs w-56">
-                    <div className="text-xs space-y-1.5">
-                      <div className="text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wide pb-0.5">
-                        Urgency breakdown
-                      </div>
-                      {urgencyExplanation.explanation
-                        .map((line) => {
-                          const match = line.match(
-                            /^(.+):\s*([+-]?\d+\.?\d*)$/,
-                          );
-                          if (!match) return null;
-                          const value = parseFloat(match[2]);
-                          if (value === 0) return null;
-                          return { label: match[1], value };
-                        })
-                        .filter(
-                          (r): r is { label: string; value: number } =>
-                            r !== null,
-                        )
-                        .map(({ label, value }) => (
-                          <div
-                            key={label}
-                            className="flex justify-between gap-4"
-                          >
-                            <span className="text-gray-500 dark:text-gray-400">
-                              {label}
-                            </span>
-                            <span className="font-medium tabular-nums text-gray-900 dark:text-gray-100">
-                              {value >= 0 ? "+" : ""}
-                              {value.toFixed(2)}
-                            </span>
-                          </div>
-                        ))}
-                      <div className="flex justify-between gap-4 pt-1 border-t border-gray-100 dark:border-gray-700">
-                        <span className="font-medium text-gray-700 dark:text-gray-300">
-                          Total
-                        </span>
-                        <span className="font-semibold tabular-nums text-gray-900 dark:text-gray-100">
-                          {urgencyExplanation.score.toFixed(1)}
-                        </span>
-                      </div>
-                    </div>
-                  </TooltipContent>
-                </Tooltip>
+              <div className="absolute right-0 top-0 sm:hidden">
+                {renderUrgencyScore()}
               </div>
             )}
+            {showUrgency &&
+              renderUrgencyBadges("hidden sm:flex ml-2 max-w-1/2")}
           </div>
         </div>
       </div>
