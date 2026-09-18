@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { FocusSection } from "@/components/focus-section";
-import { AddItemModal } from "@/components/add-item-modal";
+import { AddTaskModal } from "@/components/add-item-modal";
 import { SmartTaskInput } from "@/components/smart-task-input";
 import { ContextsSection } from "@/components/contexts-section";
 import { useDashboardData } from "@/lib/hooks/use-dashboard-data";
@@ -202,7 +202,7 @@ export function DashboardClient() {
         />
       </div>
       <div className="flex justify-center mt-2 pb-16">
-        <AddItemModal contexts={contexts} tags={tags} onDataChange={mutate} />
+        <AddTaskModal contexts={contexts} tags={tags} onDataChange={mutate} />
       </div>
     </>
   );

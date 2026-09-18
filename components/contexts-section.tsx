@@ -8,7 +8,7 @@ import type { Context, Task, Tag } from "@/lib/data";
 import { ContextGroup } from "@/components/context-group";
 import { ContextGroupContainer } from "@/components/context-group-container";
 import { ArchivedContexts } from "@/components/archived-contexts";
-import { AddItemModal } from "@/components/add-item-modal";
+import { AddContextModal } from "@/components/add-item-modal";
 
 interface ContextsSectionProps {
   contexts: Context[];
@@ -139,11 +139,8 @@ export function ContextsSection({
         <div className="flex items-center gap-2">
           <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">Contexts</h2>
           {!readOnly && (
-            <AddItemModal
+            <AddContextModal
               contexts={contexts}
-              tags={tags}
-              addButtonSize="icon"
-              defaultTab="context"
               onDataChange={onDataChange}
             />
           )}

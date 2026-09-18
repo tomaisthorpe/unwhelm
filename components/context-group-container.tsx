@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { AddItemModal, TaskModal } from "./add-item-modal";
+import { AddTaskModal, ContextModal } from "./add-item-modal";
 import { ContextGroup } from "./context-group";
 import type { Context, Task, Tag } from "@/lib/data";
 
@@ -44,7 +44,7 @@ export function ContextGroupContainer({
         onDataChange={onDataChange}
         onEditContext={context.isInbox ? undefined : () => setIsEditContextOpen(true)}
         addTaskNode={
-          <AddItemModal
+          <AddTaskModal
             contexts={allContexts}
             tags={tags}
             defaultContextId={context.id}
@@ -53,9 +53,8 @@ export function ContextGroupContainer({
           />
         }
       />
-      <TaskModal
+      <ContextModal
         contexts={allContexts}
-        tags={tags}
         contextToEdit={context}
         isOpen={isEditContextOpen}
         onClose={() => setIsEditContextOpen(false)}

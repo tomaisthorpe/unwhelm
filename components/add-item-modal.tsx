@@ -37,15 +37,12 @@ import {
 } from "@/lib/server-actions";
 import { useDashboardActions } from "@/lib/hooks/use-dashboard-actions";
 import {
-  CheckSquare,
-  Home,
   Plus,
   Trash2,
   AlertTriangle,
   AlertCircle,
   Archive,
   Calendar,
-  Tag as TagIcon,
 } from "lucide-react";
 import type { Task, Context, Tag } from "@/lib/data";
 import { contextIconOptions } from "@/lib/context-icons";
@@ -75,7 +72,7 @@ const tagSchema = z.object({
 type ContextFormData = z.infer<typeof contextSchema>;
 type TagFormData = z.infer<typeof tagSchema>;
 
-interface TaskModalProps {
+interface ItemModalProps {
   contexts: Array<{
     id: string;
     name: string;
@@ -91,7 +88,8 @@ interface TaskModalProps {
   defaultContextId?: string;
   contextToEdit?: Context;
   tagToEdit?: Tag;
-  defaultTab?: "task" | "context" | "tag";
+  initialTagName?: string;
+  mode: "task" | "context" | "tag";
   onDataChange?: () => void;
 }
 
@@ -110,7 +108,7 @@ const contextColors = [
   { value: "bg-indigo-500", label: "Indigo", color: "bg-indigo-500" },
 ];
 
-export function TaskModal({
+function ItemModal({
   contexts,
   tags = [],
   task,
@@ -119,12 +117,11 @@ export function TaskModal({
   defaultContextId,
   contextToEdit,
   tagToEdit,
-  defaultTab = "task",
+  initialTagName,
+  mode,
   onDataChange,
-}: TaskModalProps) {
-  const [activeTab, setActiveTab] = useState<"task" | "context" | "tag">(
-    defaultTab,
-  );
+}: ItemModalProps) {
+  const activeTab = mode;
   const [isLoading, setIsLoading] = useState(false);
   const [existingTags, setExistingTags] = useState<string[]>([]);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
@@ -134,6 +131,8 @@ export function TaskModal({
   const [error, setError] = useState<string | null>(null);
   const [completeYesterdayTooltipOpen, setCompleteYesterdayTooltipOpen] =
     useState(false);
+  const [tagEditorName, setTagEditorName] = useState<string | null>(null);
+  const [taskFormSubmitted, setTaskFormSubmitted] = useState(false);
   const { createTask, updateTask, deleteTask, createContext, updateContext } =
     useDashboardActions();
 
@@ -184,12 +183,15 @@ export function TaskModal({
     }
   }, [isOpen]);
 
-  // Reset forms when modal opens/closes or task changes
+  // Reset only the form owned by this modal when it opens.
   useEffect(() => {
-    if (isOpen) {
-      setError(null); // Clear errors when modal opens
+    if (!isOpen) return;
+
+    setError(null);
+    setTaskFormSubmitted(false);
+
+    if (mode === "task") {
       if (task) {
-        // Editing mode - populate form with task data
         const formData = {
           title: task.title,
           priority: task.priority,
@@ -208,27 +210,7 @@ export function TaskModal({
         };
         setTaskFormData(formData);
         setInitialTaskFormData(formData);
-        setActiveTab("task");
-      } else if (contextToEdit) {
-        // Editing a context - populate context form
-        contextForm.reset({
-          name: contextToEdit.name,
-          description: contextToEdit.description || "",
-          icon: contextToEdit.icon,
-          color: contextToEdit.color,
-          coefficient: contextToEdit.coefficient || 0,
-        });
-        setActiveTab("context");
-      } else if (tagToEdit) {
-        // Editing a tag - populate tag form
-        tagForm.reset({
-          name: tagToEdit.name,
-          coefficient: tagToEdit.coefficient || 0,
-          color: tagToEdit.color,
-        });
-        setActiveTab("tag");
       } else {
-        // Adding mode - reset to defaults
         const currentFallbackContextId =
           defaultContextId || inboxContext?.id || "";
         const defaultFormData = {
@@ -247,7 +229,20 @@ export function TaskModal({
         };
         setTaskFormData(defaultFormData);
         setInitialTaskFormData(defaultFormData);
-        // Also reset context form to defaults
+      }
+      return;
+    }
+
+    if (mode === "context") {
+      if (contextToEdit) {
+        contextForm.reset({
+          name: contextToEdit.name,
+          description: contextToEdit.description || "",
+          icon: contextToEdit.icon,
+          color: contextToEdit.color,
+          coefficient: contextToEdit.coefficient || 0,
+        });
+      } else {
         contextForm.reset({
           name: "",
           description: "",
@@ -255,16 +250,24 @@ export function TaskModal({
           color: "bg-blue-500",
           coefficient: 0,
         });
-        setActiveTab(defaultTab);
       }
+      return;
     }
+
+    tagForm.reset({
+      name: tagToEdit?.name ?? initialTagName ?? "",
+      coefficient: tagToEdit?.coefficient ?? 0,
+      color: tagToEdit?.color ?? "bg-blue-500",
+    });
   }, [
     isOpen,
+    mode,
     task?.id,
     defaultContextId,
     contextToEdit?.id,
     inboxContext?.id,
     tagToEdit?.id,
+    initialTagName,
   ]);
 
   // Check if the task form has unsaved changes
@@ -317,32 +320,12 @@ export function TaskModal({
   };
 
   const handleTagEdit = (tagName: string) => {
-    // Find the tag in the tags array
-    const existingTag = tags.find(
-      (tag) => tag.name.toLowerCase() === tagName.toLowerCase(),
-    );
-
-    if (existingTag) {
-      // Edit existing tag
-      tagForm.reset({
-        name: existingTag.name,
-        coefficient: existingTag.coefficient,
-        color: existingTag.color,
-      });
-      setActiveTab("tag");
-    } else {
-      // Create new tag with this name
-      tagForm.reset({
-        name: tagName,
-        coefficient: 0,
-        color: "bg-blue-500",
-      });
-      setActiveTab("tag");
-    }
+    setTagEditorName(tagName);
   };
 
   const onSubmitTask = async (e: React.FormEvent) => {
     e.preventDefault();
+    setTaskFormSubmitted(true);
 
     // Basic validation
     if (!taskFormData.title.trim()) return;
@@ -438,8 +421,7 @@ export function TaskModal({
       tag.name.toLowerCase() === tagForm.watch("name").toLowerCase(),
   );
   const isEditingTagForm =
-    isEditingTag ||
-    (activeTab === "tag" && (isEditing || selectedTag !== undefined));
+    isEditingTag || initialTagName !== undefined || selectedTag !== undefined;
 
   const onSubmitTag = async (data: TagFormData) => {
     setIsLoading(true);
@@ -459,6 +441,7 @@ export function TaskModal({
 
       try {
         await updateTagAction(formData);
+        onDataChange?.();
         tagForm.reset();
         onClose();
       } catch (error) {
@@ -477,6 +460,7 @@ export function TaskModal({
 
       try {
         await createTagAction(formData);
+        onDataChange?.();
         tagForm.reset();
         onClose();
       } catch (error) {
@@ -552,6 +536,8 @@ export function TaskModal({
   // Validation errors for TaskForm
   const getTaskFormErrors = () => {
     const errors: Partial<Record<keyof TaskFormData, string>> = {};
+    if (!taskFormSubmitted) return errors;
+
     if (!taskFormData.title.trim()) {
       errors.title = "Title is required";
     }
@@ -563,26 +549,31 @@ export function TaskModal({
   };
 
   return (
-    <Dialog
-      open={isOpen}
-      onOpenChange={(open) => {
-        if (!open) {
-          handleClose();
-        }
-      }}
-      modal={true}
-    >
+    <>
+      <Dialog
+        open={isOpen}
+        onOpenChange={(open) => {
+          if (!open) {
+            handleClose();
+          }
+        }}
+        modal={true}
+      >
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto bg-white dark:bg-gray-900 shadow-xl rounded-2xl border-0">
         <DialogHeader>
           <div className="flex items-center justify-between">
             <DialogTitle>
-              {isEditingTagForm
-                ? "Edit Tag"
-                : isEditing
-                ? "Edit Task"
-                : isEditingContext
-                  ? "Edit Context"
-                  : "Add New Item"}
+              {mode === "task"
+                ? isEditing
+                  ? "Edit Task"
+                  : "Add Task"
+                : mode === "context"
+                  ? isEditingContext
+                    ? "Edit Context"
+                    : "Add Context"
+                  : isEditingTagForm
+                    ? "Edit Tag"
+                    : "Add Tag"}
             </DialogTitle>
 
             {/* Quick Actions in Header - Only for editing tasks */}
@@ -624,57 +615,6 @@ export function TaskModal({
             <AlertCircle className="w-4 h-4 flex-shrink-0" />
             <span className="text-sm">{error}</span>
           </div>
-        )}
-
-        {/* Tab Navigation - Only show when creating new items (not editing) */}
-        {!isEditing && !isEditingContext && !isEditingTag ? (
-          <div className="flex gap-1 bg-gray-100 dark:bg-gray-800 rounded-lg p-1 mt-2 mb-6 sm:gap-2">
-            <button
-              onClick={() => setActiveTab("task")}
-              className={`flex min-w-0 flex-1 items-center justify-center gap-1.5 px-2 py-2 text-sm font-medium rounded-lg transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 sm:px-4
-                ${
-                  activeTab === "task"
-                    ? "bg-blue-50 dark:bg-blue-950/50 text-blue-700 dark:text-blue-300 shadow-sm"
-                    : "bg-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
-                }
-              `}
-              type="button"
-            >
-              <CheckSquare className="w-4 h-4 shrink-0" />
-              <span>Task</span>
-            </button>
-            <button
-              onClick={() => setActiveTab("context")}
-              className={`flex min-w-0 flex-1 items-center justify-center gap-1.5 px-2 py-2 text-sm font-medium rounded-lg transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 sm:px-4
-                ${
-                  activeTab === "context"
-                    ? "bg-blue-50 dark:bg-blue-950/50 text-blue-700 dark:text-blue-300 shadow-sm"
-                    : "bg-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
-                }
-              `}
-              type="button"
-            >
-              <Home className="w-4 h-4 shrink-0" />
-              <span>Context</span>
-            </button>
-            <button
-              onClick={() => setActiveTab("tag")}
-              className={`flex min-w-0 flex-1 items-center justify-center gap-1.5 px-2 py-2 text-sm font-medium rounded-lg transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 sm:px-4
-                ${
-                  activeTab === "tag"
-                    ? "bg-blue-50 dark:bg-blue-950/50 text-blue-700 dark:text-blue-300 shadow-sm"
-                    : "bg-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
-                }
-              `}
-              type="button"
-            >
-              <TagIcon className="w-4 h-4 shrink-0" />
-              <span>Tag</span>
-            </button>
-          </div>
-        ) : (
-          // Add spacing when tabs are hidden (editing mode)
-          <div className="mt-2" />
         )}
 
         {/* Task Form */}
@@ -959,6 +899,7 @@ export function TaskModal({
                         setIsLoading(true);
                         try {
                           await deleteTagAction(selectedTag.id);
+                          onDataChange?.();
                           tagForm.reset();
                           onClose();
                         } catch (error) {
@@ -1121,48 +1062,133 @@ export function TaskModal({
           </div>
         </DialogContent>
       </Dialog>
-    </Dialog>
+      </Dialog>
+
+      {mode === "task" && tagEditorName && (
+        <TagModal
+          tags={tags}
+          tagToEdit={tags.find(
+            (tag) =>
+              tag.name.toLowerCase() === tagEditorName.toLowerCase(),
+          )}
+          initialTagName={tagEditorName}
+          isOpen
+          onClose={() => {
+            setTagEditorName(null);
+            getExistingTags().then(setExistingTags);
+          }}
+          onDataChange={onDataChange}
+        />
+      )}
+    </>
   );
 }
 
-// Legacy component for backward compatibility and add button
-export function AddItemModal({
+type ModalContext = ItemModalProps["contexts"][number];
+
+export function TaskModal({
+  contexts,
+  tags = [],
+  task,
+  isOpen,
+  onClose,
+  defaultContextId,
+  onDataChange,
+}: {
+  contexts: ModalContext[];
+  tags?: Tag[];
+  task?: Task;
+  isOpen: boolean;
+  onClose: () => void;
+  defaultContextId?: string;
+  onDataChange?: () => void;
+}) {
+  return (
+    <ItemModal
+      mode="task"
+      contexts={contexts}
+      tags={tags}
+      task={task}
+      isOpen={isOpen}
+      onClose={onClose}
+      defaultContextId={defaultContextId}
+      onDataChange={onDataChange}
+    />
+  );
+}
+
+export function ContextModal({
+  contexts,
+  contextToEdit,
+  isOpen,
+  onClose,
+  onDataChange,
+}: {
+  contexts: ModalContext[];
+  contextToEdit?: Context;
+  isOpen: boolean;
+  onClose: () => void;
+  onDataChange?: () => void;
+}) {
+  return (
+    <ItemModal
+      mode="context"
+      contexts={contexts}
+      contextToEdit={contextToEdit}
+      isOpen={isOpen}
+      onClose={onClose}
+      onDataChange={onDataChange}
+    />
+  );
+}
+
+export function TagModal({
+  tags = [],
+  tagToEdit,
+  initialTagName,
+  isOpen,
+  onClose,
+  onDataChange,
+}: {
+  tags?: Tag[];
+  tagToEdit?: Tag;
+  initialTagName?: string;
+  isOpen: boolean;
+  onClose: () => void;
+  onDataChange?: () => void;
+}) {
+  return (
+    <ItemModal
+      mode="tag"
+      contexts={[]}
+      tags={tags}
+      tagToEdit={tagToEdit}
+      initialTagName={initialTagName}
+      isOpen={isOpen}
+      onClose={onClose}
+      onDataChange={onDataChange}
+    />
+  );
+}
+
+export function AddTaskModal({
   contexts,
   tags = [],
   defaultContextId,
   addButtonSize = "lg",
-  defaultTab = "task",
-  buttonContent,
   onDataChange,
 }: {
-  contexts: Array<{
-    id: string;
-    name: string;
-    icon: string;
-    color: string;
-    coefficient: number;
-    isInbox: boolean;
-  }>;
+  contexts: ModalContext[];
   tags?: Tag[];
   defaultContextId?: string;
-  addButtonSize?: "sm" | "lg" | "icon";
-  defaultTab?: "task" | "context" | "tag";
-  buttonContent?: React.ReactNode;
+  addButtonSize?: "sm" | "lg";
   onDataChange?: () => void;
 }) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
     <>
-      {addButtonSize === "icon" ? (
-        <button
-          onClick={() => setIsOpen(true)}
-          className="flex items-center justify-center p-1.5 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-md transition-colors"
-          title="Add Context"
-        >
-          {buttonContent || <Plus className="w-4 h-4" />}
-        </button>
-      ) : addButtonSize === "sm" ? (
+      {addButtonSize === "sm" ? (
         <button
           onClick={() => setIsOpen(true)}
           className="flex items-center p-1.5 text-xs bg-white/20 hover:bg-white/30 rounded-md transition-colors sm:space-x-2 sm:px-2 sm:py-1"
@@ -1185,7 +1211,35 @@ export function AddItemModal({
         isOpen={isOpen}
         onClose={() => setIsOpen(false)}
         defaultContextId={defaultContextId}
-        defaultTab={defaultTab}
+        onDataChange={onDataChange}
+      />
+    </>
+  );
+}
+
+export function AddContextModal({
+  contexts,
+  onDataChange,
+}: {
+  contexts: ModalContext[];
+  onDataChange?: () => void;
+}) {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <>
+      <button
+        onClick={() => setIsOpen(true)}
+        className="flex items-center justify-center p-1.5 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-md transition-colors"
+        aria-label="Add context"
+        title="Add context"
+      >
+        <Plus className="w-4 h-4" />
+      </button>
+      <ContextModal
+        contexts={contexts}
+        isOpen={isOpen}
+        onClose={() => setIsOpen(false)}
         onDataChange={onDataChange}
       />
     </>
