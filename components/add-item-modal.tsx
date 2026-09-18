@@ -433,6 +433,14 @@ export function TaskModal({
     },
   });
 
+  const selectedTag = tags.find(
+    (tag) =>
+      tag.name.toLowerCase() === tagForm.watch("name").toLowerCase(),
+  );
+  const isEditingTagForm =
+    isEditingTag ||
+    (activeTab === "tag" && (isEditing || selectedTag !== undefined));
+
   const onSubmitTag = async (data: TagFormData) => {
     setIsLoading(true);
     const formData = new FormData();
@@ -568,13 +576,13 @@ export function TaskModal({
         <DialogHeader>
           <div className="flex items-center justify-between">
             <DialogTitle>
-              {isEditing
+              {isEditingTagForm
+                ? "Edit Tag"
+                : isEditing
                 ? "Edit Task"
                 : isEditingContext
                   ? "Edit Context"
-                  : isEditingTag
-                    ? "Edit Tag"
-                    : "Add New Item"}
+                  : "Add New Item"}
             </DialogTitle>
 
             {/* Quick Actions in Header - Only for editing tasks */}
@@ -942,24 +950,15 @@ export function TaskModal({
             <div className="flex justify-end pt-4">
               <div className="flex space-x-2 ml-auto">
                 {/* Delete button for existing tags */}
-                {tags.find(
-                  (tag) =>
-                    tag.name.toLowerCase() ===
-                    tagForm.watch("name").toLowerCase(),
-                ) && (
+                {selectedTag && (
                   <Button
                     type="button"
                     variant="destructive"
                     onClick={async () => {
-                      const existingTag = tags.find(
-                        (tag) =>
-                          tag.name.toLowerCase() ===
-                          tagForm.watch("name").toLowerCase(),
-                      );
-                      if (existingTag) {
+                      if (selectedTag) {
                         setIsLoading(true);
                         try {
-                          await deleteTagAction(existingTag.id);
+                          await deleteTagAction(selectedTag.id);
                           tagForm.reset();
                           onClose();
                         } catch (error) {
@@ -985,18 +984,10 @@ export function TaskModal({
                 </Button>
                 <Button type="submit" disabled={isLoading}>
                   {isLoading
-                    ? tags.find(
-                        (tag) =>
-                          tag.name.toLowerCase() ===
-                          tagForm.watch("name").toLowerCase(),
-                      )
+                    ? isEditingTagForm
                       ? "Updating..."
                       : "Creating..."
-                    : tags.find(
-                          (tag) =>
-                            tag.name.toLowerCase() ===
-                            tagForm.watch("name").toLowerCase(),
-                        )
+                    : isEditingTagForm
                       ? "Update Tag"
                       : "Create Tag"}
                 </Button>
