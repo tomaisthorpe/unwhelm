@@ -840,7 +840,7 @@ export function TaskModal({
                   aria-label="Archive context"
                   title="Archive context"
                 >
-                  <Archive className="w-4 h-4 sm:mr-2" />
+                  <Archive className="w-4 h-4" />
                   <span className="hidden sm:inline">Archive Context</span>
                 </Button>
               )}
