@@ -17,7 +17,7 @@ import {
 import { useSession } from "next-auth/react";
 import { DarkModeToggle } from "@/components/dark-mode-toggle";
 import { ContextGroup } from "@/components/context-group";
-import { TodaySection } from "@/components/today-section";
+import { FocusSection } from "@/components/focus-section";
 import { calculateUrgency, evaluateUrgency } from "@/lib/utils";
 import type { Task, Context, Tag } from "@/lib/data";
 
@@ -398,7 +398,7 @@ export default function MarketingHome() {
               </div>
             </div>
             <div className="bg-gray-50 dark:bg-gray-950 p-4 space-y-4">
-              <TodaySection
+              <FocusSection
                 tasks={ALL_TASKS}
                 contexts={CONTEXTS}
                 tags={TAGS}

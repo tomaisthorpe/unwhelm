@@ -75,7 +75,7 @@ This codebase follows React/Next.js best practices with a server-first architect
 - `components/contexts-section.tsx` - Context section wrapper with search
 - `components/context-group.tsx` - Individual context display with health bar
 - `components/context-collapsible.tsx` - Collapsible context component
-- `components/today-section.tsx` - Today section wrapper
+- `components/focus-section.tsx` - Focus section wrapper
 - `components/pagination.tsx` - Pagination for completed tasks page
 - `components/burndown-chart.tsx` - Task completion visualization (Recharts)
 - `components/badge-permission-banner.tsx` - PWA badge permission prompt
@@ -475,6 +475,7 @@ interface BurndownDataPoint {
 ## Honeycomb MCP Usage
 
 When working with Honeycomb:
+
 - Always call `get_workspace_context` first to understand available environments and datasets
 - Use `find_columns` or `get_dataset_columns` to discover fields before running queries
 - Use human-readable time ranges (e.g., "last 2 hours", "24h") — avoid epoch timestamps

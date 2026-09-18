@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { TodaySection } from "@/components/today-section";
+import { FocusSection } from "@/components/focus-section";
 import { AddItemModal } from "@/components/add-item-modal";
 import { SmartTaskInput } from "@/components/smart-task-input";
 import { ContextsSection } from "@/components/contexts-section";
@@ -178,7 +178,7 @@ export function DashboardClient() {
         />
 
         {/* Today Section */}
-        <TodaySection
+        <FocusSection
           tasks={tasks}
           contexts={allContexts}
           tags={tags}

@@ -11,7 +11,7 @@ import {
 import type { Task, Tag } from "@/lib/data";
 import { Button } from "@/components/ui/button";
 
-interface TodaySectionProps {
+interface FocusSectionProps {
   tasks: Task[];
   contexts: Array<{
     id: string;
@@ -30,7 +30,7 @@ interface TodaySectionProps {
   hideTabs?: boolean;
 }
 
-function getTodayTasks(tasks: Task[]): Task[] {
+function getDueTasks(tasks: Task[]): Task[] {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
@@ -94,7 +94,7 @@ function getUrgentTasks(tasks: Task[]): Task[] {
     });
 }
 
-export function TodaySection({
+export function FocusSection({
   tasks,
   contexts,
   tags,
@@ -104,13 +104,13 @@ export function TodaySection({
   onDataChange,
   readOnly,
   hideTabs,
-}: TodaySectionProps) {
-  const [activeTab, setActiveTab] = useState<"urgency" | "today">("urgency");
+}: FocusSectionProps) {
+  const [activeTab, setActiveTab] = useState<"urgency" | "due">("urgency");
 
   const urgentTasks = getUrgentTasks(tasks);
-  const todayTasks = getTodayTasks(tasks);
+  const dueTasks = getDueTasks(tasks);
 
-  const tabTasks = activeTab === "urgency" ? urgentTasks : todayTasks;
+  const tabTasks = activeTab === "urgency" ? urgentTasks : dueTasks;
   const normalizedSearchQuery = searchQuery?.trim().toLowerCase() ?? "";
   const normalizedTagSearchQuery = normalizedSearchQuery.replace(/^#+/, "");
   const currentTasks = normalizedSearchQuery
@@ -133,7 +133,7 @@ export function TodaySection({
 
   const completedCount = currentTasks.filter((task) => task.completed).length;
   const overdueCount =
-    activeTab === "today"
+    activeTab === "due"
       ? currentTasks.filter((task) => {
           if (!task.dueDate || task.completed) return false;
           const today = new Date();
@@ -174,10 +174,10 @@ export function TodaySection({
                 </button>
                 <button
                   type="button"
-                  onClick={() => setActiveTab("today")}
+                  onClick={() => setActiveTab("due")}
                   className={
                     "px-3 py-1.5 text-sm rounded-md transition-colors " +
-                    (activeTab === "today"
+                    (activeTab === "due"
                       ? "bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow"
                       : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100")
                   }
@@ -190,7 +190,7 @@ export function TodaySection({
           <div className="col-start-2 row-start-1 flex items-center gap-3 md:col-start-4">
             <div className="text-sm text-gray-500 dark:text-gray-400">
               {completedCount}/{currentTasks.length} completed
-              {activeTab === "today" && overdueCount > 0 && (
+              {activeTab === "due" && overdueCount > 0 && (
                 <span className="text-red-500 ml-2">
                   ({overdueCount} overdue)
                 </span>
@@ -259,7 +259,7 @@ export function TodaySection({
             <p className="text-gray-500 dark:text-gray-400">
               {activeTab === "urgency"
                 ? "No tasks to focus on"
-                : "No tasks scheduled for today"}
+                : "No tasks due"}
             </p>
           </div>
         )}

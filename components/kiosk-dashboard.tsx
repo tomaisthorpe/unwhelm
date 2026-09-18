@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { TodaySection } from "@/components/today-section";
+import { FocusSection } from "@/components/focus-section";
 import { ContextsSection } from "@/components/contexts-section";
 import { useDashboardData } from "@/lib/hooks/use-dashboard-data";
 import type { Task } from "@/lib/data";
@@ -32,8 +32,15 @@ export function KioskDashboard() {
     () => loadCollapsedState(),
   );
 
-  const { tasks, contexts, archivedContexts, tags, isLoading, isError, mutate } =
-    useDashboardData();
+  const {
+    tasks,
+    contexts,
+    archivedContexts,
+    tags,
+    isLoading,
+    isError,
+    mutate,
+  } = useDashboardData();
 
   useEffect(() => {
     saveCollapsedState(collapsedState);
@@ -79,13 +86,15 @@ export function KioskDashboard() {
       aHabits.length === 0
         ? 100
         : Math.round(
-            (aHabits.filter((h: Task) => h.completed).length / aHabits.length) * 100,
+            (aHabits.filter((h: Task) => h.completed).length / aHabits.length) *
+              100,
           );
     const bHealth =
       bHabits.length === 0
         ? 100
         : Math.round(
-            (bHabits.filter((h: Task) => h.completed).length / bHabits.length) * 100,
+            (bHabits.filter((h: Task) => h.completed).length / bHabits.length) *
+              100,
           );
 
     if (aHealth !== bHealth) return aHealth - bHealth;
@@ -110,7 +119,7 @@ export function KioskDashboard() {
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-6 space-y-6">
-      <TodaySection
+      <FocusSection
         tasks={tasks}
         contexts={allContexts}
         tags={tags}
