@@ -837,9 +837,11 @@ export function TaskModal({
                   variant="outline-destructive"
                   onClick={() => setShowArchiveConfirm(true)}
                   disabled={isLoading}
+                  aria-label="Archive context"
+                  title="Archive context"
                 >
-                  <Archive className="w-4 h-4 mr-2" />
-                  Archive Context
+                  <Archive className="w-4 h-4 sm:mr-2" />
+                  <span className="hidden sm:inline">Archive Context</span>
                 </Button>
               )}
               <div className="flex space-x-2 ml-auto">
