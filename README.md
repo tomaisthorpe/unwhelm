@@ -40,13 +40,12 @@ For detailed setup instructions, see [installation.md](./docs/installation.md).
 **Development:**
 
 ```bash
-npm install
-npm run db:push
-npm run db:seed
-npm run dev
+docker compose up
 ```
 
-Open [http://localhost:3000](http://localhost:3000) to see the application.
+Open [http://localhost:3000](http://localhost:3000) to see the application. Source edits reload automatically. After changing dependencies, run `docker compose up --build --renew-anon-volumes`; after changing the Prisma schema, restart the app to regenerate its client.
+
+To run the production image locally, use `docker compose -f docker-compose.yml up --build`.
 
 ## Stack
 

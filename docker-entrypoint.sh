@@ -1,6 +1,11 @@
 #!/bin/sh
 set -e
 
+if [ "$NODE_ENV" = "development" ]; then
+  echo "Generating Prisma client..."
+  npx prisma generate
+fi
+
 echo "Running database migrations..."
 npx prisma migrate deploy
 

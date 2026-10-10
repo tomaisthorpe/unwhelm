@@ -37,7 +37,7 @@ Or clone the whole repo if you want to browse the code:
 3. **Start everything**
 
 ```bash
-   docker compose up
+   docker compose -f docker-compose.yml up
 ```
 
 That's it. Open http://localhost:3000 and log in with your admin credentials.
@@ -49,7 +49,7 @@ The database will be automatically migrated and your admin user created on first
 To add sample tasks and contexts for testing:
 
 ```bash
-docker compose exec -e ENABLE_DEMO_USER=true app npm run db:seed
+docker compose -f docker-compose.yml exec -e ENABLE_DEMO_USER=true app npm run db:seed
 ```
 
 This creates a demo account (demo@unwhelm.app / password123) with example data.
@@ -118,6 +118,7 @@ This creates a demo account (demo@unwhelm.app / password123) with sample context
 **With Docker:**
 
 - Change `NEXTAUTH_URL` to your domain
+- Start with `docker compose -f docker-compose.yml up` to exclude the development override
 - Generate a strong `NEXTAUTH_SECRET`: `openssl rand -base64 32`
 - Set a secure `ADMIN_PASSWORD`
 - Use a managed PostgreSQL instance (recommended) or the included db service

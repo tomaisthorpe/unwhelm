@@ -19,6 +19,10 @@ RUN apt-get update \
 COPY package.json package-lock.json* ./
 RUN --mount=type=cache,target=/root/.npm npm ci --include=optional
 
+# Development dependencies; source is bind-mounted by Compose.
+FROM deps AS development
+ENV NODE_ENV=development
+
 # Rebuild the source code only when needed
 FROM base AS builder
 WORKDIR /app
