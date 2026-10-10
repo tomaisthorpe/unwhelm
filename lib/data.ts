@@ -3,6 +3,7 @@ import { Session } from "next-auth";
 import { authOptions } from "./auth";
 import { prisma } from "./prisma";
 import { calculateUrgency, shouldHabitShowAsAvailable } from "./utils";
+import { isPlannedToday } from "./today-plan";
 
 // Type helper for tasks with context from Prisma
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -45,6 +46,7 @@ export interface Task {
   recurrenceBasis: "DUE_DATE" | "COMPLETION_DATE";
 
   nextDue: Date | null;
+  isPlannedToday?: boolean;
 }
 
 export interface Context {
@@ -72,6 +74,21 @@ export interface Tag {
   updatedAt: Date;
 }
 
+export async function getTodayPlanSettings() {
+  const session = await getAuthenticatedSession();
+  if (!session?.user?.id) {
+    return { timeZone: "Europe/London", resetHour: 4 };
+  }
+  const user = await prisma.user.findUnique({
+    where: { id: session.user.id },
+    select: { planTimeZone: true, planResetHour: true },
+  });
+  return {
+    timeZone: user?.planTimeZone ?? "Europe/London",
+    resetHour: user?.planResetHour ?? 4,
+  };
+}
+
 export async function getTasks(): Promise<Task[]> {
   const session = await getAuthenticatedSession();
 
@@ -80,6 +97,11 @@ export async function getTasks(): Promise<Task[]> {
   }
 
   try {
+    const planSettings = await prisma.user.findUnique({
+      where: { id: session.user.id },
+      select: { planTimeZone: true, planResetHour: true },
+    });
+    const now = new Date();
     // Get all user tags to build coefficient map
     const userTags = await prisma.tag.findMany({
       where: { userId: session.user.id },
@@ -125,6 +147,12 @@ export async function getTasks(): Promise<Task[]> {
           | "MAINTENANCE"
           | null,
         subtasks,
+        isPlannedToday: isPlannedToday(
+          task.plannedAt,
+          now,
+          planSettings?.planTimeZone ?? "Europe/London",
+          planSettings?.planResetHour ?? 4,
+        ),
         urgency: calculateUrgency({
           priority: task.priority as "LOW" | "MEDIUM" | "HIGH",
           dueDate: task.dueDate,

@@ -105,12 +105,34 @@ export function FocusSection({
   readOnly,
   hideTabs,
 }: FocusSectionProps) {
-  const [activeTab, setActiveTab] = useState<"urgency" | "due">("urgency");
+  const [activeTab, setActiveTab] = useState<"urgency" | "due" | "today">(
+    () => (tasks.some((task) => task.isPlannedToday) ? "today" : "urgency"),
+  );
 
   const urgentTasks = getUrgentTasks(tasks);
   const dueTasks = getDueTasks(tasks);
+  const plannedTasks = getUrgentTasks(
+    tasks.filter((task) => task.isPlannedToday),
+  );
+  const hasPlannedTasks = plannedTasks.length > 0;
+  const [hadPlannedTasks, setHadPlannedTasks] = useState(hasPlannedTasks);
+  if (hadPlannedTasks !== hasPlannedTasks) {
+    setHadPlannedTasks(hasPlannedTasks);
+    if (!hasPlannedTasks && activeTab === "today") {
+      setActiveTab("urgency");
+    }
+  }
+  const selectedTab =
+    activeTab === "today" && !hasPlannedTasks
+      ? "urgency"
+      : activeTab;
 
-  const tabTasks = activeTab === "urgency" ? urgentTasks : dueTasks;
+  const tabTasks =
+    selectedTab === "urgency"
+      ? urgentTasks
+      : selectedTab === "due"
+        ? dueTasks
+        : plannedTasks;
   const normalizedSearchQuery = searchQuery?.trim().toLowerCase() ?? "";
   const normalizedTagSearchQuery = normalizedSearchQuery.replace(/^#+/, "");
   const currentTasks = normalizedSearchQuery
@@ -133,7 +155,7 @@ export function FocusSection({
 
   const completedCount = currentTasks.filter((task) => task.completed).length;
   const overdueCount =
-    activeTab === "due"
+    selectedTab === "due"
       ? currentTasks.filter((task) => {
           if (!task.dueDate || task.completed) return false;
           const today = new Date();
@@ -160,12 +182,26 @@ export function FocusSection({
           {!hideTabs && (
             <div className="col-span-2 row-start-2 md:col-span-1 md:col-start-2 md:row-start-1">
               <div className="inline-flex rounded-lg bg-gray-100 dark:bg-gray-800 p-1">
+                {plannedTasks.length > 0 && (
+                  <button
+                    type="button"
+                    onClick={() => setActiveTab("today")}
+                    className={
+                      "px-3 py-1.5 text-sm rounded-md transition-colors " +
+                      (selectedTab === "today"
+                        ? "bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow"
+                        : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100")
+                    }
+                  >
+                    Today
+                  </button>
+                )}
                 <button
                   type="button"
                   onClick={() => setActiveTab("urgency")}
                   className={
                     "px-3 py-1.5 text-sm rounded-md transition-colors " +
-                    (activeTab === "urgency"
+                    (selectedTab === "urgency"
                       ? "bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow"
                       : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100")
                   }
@@ -177,7 +213,7 @@ export function FocusSection({
                   onClick={() => setActiveTab("due")}
                   className={
                     "px-3 py-1.5 text-sm rounded-md transition-colors " +
-                    (activeTab === "due"
+                    (selectedTab === "due"
                       ? "bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow"
                       : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100")
                   }
@@ -190,7 +226,7 @@ export function FocusSection({
           <div className="col-start-2 row-start-1 flex items-center gap-3 md:col-start-4">
             <div className="text-sm text-gray-500 dark:text-gray-400">
               {completedCount}/{currentTasks.length} completed
-              {activeTab === "due" && overdueCount > 0 && (
+              {selectedTab === "due" && overdueCount > 0 && (
                 <span className="text-red-500 ml-2">
                   ({overdueCount} overdue)
                 </span>
@@ -257,9 +293,11 @@ export function FocusSection({
           <div className="text-center py-8">
             <Calendar className="w-12 h-12 text-gray-300 dark:text-gray-600 mx-auto mb-3" />
             <p className="text-gray-500 dark:text-gray-400">
-              {activeTab === "urgency"
+              {selectedTab === "urgency"
                 ? "No tasks to focus on"
-                : "No tasks due"}
+                : selectedTab === "due"
+                  ? "No tasks due"
+                  : "Nothing planned for today"}
             </p>
           </div>
         )}

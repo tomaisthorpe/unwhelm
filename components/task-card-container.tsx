@@ -1,7 +1,8 @@
 "use client";
 
-import { useTransition } from "react";
+import { useState, useTransition } from "react";
 import { useDashboardActions } from "@/lib/hooks/use-dashboard-actions";
+import { setTaskPlannedTodayAction } from "@/lib/server-actions";
 import { TaskCard } from "./task-card";
 import type { Task, Tag } from "@/lib/data";
 
@@ -36,12 +37,28 @@ export function TaskCardContainer({
   onDataChange,
 }: TaskCardContainerProps) {
   const [isPending, startTransition] = useTransition();
+  const [isPlanPending, startPlanTransition] = useTransition();
+  const [planError, setPlanError] = useState<string | null>(null);
   const { toggleTask } = useDashboardActions();
 
   const handleToggle = () => {
     startTransition(async () => {
       await toggleTask(task.id);
       onDataChange?.();
+    });
+  };
+
+  const handlePlanToggle = () => {
+    setPlanError(null);
+    startPlanTransition(async () => {
+      try {
+        await setTaskPlannedTodayAction(task.id, !task.isPlannedToday);
+        await onDataChange?.();
+      } catch (error) {
+        setPlanError(
+          error instanceof Error ? error.message : "Could not update Today",
+        );
+      }
     });
   };
 
@@ -58,6 +75,9 @@ export function TaskCardContainer({
       onDataChange={onDataChange}
       onToggle={handleToggle}
       isTogglePending={isPending}
+      onPlanToggle={handlePlanToggle}
+      isPlanPending={isPlanPending}
+      planError={planError}
     />
   );
 }

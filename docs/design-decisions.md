@@ -50,11 +50,19 @@ This document captures the key design decisions made during Todone's development
 
 **Impact**: Health bars show habit completion ratio, giving a sense of life balance.
 
-### "Today" Section Priority
+### Due Tasks in Focus
 
-**Decision**: Dedicated "Today" section at the top, pulling tasks from all contexts.
+**Decision**: The Due tab in Focus pulls tasks due today or overdue from all contexts.
 
-**Reasoning**: Due dates create genuine urgency that transcends context boundaries. Today's tasks need immediate visibility regardless of context.
+**Reasoning**: Hard deadlines create genuine urgency that transcends context boundaries.
+
+### Temporary Today Plan
+
+**Decision**: Let users add tasks to a Today plan without changing their due dates or urgency scores. Show the Today tab first when it contains tasks; otherwise hide it. Open Today on page load when the plan has tasks, but adding a task during a visit does not switch tabs. Keep planned tasks visible in their other lists with a Today indicator.
+
+**Reasoning**: Due dates represent hard deadlines. Planning a day is an intention that can change without creating overdue tasks or missed-plan warnings.
+
+**Reset**: The user chooses a timezone and reset hour in account settings. A task belongs to the planning day in which it was added; after the next reset it no longer appears in Today. Completed tasks can remain in the plan until reset. Changing the reset setting can change which existing selections count as current.
 
 ## Visual Design Decisions
 
@@ -128,4 +136,3 @@ Examples:
 **Rejected**: Multiple priority dimensions (importance, urgency, effort, etc.).
 
 **Reasoning**: Single urgency score is simpler and can incorporate multiple factors mathematically.
-

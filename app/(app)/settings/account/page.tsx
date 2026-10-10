@@ -9,6 +9,7 @@ import {
   getUserUsageCounts,
   getUserApiKey,
   getTaskReminderPreferences,
+  getTodayPlanSettings,
 } from "@/lib/data";
 import { FEATURE_LIMITS } from "@/lib/feature-limits";
 
@@ -21,10 +22,11 @@ export default async function AccountSettingsPage() {
   const session = (await getServerSession(authOptions)) as Session;
 
   // Get user's current usage counts and API key
-  const [usageCounts, apiKey, taskReminderPreferences] = await Promise.all([
+  const [usageCounts, apiKey, taskReminderPreferences, todayPlanSettings] = await Promise.all([
     getUserUsageCounts(),
     getUserApiKey(),
     getTaskReminderPreferences(),
+    getTodayPlanSettings(),
   ]);
 
   return (
@@ -46,6 +48,7 @@ export default async function AccountSettingsPage() {
           }}
           apiKey={apiKey}
           taskReminderPreferences={taskReminderPreferences}
+          todayPlanSettings={todayPlanSettings}
         />
     </div>
   );

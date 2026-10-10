@@ -11,6 +11,8 @@ import {
   CheckSquare,
   Circle,
   CheckCircle2,
+  CalendarPlus,
+  CalendarCheck2,
 } from "lucide-react";
 import {
   formatDateForTask,
@@ -53,6 +55,9 @@ interface TaskCardProps {
   readOnly?: boolean;
   onToggle?: () => void;
   isTogglePending?: boolean;
+  onPlanToggle?: () => void;
+  isPlanPending?: boolean;
+  planError?: string | null;
 }
 
 const renderHabitIcon = (iconType: string, className: string) => {
@@ -154,6 +159,9 @@ export function TaskCard({
   readOnly,
   onToggle,
   isTogglePending,
+  onPlanToggle,
+  isPlanPending,
+  planError,
 }: TaskCardProps) {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const dateInfo = formatDateForTask(task.dueDate);
@@ -318,6 +326,44 @@ export function TaskCard({
                   ) : (
                     <MarkdownText text={task.title} />
                   )}
+                  {(task.isPlannedToday || (!readOnly && !effectiveCompleted)) &&
+                    (onPlanToggle ? (
+                      <button
+                        type="button"
+                        onClick={(event) => {
+                          event.stopPropagation();
+                          onPlanToggle();
+                        }}
+                        disabled={isPlanPending}
+                        aria-label={
+                          task.isPlannedToday
+                            ? `Remove ${task.title} from Today`
+                            : `Add ${task.title} to Today`
+                        }
+                        title={
+                          task.isPlannedToday
+                            ? "Remove from Today"
+                            : "Add to Today"
+                        }
+                        className={cn(
+                          "inline-flex align-middle items-center gap-1 rounded p-1 ml-1 text-xs font-medium transition-colors disabled:opacity-50",
+                          task.isPlannedToday
+                            ? "bg-blue-100 text-blue-700 dark:bg-blue-950/50 dark:text-blue-300"
+                            : "text-gray-500 hover:bg-gray-100 hover:text-blue-700 dark:text-gray-400 dark:hover:bg-gray-800",
+                        )}
+                      >
+                        {task.isPlannedToday ? (
+                          <CalendarCheck2 className="w-3.5 h-3.5" />
+                        ) : (
+                          <CalendarPlus className="w-3.5 h-3.5" />
+                        )}
+                        {task.isPlannedToday && "Today"}
+                      </button>
+                    ) : task.isPlannedToday ? (
+                      <span className="inline-flex align-middle items-center gap-1 rounded p-1 ml-1 text-xs font-medium bg-blue-100 text-blue-700 dark:bg-blue-950/50 dark:text-blue-300">
+                        <CalendarCheck2 className="w-3.5 h-3.5" /> Today
+                      </span>
+                    ) : null)}
                 </h3>
 
                 {task.type === "RECURRING" && (
@@ -346,6 +392,11 @@ export function TaskCard({
                   </div>
                 )}
               </div>
+              {planError && (
+                <p role="alert" className="text-xs text-red-600">
+                  {planError}
+                </p>
+              )}
 
               {(showUrgency ||
                 (showContext && taskContext) ||

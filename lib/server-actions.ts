@@ -19,6 +19,7 @@ import {
 import { revalidatePath } from "next/cache";
 import bcrypt from "bcryptjs";
 import { FEATURE_LIMITS, FEATURE_LIMIT_ERRORS } from "./feature-limits";
+import { isPlannedToday } from "./today-plan";
 
 // Get authenticated user or redirect
 async function getAuthenticatedUser() {
@@ -105,6 +106,65 @@ export async function toggleTaskAction(taskId: string) {
 
   revalidatePath("/tasks");
   revalidatePath("/tasks/completed");
+}
+
+export async function setTaskPlannedTodayAction(
+  taskId: string,
+  planned: boolean,
+) {
+  const userId = await getAuthenticatedUser();
+  const [task, user] = await Promise.all([
+    prisma.task.findFirst({ where: { id: taskId, userId } }),
+    prisma.user.findUnique({
+      where: { id: userId },
+      select: { planTimeZone: true, planResetHour: true },
+    }),
+  ]);
+  if (!task || !user) throw new Error("Task not found");
+
+  const now = new Date();
+  const active = isPlannedToday(
+    task.plannedAt,
+    now,
+    user.planTimeZone,
+    user.planResetHour,
+  );
+  if (planned && task.completed && !shouldHabitShowAsAvailable(task)) {
+    throw new Error("Completed tasks cannot be added to Today");
+  }
+  if (active !== planned) {
+    await prisma.task.update({
+      where: { id: taskId },
+      data: { plannedAt: planned ? now : null },
+    });
+  }
+  revalidatePath("/tasks");
+}
+
+export async function updateTodayPlanSettingsAction(settings: {
+  timeZone: string;
+  resetHour: number;
+}) {
+  const userId = await getAuthenticatedUser();
+  const timeZone = settings.timeZone.trim();
+  if (
+    !Number.isInteger(settings.resetHour) ||
+    settings.resetHour < 0 ||
+    settings.resetHour > 23
+  ) {
+    throw new Error("Reset hour must be between 0 and 23");
+  }
+  try {
+    new Intl.DateTimeFormat("en-GB", { timeZone }).format();
+  } catch {
+    throw new Error("Enter a valid IANA timezone, such as Europe/London");
+  }
+  await prisma.user.update({
+    where: { id: userId },
+    data: { planTimeZone: timeZone, planResetHour: settings.resetHour },
+  });
+  revalidatePath("/settings/account");
+  revalidatePath("/tasks");
 }
 
 // Server action to mark task as completed yesterday

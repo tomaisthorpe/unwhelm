@@ -54,6 +54,8 @@ model User {
   taskReminderTimeZone   String    @default("Europe/London")
   taskReminderHour       Int       @default(9)
   taskReminderLastSentAt DateTime?
+  planTimeZone           String    @default("Europe/London")
+  planResetHour          Int       @default(4)
   createdAt              DateTime  @default(now())
   updatedAt              DateTime  @updatedAt
 
@@ -146,6 +148,7 @@ model Task {
   tags        String[]  @default([]) // Keep for backward compatibility during migration
   contextId   String
   dueDate     DateTime?
+  plannedAt   DateTime?
   waitDays    Int? // Number of days before due date to start increasing urgency
   urgency     Float     @default(5.0)
   completed   Boolean   @default(false)

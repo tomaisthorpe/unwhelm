@@ -12,6 +12,7 @@ import {
   revokeApiKeyAction,
   updateTaskReminderPreferencesAction,
   sendTestTaskReminderAction,
+  updateTodayPlanSettingsAction,
 } from "@/lib/server-actions";
 import { Eye, EyeOff, Copy, Check, RefreshCw, Trash2 } from "lucide-react";
 import { SectionPanel } from "@/components/ui/section-panel";
@@ -37,6 +38,7 @@ interface AccountSettingsFormProps {
     timeZone: string;
     hour: number;
   };
+  todayPlanSettings: { timeZone: string; resetHour: number };
 }
 
 export function AccountSettingsForm({
@@ -45,6 +47,7 @@ export function AccountSettingsForm({
   limits,
   apiKey: initialApiKey,
   taskReminderPreferences,
+  todayPlanSettings,
 }: AccountSettingsFormProps) {
   const router = useRouter();
   const [name, setName] = useState(user.name || "");
@@ -67,6 +70,35 @@ export function AccountSettingsForm({
   const [isReminderPending, startReminderTransition] = useTransition();
   const [isReminderTestPending, startReminderTestTransition] = useTransition();
   const [reminderMessage, setReminderMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
+  const [planTimeZone, setPlanTimeZone] = useState(todayPlanSettings.timeZone);
+  const [planResetHour, setPlanResetHour] = useState(todayPlanSettings.resetHour);
+  const [isPlanPending, startPlanTransition] = useTransition();
+  const [planMessage, setPlanMessage] = useState<{
+    type: "success" | "error";
+    text: string;
+  } | null>(null);
+
+  const handlePlanSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
+    setPlanMessage(null);
+    startPlanTransition(async () => {
+      try {
+        await updateTodayPlanSettingsAction({
+          timeZone: planTimeZone,
+          resetHour: planResetHour,
+        });
+        setPlanMessage({ type: "success", text: "Today plan settings saved" });
+      } catch (error) {
+        setPlanMessage({
+          type: "error",
+          text:
+            error instanceof Error
+              ? error.message
+              : "Failed to save Today plan settings",
+        });
+      }
+    });
+  };
 
   const handleReminderSubmit = (event: React.FormEvent) => {
     event.preventDefault();
@@ -271,6 +303,55 @@ export function AccountSettingsForm({
             disabled={isPending || name.trim() === user.name || name.trim().length === 0}
           >
             {isPending ? "Saving..." : "Save Changes"}
+          </Button>
+        </form>
+      </SectionPanel>
+
+      <SectionPanel
+        title="Today plan"
+        description="Today clears at your reset time. Tasks stay visible in Urgency, Due, and their contexts; unfinished plans never become overdue."
+      >
+        <form onSubmit={handlePlanSubmit} className="space-y-4">
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div>
+              <Label htmlFor="planTimeZone">Timezone</Label>
+              <Input
+                id="planTimeZone"
+                value={planTimeZone}
+                onChange={(event) => setPlanTimeZone(event.target.value)}
+                placeholder="Europe/London"
+                className="mt-1"
+                disabled={isPlanPending}
+              />
+            </div>
+            <div>
+              <Label htmlFor="planResetHour">Reset hour (0–23)</Label>
+              <Input
+                id="planResetHour"
+                type="number"
+                min={0}
+                max={23}
+                value={planResetHour}
+                onChange={(event) => setPlanResetHour(Number(event.target.value))}
+                className="mt-1"
+                disabled={isPlanPending}
+              />
+            </div>
+          </div>
+          {planMessage && (
+            <p
+              role="status"
+              className={
+                planMessage.type === "error"
+                  ? "text-sm text-red-600"
+                  : "text-sm text-green-600"
+              }
+            >
+              {planMessage.text}
+            </p>
+          )}
+          <Button type="submit" disabled={isPlanPending}>
+            {isPlanPending ? "Saving..." : "Save Today settings"}
           </Button>
         </form>
       </SectionPanel>

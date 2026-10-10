@@ -1,0 +1,3 @@
+ALTER TABLE "users" ADD COLUMN "planTimeZone" TEXT NOT NULL DEFAULT 'Europe/London';
+ALTER TABLE "users" ADD COLUMN "planResetHour" INTEGER NOT NULL DEFAULT 4;
+ALTER TABLE "tasks" ADD COLUMN "plannedAt" TIMESTAMP(3);
