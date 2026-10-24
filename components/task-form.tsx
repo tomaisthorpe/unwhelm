@@ -540,8 +540,8 @@ export function TaskForm({
                     key={option.value}
                     className={`flex cursor-pointer gap-3 rounded-md border p-3 ${
                       data.recurrenceBasis === option.value
-                        ? "border-blue-500 bg-blue-50"
-                        : "border-gray-200 hover:bg-gray-50"
+                        ? "border-blue-500 bg-blue-50 dark:bg-blue-950/50"
+                        : "border-gray-200 hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800"
                     }`}
                   >
                     <input
@@ -556,14 +556,14 @@ export function TaskForm({
                       <span className="block text-sm font-medium">
                         {option.label}
                       </span>
-                      <span className="block text-xs text-gray-500">
+                      <span className="block text-xs text-muted-foreground">
                         {option.description}
                       </span>
                     </span>
                   </label>
                 ))}
               </div>
-              <p className="mt-2 text-xs text-gray-500">
+              <p className="mt-2 text-xs text-muted-foreground">
                 {data.recurrenceBasis === "COMPLETION_DATE"
                   ? `The next task will be due ${data.frequency || "the selected number of"} days after completion.`
                   : "The next task will follow the due-date schedule."}
