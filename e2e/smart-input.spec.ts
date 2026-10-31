@@ -3,16 +3,13 @@ import type { Task, Context } from "../lib/data";
 
 test.use({ timezoneId: "UTC" });
 
-test("smart input parses task details and saves the task", async ({ page, account }) => {
+test("smart input parses task details and saves the task", async ({ authenticatedPage: page }) => {
   const now = new Date();
   await page.clock.setFixedTime(now);
   const tomorrow = new Date(now);
   tomorrow.setUTCDate(tomorrow.getUTCDate() + 1);
 
-  await page.goto("/auth/signin");
-  await page.getByLabel("Email address", { exact: true }).fill(account.email);
-  await page.getByLabel("Password", { exact: true }).fill(account.password);
-  await page.getByRole("button", { name: "Sign in", exact: true }).click();
+  await page.goto("/tasks");
   await expect(page).toHaveURL("/tasks");
   await expect(page.getByRole("heading", { name: "Inbox", exact: true })).toBeVisible();
 

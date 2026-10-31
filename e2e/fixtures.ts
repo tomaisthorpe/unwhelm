@@ -1,11 +1,12 @@
 import { randomUUID } from "node:crypto";
-import { test as base, expect } from "@playwright/test";
+import { test as base, expect, type Page } from "@playwright/test";
 import { Pool } from "pg";
 
 export { expect } from "@playwright/test";
 
 export const test = base.extend<{
   account: { name: string; email: string; password: string };
+  authenticatedPage: Page;
 }>({
   account: async ({ request }, provideAccount) => {
     const account = {
@@ -28,5 +29,30 @@ export const test = base.extend<{
         await database.end();
       }
     }
+  },
+  authenticatedPage: async ({ page, account }, providePage) => {
+    // page.request shares cookies with this test's browser context.
+    const csrfResponse = await page.request.get("/api/auth/csrf");
+    expect(csrfResponse.ok()).toBeTruthy();
+    const { csrfToken } = await csrfResponse.json();
+    expect(csrfToken).toEqual(expect.any(String));
+
+    const response = await page.request.post("/api/auth/callback/credentials", {
+      form: {
+        email: account.email,
+        password: account.password,
+        csrfToken,
+        json: "true",
+      },
+    });
+    expect(response.ok()).toBeTruthy();
+
+    const session = await page.request.get("/api/auth/session");
+    expect(session.ok()).toBeTruthy();
+    expect(await session.json()).toMatchObject({
+      user: { name: account.name, email: account.email },
+    });
+
+    await providePage(page);
   },
 });
