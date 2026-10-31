@@ -77,15 +77,15 @@ npm run db:studio       # Open Prisma Studio
 Run the Playwright suite against a production build with a dedicated PostgreSQL test database:
 
 ```bash
-npx playwright install chromium
+npx playwright install chromium firefox
 docker compose -p unwhelm-e2e -f docker-compose.e2e.yml up -d --wait
 E2E_DATABASE_URL="postgresql://unwhelm_e2e:unwhelm_e2e@127.0.0.1:55432/unwhelm_e2e" npm run test:e2e
 docker compose -p unwhelm-e2e -f docker-compose.e2e.yml down
 ```
 
-The runner applies the database schema and starts a temporary server on port 3100. GitHub Actions runs the suite automatically. View the local report with `npx playwright show-report`.
+The runner applies the database schema and starts a temporary server on port 3100. Tests run in Chromium and Firefox locally and in GitHub Actions. Use `npm run test:e2e -- --project=firefox` (or `--project=chromium`) to run one browser. View the local report with `npx playwright show-report`.
 
-On NixOS, enter `devenv shell` and skip `npx playwright install chromium`; devenv provides compatible browsers following the [NixOS Playwright setup](https://wiki.nixos.org/wiki/Playwright). Keep the npm Playwright version aligned with the pinned nixpkgs version.
+On NixOS, enter `devenv shell` and skip `npx playwright install chromium firefox`; devenv provides compatible browsers following the [NixOS Playwright setup](https://wiki.nixos.org/wiki/Playwright). Keep the npm Playwright version aligned with the pinned nixpkgs version.
 
 ## Environment Variables
 

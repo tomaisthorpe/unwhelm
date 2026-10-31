@@ -3,7 +3,7 @@
 let
   playwrightVersion = (builtins.fromJSON (builtins.readFile ./package.json)).devDependencies."@playwright/test";
   playwrightBrowsers = pkgs.playwright-driver.browsers.override {
-    withFirefox = false;
+    withFirefox = true;
     withWebkit = false;
   };
 in

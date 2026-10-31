@@ -21,11 +21,19 @@ export default defineConfig({
     screenshot: "only-on-failure",
     video: process.env.CI ? "retain-on-failure" : "on",
     serviceWorkers: "block",
-    launchOptions: {
-      executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH,
-    },
   },
-  projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],
+  projects: [
+    {
+      name: "chromium",
+      use: {
+        ...devices["Desktop Chrome"],
+        launchOptions: {
+          executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH,
+        },
+      },
+    },
+    { name: "firefox", use: { ...devices["Desktop Firefox"] } },
+  ],
   webServer: {
     command:
       "npm run db:generate && npm run db:push && npm run build && npm run start -- --hostname 127.0.0.1 --port 3100",
