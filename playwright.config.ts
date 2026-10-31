@@ -19,6 +19,7 @@ export default defineConfig({
     baseURL,
     trace: "retain-on-failure",
     screenshot: "only-on-failure",
+    video: process.env.CI ? "retain-on-failure" : "on",
     serviceWorkers: "block",
     launchOptions: {
       executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH,
