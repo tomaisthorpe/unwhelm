@@ -435,8 +435,8 @@ export default function MarketingHome() {
               </span>
               is built to help you keep on top of your personal task lists. It
               helps you know what to do next without becoming overwhelmed, by
-              showing you only what you need to see. There&apos;s no AI
-              summaries, gamification, or shame language.
+              showing you only what you need to see. There are no AI summaries,
+              gamification, or shame language.
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {[
@@ -444,7 +444,7 @@ export default function MarketingHome() {
                   icon: TrendingUp,
                   title: "Urgency scoring that explains itself",
                   description:
-                    "Forty overdue task and no idea where to start? Every task gets a score, and hovering over it shows what's pushing it up the list.",
+                    "Forty overdue tasks and no idea where to start? Every task gets a score, and hovering over it shows what's pushing it up the list.",
                 },
                 {
                   icon: MapPin,
@@ -476,8 +476,8 @@ export default function MarketingHome() {
                           next friday
                         </span>
                       </code>
-                      ” and the context, priority and date are filled in for you.
-                      If you’d rather use a form, that works too.
+                      ” and the context, priority and date are filled in for
+                      you. If you’d rather use a form, that works too.
                     </>
                   ),
                 },
@@ -603,8 +603,9 @@ export default function MarketingHome() {
                 </p>
                 <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
                   There are four types: streak, learning, wellness, and
-                  maintenance A cleaning habit doesn&apos;t need the same energy
-                  as a daily run, so they don&apos;t get treated the same.
+                  maintenance. A cleaning habit doesn&apos;t need the same
+                  energy as a daily run, so they don&apos;t get treated the
+                  same.
                 </p>
               </div>
             </div>
@@ -628,7 +629,7 @@ export default function MarketingHome() {
                 unwhelm
               </span>{" "}
               is a small, focused app. The UI and the core concepts don&apos;t
-              shift, so the way you use it today is teh way you&apos;ll use it
+              shift, so the way you use it today is the way you&apos;ll use it
               next year.
             </p>
           </div>
