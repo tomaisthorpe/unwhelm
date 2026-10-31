@@ -16,23 +16,8 @@ env:
 
 jobs:
   tests:
+    name: Lint and unit tests
     runs-on: ubuntu-latest
-    services:
-      postgres:
-        image: postgres:15-alpine
-        env:
-          POSTGRES_USER: unwhelm_e2e
-          POSTGRES_PASSWORD: unwhelm_e2e
-          POSTGRES_DB: unwhelm_e2e
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd "pg_isready -U unwhelm_e2e -d unwhelm_e2e"
-          --health-interval 5s
-          --health-timeout 5s
-          --health-retries 10
-    env:
-      E2E_DATABASE_URL: postgresql://unwhelm_e2e:unwhelm_e2e@127.0.0.1:5432/unwhelm_e2e
 
     steps:
       - name: Checkout repository
@@ -66,6 +51,41 @@ jobs:
           disable_search: true
           fail_ci_if_error: true
 
+  e2e:
+    name: End-to-end tests
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:15-alpine
+        env:
+          POSTGRES_USER: unwhelm_e2e
+          POSTGRES_PASSWORD: unwhelm_e2e
+          POSTGRES_DB: unwhelm_e2e
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U unwhelm_e2e -d unwhelm_e2e"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      E2E_DATABASE_URL: postgresql://unwhelm_e2e:unwhelm_e2e@127.0.0.1:5432/unwhelm_e2e
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
       - name: Install Playwright Chromium
         run: npx playwright install --with-deps chromium
 
@@ -84,7 +104,7 @@ jobs:
           if-no-files-found: ignore
 
   build-and-push:
-    needs: tests
+    needs: [tests, e2e]
     runs-on: ubuntu-latest
     permissions:
       contents: read
