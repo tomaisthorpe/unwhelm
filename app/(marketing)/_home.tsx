@@ -487,8 +487,25 @@ export default function MarketingHome() {
                 {
                   icon: Languages,
                   title: "Natural language input",
-                  description:
-                    "Type “call dentist !phone p1 next friday” and the context, priority and date are filled in for you. If you’d rather use a form, that works too.",
+                  description: (
+                    <>
+                      Type “
+                      <code className="font-mono text-gray-900 dark:text-gray-100">
+                        call dentist{" "}
+                        <span className="bg-blue-500/20 rounded px-1 py-0.5 -mx-0.5 -my-0.5">
+                          !Phone
+                        </span>{" "}
+                        <span className="bg-purple-500/20 rounded px-1 py-0.5 -mx-0.5 -my-0.5">
+                          p1
+                        </span>{" "}
+                        <span className="bg-orange-500/20 rounded px-1 py-0.5 -mx-0.5 -my-0.5">
+                          next friday
+                        </span>
+                      </code>
+                      ” and the context, priority and date are filled in for you.
+                      If you’d rather use a form, that works too.
+                    </>
+                  ),
                 },
                 {
                   icon: BarChart2,
