@@ -14,7 +14,7 @@ import {
 import { FEATURE_LIMITS } from "@/lib/feature-limits";
 
 export const metadata: Metadata = {
-  title: "unwhelm / Account Settings",
+  title: "Settings",
 };
 
 export default async function AccountSettingsPage() {
@@ -33,7 +33,7 @@ export default async function AccountSettingsPage() {
     <div className="max-w-4xl mx-auto px-4 py-6">
         <PageHeader
           icon={<div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center"><UserIcon className="w-5 h-5 text-blue-600" /></div>}
-          title="Account Settings"
+          title="Settings"
           subtitle="Manage your profile information"
           backHref="/tasks"
         />

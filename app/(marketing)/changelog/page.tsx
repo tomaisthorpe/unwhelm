@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { changelog } from "@/content/changelog";
 
 export const metadata: Metadata = {
-  title: "Changelog · unwhelm",
+  title: "Changelog",
   description: "The latest updates and improvements to unwhelm.",
 };
 

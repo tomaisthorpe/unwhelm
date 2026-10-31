@@ -5,7 +5,7 @@ import { getAllUserStats, isAdmin } from "@/lib/data";
 import { PageHeader } from "@/components/ui/page-header";
 
 export const metadata: Metadata = {
-  title: "unwhelm / Admin Panel",
+  title: "Admin Panel",
 };
 
 export default async function AdminPanelPage() {

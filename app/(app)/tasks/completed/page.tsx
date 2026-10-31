@@ -16,7 +16,7 @@ interface CompletedPageProps {
 }
 
 export const metadata: Metadata = {
-  title: "unwhelm / Completed Tasks",
+  title: "Completed Tasks",
 };
 
 // Component to render a group of tasks

@@ -17,10 +17,16 @@ const inter = Inter({
   subsets: ["latin"],
 });
 
+const title = "unwhelm - a task app without the guilt";
+const description =
+  "Find what deserves your attention, organise tasks by context, and build habits without guilt over missed days. Self-hostable and built for everyday life.";
+
 export const metadata: Metadata = {
-  title: "unwhelm",
-  description:
-    "A context-based task management app with customizable urgency scoring and flexible habit tracking.",
+  title: {
+    default: title,
+    template: "%s - unwhelm",
+  },
+  description,
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
@@ -33,15 +39,13 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     siteName: "unwhelm",
-    title: "unwhelm",
-    description:
-      "A context-based task management app with customizable urgency scoring and flexible habit tracking.",
+    title,
+    description,
   },
   twitter: {
     card: "summary",
-    title: "unwhelm",
-    description:
-      "A context-based task management app with customizable urgency scoring and flexible habit tracking.",
+    title,
+    description,
   },
 };
 
