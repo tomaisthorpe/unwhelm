@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { useState } from "react";
 import {
   MapPin,
   TrendingUp,
@@ -290,6 +291,9 @@ const breakdownMax = Math.max(...breakdownRows.map((r) => Math.abs(r.value)));
 export default function MarketingHome() {
   const { status } = useSession();
   const isSignedIn = status === "authenticated";
+  const [collapsedContexts, setCollapsedContexts] = useState<
+    Record<string, boolean>
+  >({});
 
   return (
     <div className="min-h-screen bg-white dark:bg-gray-900">
@@ -418,7 +422,13 @@ export default function MarketingHome() {
                     tasks={ALL_TASKS}
                     allContexts={CONTEXTS}
                     tags={TAGS}
-                    collapsed
+                    collapsed={collapsedContexts[ctx.id] ?? true}
+                    onCollapsedChange={(collapsed) =>
+                      setCollapsedContexts((previous) => ({
+                        ...previous,
+                        [ctx.id]: collapsed,
+                      }))
+                    }
                     readOnly
                   />
                 ))}
@@ -577,7 +587,7 @@ export default function MarketingHome() {
               />
               <div>
                 <h2 className="text-3xl font-bold font-brand text-gray-900 dark:text-gray-100 mb-4">
-                  Habits that don't punish you
+                  Habits that don&apos;t punish you
                 </h2>
                 <p className="text-gray-600 dark:text-gray-400 leading-relaxed mb-6">
                   Most habit apps live or die by the streak. Miss one day and
