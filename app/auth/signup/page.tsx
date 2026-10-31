@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
+import { getSession, signIn, useSession } from "next-auth/react";
 import Link from "next/link";
 import { CheckCircle2, Eye, EyeOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -77,10 +77,23 @@ export default function SignUp() {
         setError(data.error || "An error occurred during signup");
       } else {
         setSuccess(true);
-        // Redirect to signin page after successful signup
-        setTimeout(() => {
-          router.push("/auth/signin?message=Account created successfully");
-        }, 2000);
+        try {
+          const signInResult = await signIn("credentials", {
+            email,
+            password,
+            redirect: false,
+          });
+
+          if (!signInResult?.ok || signInResult.error || !(await getSession())) {
+            setError("Your account was created, but automatic sign-in failed. Please sign in to continue.");
+            return;
+          }
+
+          router.replace("/tasks");
+          router.refresh();
+        } catch {
+          setError("Your account was created, but automatic sign-in failed. Please sign in to continue.");
+        }
       }
     } catch {
       setError("An error occurred. Please try again.");
@@ -102,9 +115,13 @@ export default function SignUp() {
             Account Created!
           </h2>
           <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
-            Your account has been created successfully. Redirecting to sign
-            in...
+            {error || "Your account has been created successfully. Signing you in..."}
           </p>
+          {error && (
+            <Button asChild className="mt-6">
+              <Link href="/auth/signin">Sign in</Link>
+            </Button>
+          )}
         </div>
       </div>
     );
