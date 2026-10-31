@@ -58,20 +58,38 @@ export function AccountSettingsForm({
   } | null>(null);
 
   // API key state
-  const [currentApiKey, setCurrentApiKey] = useState<string | null>(initialApiKey);
+  const [currentApiKey, setCurrentApiKey] = useState<string | null>(
+    initialApiKey,
+  );
   const [isApiKeyVisible, setIsApiKeyVisible] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
   const [isApiKeyPending, startApiKeyTransition] = useTransition();
-  const [apiKeyMessage, setApiKeyMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
-  const [reminderEnabled, setReminderEnabled] = useState(taskReminderPreferences.enabled);
-  const [pushoverUserKey, setPushoverUserKey] = useState(taskReminderPreferences.pushoverUserKey);
-  const [reminderTimeZone, setReminderTimeZone] = useState(taskReminderPreferences.timeZone);
-  const [reminderHour, setReminderHour] = useState(taskReminderPreferences.hour);
+  const [apiKeyMessage, setApiKeyMessage] = useState<{
+    type: "success" | "error";
+    text: string;
+  } | null>(null);
+  const [reminderEnabled, setReminderEnabled] = useState(
+    taskReminderPreferences.enabled,
+  );
+  const [pushoverUserKey, setPushoverUserKey] = useState(
+    taskReminderPreferences.pushoverUserKey,
+  );
+  const [reminderTimeZone, setReminderTimeZone] = useState(
+    taskReminderPreferences.timeZone,
+  );
+  const [reminderHour, setReminderHour] = useState(
+    taskReminderPreferences.hour,
+  );
   const [isReminderPending, startReminderTransition] = useTransition();
   const [isReminderTestPending, startReminderTestTransition] = useTransition();
-  const [reminderMessage, setReminderMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
+  const [reminderMessage, setReminderMessage] = useState<{
+    type: "success" | "error";
+    text: string;
+  } | null>(null);
   const [planTimeZone, setPlanTimeZone] = useState(todayPlanSettings.timeZone);
-  const [planResetHour, setPlanResetHour] = useState(todayPlanSettings.resetHour);
+  const [planResetHour, setPlanResetHour] = useState(
+    todayPlanSettings.resetHour,
+  );
   const [isPlanPending, startPlanTransition] = useTransition();
   const [planMessage, setPlanMessage] = useState<{
     type: "success" | "error";
@@ -111,11 +129,17 @@ export function AccountSettingsForm({
           timeZone: reminderTimeZone,
           hour: reminderHour,
         });
-        setReminderMessage({ type: "success", text: "Reminder settings saved" });
+        setReminderMessage({
+          type: "success",
+          text: "Reminder settings saved",
+        });
       } catch (error) {
         setReminderMessage({
           type: "error",
-          text: error instanceof Error ? error.message : "Failed to save reminder settings",
+          text:
+            error instanceof Error
+              ? error.message
+              : "Failed to save reminder settings",
         });
       }
     });
@@ -133,7 +157,10 @@ export function AccountSettingsForm({
       } catch (error) {
         setReminderMessage({
           type: "error",
-          text: error instanceof Error ? error.message : "Failed to send test notification",
+          text:
+            error instanceof Error
+              ? error.message
+              : "Failed to send test notification",
         });
       }
     });
@@ -146,7 +173,10 @@ export function AccountSettingsForm({
         const newKey = await generateApiKeyAction();
         setCurrentApiKey(newKey);
         setIsApiKeyVisible(true);
-        setApiKeyMessage({ type: "success", text: currentApiKey ? "API key regenerated" : "API key generated" });
+        setApiKeyMessage({
+          type: "success",
+          text: currentApiKey ? "API key regenerated" : "API key generated",
+        });
       } catch {
         setApiKeyMessage({ type: "error", text: "Failed to generate API key" });
       }
@@ -207,7 +237,8 @@ export function AccountSettingsForm({
       } catch (error) {
         setMessage({
           type: "error",
-          text: error instanceof Error ? error.message : "Failed to update name",
+          text:
+            error instanceof Error ? error.message : "Failed to update name",
         });
       }
     });
@@ -240,7 +271,10 @@ export function AccountSettingsForm({
       } catch (error) {
         setPasswordMessage({
           type: "error",
-          text: error instanceof Error ? error.message : "Failed to change password",
+          text:
+            error instanceof Error
+              ? error.message
+              : "Failed to change password",
         });
       }
     });
@@ -300,7 +334,9 @@ export function AccountSettingsForm({
           {/* Submit Button */}
           <Button
             type="submit"
-            disabled={isPending || name.trim() === user.name || name.trim().length === 0}
+            disabled={
+              isPending || name.trim() === user.name || name.trim().length === 0
+            }
           >
             {isPending ? "Saving..." : "Save Changes"}
           </Button>
@@ -332,7 +368,9 @@ export function AccountSettingsForm({
                 min={0}
                 max={23}
                 value={planResetHour}
-                onChange={(event) => setPlanResetHour(Number(event.target.value))}
+                onChange={(event) =>
+                  setPlanResetHour(Number(event.target.value))
+                }
                 className="mt-1"
                 disabled={isPlanPending}
               />
@@ -408,7 +446,9 @@ export function AccountSettingsForm({
                 min={0}
                 max={23}
                 value={reminderHour}
-                onChange={(event) => setReminderHour(Number(event.target.value))}
+                onChange={(event) =>
+                  setReminderHour(Number(event.target.value))
+                }
                 className="mt-1"
                 disabled={isReminderPending}
               />
@@ -452,25 +492,27 @@ export function AccountSettingsForm({
 
       {/* Usage & Limits Section */}
       <SectionPanel title="Usage & Limits">
-
         <div className="space-y-4">
           {/* Tasks Usage */}
           <div>
             <div className="flex items-center justify-between mb-2">
               <Label className="text-sm font-medium text-gray-700">Tasks</Label>
               <span className="text-sm text-gray-600 dark:text-gray-400">
-                {usageCounts.tasksCount.toLocaleString()} {limits.maxTasks === Infinity ? "" : `/ ${limits.maxTasks.toLocaleString()}`}
+                {usageCounts.tasksCount.toLocaleString()}{" "}
+                {limits.maxTasks === Infinity
+                  ? ""
+                  : `/ ${limits.maxTasks.toLocaleString()}`}
               </span>
             </div>
             {limits.maxTasks !== Infinity && (
               <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
                 <div
                   className={`h-2 rounded-full transition-all ${
-                    (usageCounts.tasksCount / limits.maxTasks) >= 0.9
+                    usageCounts.tasksCount / limits.maxTasks >= 0.9
                       ? "bg-red-500"
-                      : (usageCounts.tasksCount / limits.maxTasks) >= 0.7
-                      ? "bg-yellow-500"
-                      : "bg-blue-500"
+                      : usageCounts.tasksCount / limits.maxTasks >= 0.7
+                        ? "bg-yellow-500"
+                        : "bg-blue-500"
                   }`}
                   style={{
                     width: `${Math.min((usageCounts.tasksCount / limits.maxTasks) * 100, 100)}%`,
@@ -479,27 +521,34 @@ export function AccountSettingsForm({
               </div>
             )}
             {limits.maxTasks === Infinity && (
-              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Unlimited</p>
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                Unlimited
+              </p>
             )}
           </div>
 
           {/* Contexts Usage */}
           <div>
             <div className="flex items-center justify-between mb-2">
-              <Label className="text-sm font-medium text-gray-700">Contexts</Label>
+              <Label className="text-sm font-medium text-gray-700">
+                Contexts
+              </Label>
               <span className="text-sm text-gray-600 dark:text-gray-400">
-                {usageCounts.contextsCount.toLocaleString()} {limits.maxContexts === Infinity ? "" : `/ ${limits.maxContexts.toLocaleString()}`}
+                {usageCounts.contextsCount.toLocaleString()}{" "}
+                {limits.maxContexts === Infinity
+                  ? ""
+                  : `/ ${limits.maxContexts.toLocaleString()}`}
               </span>
             </div>
             {limits.maxContexts !== Infinity && (
               <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
                 <div
                   className={`h-2 rounded-full transition-all ${
-                    (usageCounts.contextsCount / limits.maxContexts) >= 0.9
+                    usageCounts.contextsCount / limits.maxContexts >= 0.9
                       ? "bg-red-500"
-                      : (usageCounts.contextsCount / limits.maxContexts) >= 0.7
-                      ? "bg-yellow-500"
-                      : "bg-blue-500"
+                      : usageCounts.contextsCount / limits.maxContexts >= 0.7
+                        ? "bg-yellow-500"
+                        : "bg-blue-500"
                   }`}
                   style={{
                     width: `${Math.min((usageCounts.contextsCount / limits.maxContexts) * 100, 100)}%`,
@@ -508,7 +557,9 @@ export function AccountSettingsForm({
               </div>
             )}
             {limits.maxContexts === Infinity && (
-              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Unlimited</p>
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                Unlimited
+              </p>
             )}
           </div>
         </div>
@@ -516,7 +567,6 @@ export function AccountSettingsForm({
 
       {/* Security Section */}
       <SectionPanel title="Security">
-
         <form onSubmit={handlePasswordChange}>
           {/* Current Password */}
           <div className="mb-4">
@@ -614,12 +664,16 @@ export function AccountSettingsForm({
       </SectionPanel>
 
       {/* API Access Section */}
-      <SectionPanel title="API Access" description="Use this key to access your tasks from external apps (e.g. an e-ink dashboard). Keep it secret — it provides read access to your task data.">
-
+      <SectionPanel
+        title="API Access"
+        description="Use this key to access your tasks from external apps. Keep it secret. it provides read access to your task data."
+      >
         {currentApiKey ? (
           <div className="space-y-3">
             <div>
-              <Label className="text-sm font-medium text-gray-700">API Key</Label>
+              <Label className="text-sm font-medium text-gray-700">
+                API Key
+              </Label>
               <div className="mt-1 flex items-center gap-2">
                 <Input
                   readOnly
@@ -633,7 +687,11 @@ export function AccountSettingsForm({
                   onClick={() => setIsApiKeyVisible((v) => !v)}
                   title={isApiKeyVisible ? "Hide key" : "Show key"}
                 >
-                  {isApiKeyVisible ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  {isApiKeyVisible ? (
+                    <EyeOff className="w-4 h-4" />
+                  ) : (
+                    <Eye className="w-4 h-4" />
+                  )}
                 </Button>
                 <Button
                   type="button"
@@ -642,11 +700,18 @@ export function AccountSettingsForm({
                   onClick={handleCopyApiKey}
                   title="Copy to clipboard"
                 >
-                  {isCopied ? <Check className="w-4 h-4 text-green-600" /> : <Copy className="w-4 h-4" />}
+                  {isCopied ? (
+                    <Check className="w-4 h-4 text-green-600" />
+                  ) : (
+                    <Copy className="w-4 h-4" />
+                  )}
                 </Button>
               </div>
               <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                Use as: <code className="bg-gray-100 dark:bg-gray-800 px-1 rounded">Authorization: Bearer &lt;key&gt;</code>
+                Use as:{" "}
+                <code className="bg-gray-100 dark:bg-gray-800 px-1 rounded">
+                  Authorization: Bearer &lt;key&gt;
+                </code>
               </p>
             </div>
 
