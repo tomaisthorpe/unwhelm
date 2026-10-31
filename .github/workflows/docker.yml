@@ -17,6 +17,22 @@ env:
 jobs:
   tests:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:15-alpine
+        env:
+          POSTGRES_USER: unwhelm_e2e
+          POSTGRES_PASSWORD: unwhelm_e2e
+          POSTGRES_DB: unwhelm_e2e
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U unwhelm_e2e -d unwhelm_e2e"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      E2E_DATABASE_URL: postgresql://unwhelm_e2e:unwhelm_e2e@127.0.0.1:5432/unwhelm_e2e
 
     steps:
       - name: Checkout repository
@@ -49,6 +65,23 @@ jobs:
           files: ./coverage/lcov.info
           disable_search: true
           fail_ci_if_error: true
+
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Run end-to-end tests
+        run: npm run test:e2e
+
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 7
+          if-no-files-found: ignore
 
   build-and-push:
     needs: tests

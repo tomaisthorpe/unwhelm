@@ -13,6 +13,7 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
+    "test:e2e": "playwright test",
     "db:push": "prisma db push",
     "db:seed": "prisma db",
     "db:migrate": "prisma migrate dev",
@@ -57,6 +58,7 @@
   },
   "devDependencies": {
     "@jest/globals": "^30.4.1",
+    "@playwright/test": "1.63.0",
     "@serwist/turbopack": "^9.5.11",
     "@tailwindcss/postcss": "^4",
     "@types/jest": "^30.0.0",

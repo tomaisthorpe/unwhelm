@@ -1,6 +1,22 @@
 { pkgs, lib, config, inputs, ... }:
 
+let
+  playwrightVersion = (builtins.fromJSON (builtins.readFile ./package.json)).devDependencies."@playwright/test";
+  playwrightBrowsers = pkgs.playwright-driver.browsers.override {
+    withFirefox = false;
+    withWebkit = false;
+  };
+in
 {
+  env = {
+    PLAYWRIGHT_BROWSERS_PATH =
+      assert lib.assertMsg (playwrightVersion == pkgs.playwright-driver.version)
+        "Playwright versions must match: package.json has ${playwrightVersion}, nixpkgs provides ${pkgs.playwright-driver.version}. Update the npm dependency and Nix pin together.";
+      "${playwrightBrowsers}";
+    PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD = "1";
+    PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS = "true";
+  };
+
   # https://devenv.sh/packages/
   packages = with pkgs; [
     nodejs_24
