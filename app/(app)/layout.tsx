@@ -1,5 +1,6 @@
 import { CheckCircle2, LogOut, Settings, ShieldCheck } from "lucide-react";
 import { DarkModeToggle } from "@/components/dark-mode-toggle";
+import { Footer } from "@/components/footer";
 import { redirect } from "next/navigation";
 import { getServerSession } from "next-auth/next";
 import { Session } from "next-auth";
@@ -23,7 +24,7 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
   const adminStatus = await isAdmin();
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
+    <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-gray-950">
       {/* Header */}
       <div className="bg-white dark:bg-gray-900 shadow-sm">
         <div className="max-w-4xl mx-auto px-4 py-4">
@@ -76,7 +77,9 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
         </div>
       </div>
 
-      {children}
+      <div className="flex-1">{children}</div>
+
+      <Footer />
 
       {/* Dark mode toggle - fixed bottom corner */}
       <div className="fixed bottom-4 right-4 z-50">

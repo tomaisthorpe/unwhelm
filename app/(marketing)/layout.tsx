@@ -1,5 +1,6 @@
 import { ReactNode } from "react";
 import { DarkModeToggle } from "@/components/dark-mode-toggle";
+import { Footer } from "@/components/footer";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -36,31 +37,7 @@ export default function MarketingLayout({ children }: { children: ReactNode }) {
 
       <main>{children}</main>
 
-      <footer className="border-t border-gray-100 dark:border-gray-800 mt-24">
-        <div className="max-w-5xl mx-auto px-6 py-10 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-gray-500 dark:text-gray-400">
-          <div className="flex items-center gap-2">
-            <Image src="/unwhelm.svg" alt="unwhelm" width={20} height={20} />
-            <span>unwhelm</span>
-          </div>
-          <p className="text-center">
-            Questions or feedback?{" "}
-            <a
-              href="mailto:hello@unwhelm.app"
-              className="underline underline-offset-4 hover:text-gray-900 dark:hover:text-gray-100 transition-colors"
-            >
-              hello@unwhelm.app
-            </a>
-          </p>
-          <div className="flex gap-6">
-            <Link href="/auth/signin" className="hover:text-gray-900 dark:hover:text-gray-100 transition-colors">
-              Sign in
-            </Link>
-            <Link href="/auth/signup" className="hover:text-gray-900 dark:hover:text-gray-100 transition-colors">
-              Sign up
-            </Link>
-          </div>
-        </div>
-      </footer>
+      <Footer className="mt-24" />
 
       <div className="fixed bottom-4 right-4 z-50">
         <DarkModeToggle />
