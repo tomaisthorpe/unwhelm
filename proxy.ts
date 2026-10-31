@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
+import { customScriptConnectSources } from './lib/custom-head-script'
 
 function setSecurityHeaders(response: NextResponse, csp: string) {
   response.headers.set('Content-Security-Policy', csp)
@@ -33,9 +34,11 @@ function setSecurityHeaders(response: NextResponse, csp: string) {
 export function proxy(request: NextRequest) {
   const nonce = Buffer.from(crypto.randomUUID()).toString('base64')
   const isDevelopment = process.env.NODE_ENV === 'development'
+  const customConnectSources = customScriptConnectSources(process.env.CUSTOM_SCRIPT_CONNECT_SRC)
   const csp = `
     default-src 'self';
     script-src 'self' 'nonce-${nonce}' 'strict-dynamic'${isDevelopment ? " 'unsafe-eval'" : ''};
+    connect-src 'self' ${customConnectSources};
     style-src 'self' 'unsafe-inline';
     img-src 'self' blob: data:;
     font-src 'self';

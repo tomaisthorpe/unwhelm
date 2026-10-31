@@ -4,6 +4,7 @@ import { SerwistProvider } from "@serwist/turbopack/react";
 import { headers } from "next/headers";
 import "./globals.css";
 import { Providers } from "@/components/providers";
+import { customHeadScriptProps } from "@/lib/custom-head-script";
 
 const zain = Zain({
   variable: "--font-zain",
@@ -60,6 +61,7 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const nonce = (await headers()).get("x-nonce") ?? undefined;
+  const customHeadScript = customHeadScriptProps(process.env.CUSTOM_HEAD_SCRIPT);
 
   return (
     <html lang="en">
@@ -69,6 +71,9 @@ export default async function RootLayout({
           nonce={nonce}
           dangerouslySetInnerHTML={{ __html: `(function(){try{var t=localStorage.getItem('unwhelm-theme');if(t==='dark'||((!t||t==='system')&&window.matchMedia('(prefers-color-scheme: dark)').matches)){document.documentElement.classList.add('dark')}}catch(e){}})()` }}
         />
+        {customHeadScript && (
+          <script {...customHeadScript} nonce={nonce} />
+        )}
         {/* PWA Meta Tags */}
         <meta name="application-name" content="unwhelm" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
