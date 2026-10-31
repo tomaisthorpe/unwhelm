@@ -42,6 +42,15 @@ export default function MarketingLayout({ children }: { children: ReactNode }) {
             <Image src="/unwhelm.svg" alt="unwhelm" width={20} height={20} />
             <span>unwhelm</span>
           </div>
+          <p className="text-center">
+            Questions or feedback?{" "}
+            <a
+              href="mailto:hello@unwhelm.app"
+              className="underline underline-offset-4 hover:text-gray-900 dark:hover:text-gray-100 transition-colors"
+            >
+              hello@unwhelm.app
+            </a>
+          </p>
           <div className="flex gap-6">
             <Link href="/auth/signin" className="hover:text-gray-900 dark:hover:text-gray-100 transition-colors">
               Sign in

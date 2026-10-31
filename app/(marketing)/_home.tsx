@@ -694,6 +694,15 @@ export default function MarketingHome() {
               unwhelm
             </span>
           </div>
+          <p className="text-center">
+            Questions or feedback?{" "}
+            <a
+              href="mailto:hello@unwhelm.app"
+              className="underline underline-offset-4 hover:text-gray-900 dark:hover:text-gray-100 transition-colors"
+            >
+              hello@unwhelm.app
+            </a>
+          </p>
           <div className="flex items-center gap-6">
             <a
               href="https://github.com/tomaisthorpe/unwhelm"
