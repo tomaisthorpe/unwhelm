@@ -1,6 +1,11 @@
-import { CheckCircle2, Clock } from "lucide-react";
+import { ArrowRight, CheckCircle2, Clock } from "lucide-react";
 import { TaskCardContainer } from "@/components/task-card-container";
-import { getCompletedTasks, getContexts, getArchivedContexts, getBurndownData } from "@/lib/data";
+import {
+  getCompletedTasks,
+  getContexts,
+  getArchivedContexts,
+  getBurndownData,
+} from "@/lib/data";
 import { Button } from "@/components/ui/button";
 import { Pagination } from "@/components/pagination";
 import { BurndownChart } from "@/components/burndown-chart";
@@ -24,7 +29,7 @@ function TaskGroup({
   title,
   tasks,
   emptyMessage,
-  contexts
+  contexts,
 }: {
   title: string;
   tasks: Awaited<ReturnType<typeof getCompletedTasks>>["data"];
@@ -34,8 +39,12 @@ function TaskGroup({
   return (
     <div className="bg-white dark:bg-gray-900 rounded-lg shadow-sm mb-6">
       <div className="px-4 py-3 border-b border-gray-200 dark:border-gray-700">
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">{title}</h3>
-        <p className="text-sm text-gray-600 dark:text-gray-400">{tasks.length} tasks</p>
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+          {title}
+        </h3>
+        <p className="text-sm text-gray-600 dark:text-gray-400">
+          {tasks.length} tasks
+        </p>
       </div>
       {tasks.length > 0 ? (
         <div className="divide-y divide-gray-200 dark:divide-gray-700">
@@ -56,7 +65,9 @@ function TaskGroup({
                   </div>
                   {completedDate && (
                     <div className="ml-4 text-right flex-shrink-0">
-                      <div className="text-xs text-gray-500 dark:text-gray-400">Completed</div>
+                      <div className="text-xs text-gray-500 dark:text-gray-400">
+                        Completed
+                      </div>
                       <div className="text-sm font-medium text-gray-700 dark:text-gray-300">
                         {completedDate.toLocaleDateString()}
                       </div>
@@ -93,12 +104,13 @@ export default async function CompletedPage({
   const pageSize = 20;
 
   // Server-side data fetching
-  const [completedResult, activeContexts, archivedContexts, burndownData] = await Promise.all([
-    getCompletedTasks(page, pageSize),
-    getContexts(),
-    getArchivedContexts(),
-    getBurndownData(),
-  ]);
+  const [completedResult, activeContexts, archivedContexts, burndownData] =
+    await Promise.all([
+      getCompletedTasks(page, pageSize),
+      getContexts(),
+      getArchivedContexts(),
+      getBurndownData(),
+    ]);
 
   // Combine active and archived contexts so tasks with archived contexts still show badges
   const contexts = [...activeContexts, ...archivedContexts];
@@ -110,7 +122,7 @@ export default async function CompletedPage({
     const completedDate = startOfDay(new Date(task.completedAt));
     return completedDate.getTime() === today.getTime();
   });
-  
+
   const olderTasks = completedResult.data.filter((task) => {
     if (!task.completedAt) return false;
     const completedDate = startOfDay(new Date(task.completedAt));
@@ -119,67 +131,74 @@ export default async function CompletedPage({
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-6">
-        <PageHeader
-          icon={<div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center"><Clock className="w-5 h-5 text-green-600" /></div>}
-          title="Completed Tasks"
-          subtitle={`${completedResult.totalCount} tasks completed, ordered by completion date`}
-          backHref="/tasks"
-        />
-
-        {/* Burndown Chart */}
-        <div className="mb-6">
-          <BurndownChart data={burndownData} />
-        </div>
-
-        {/* Completed Tasks List */}
-        {completedResult.data.length > 0 ? (
-          <>
-            {/* Today's Completed Tasks */}
-            <TaskGroup
-              title="Today"
-              tasks={todayTasks}
-              emptyMessage="No tasks completed today yet."
-              contexts={contexts}
-            />
-
-            {/* Older Completed Tasks */}
-            <TaskGroup
-              title="Older"
-              tasks={olderTasks}
-              emptyMessage="No older completed tasks."
-              contexts={contexts}
-            />
-
-            {/* Pagination */}
-            <Pagination
-              currentPage={completedResult.currentPage}
-              totalPages={completedResult.totalPages}
-              hasNextPage={completedResult.hasNextPage}
-              hasPreviousPage={completedResult.hasPreviousPage}
-              totalCount={completedResult.totalCount}
-              pageSize={pageSize}
-            />
-          </>
-        ) : (
-          /* Empty State */
-          <div className="bg-white dark:bg-gray-900 rounded-lg shadow-sm p-12">
-            <div className="text-center">
-              <div className="w-16 h-16 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-4">
-                <CheckCircle2 className="w-8 h-8 text-gray-400 dark:text-gray-600" />
-              </div>
-              <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">
-                No completed tasks yet
-              </h3>
-              <p className="text-gray-600 dark:text-gray-400 mb-6">
-                Tasks you complete will appear here, ordered by when you
-                finished them.
-              </p>
-              <Link href="/tasks">
-                <Button>Go to Dashboard</Button>
-              </Link>
-            </div>
+      <PageHeader
+        icon={
+          <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+            <Clock className="w-5 h-5 text-green-600" />
           </div>
-        )}
+        }
+        title="Completed Tasks"
+        subtitle={`${completedResult.totalCount} tasks completed, ordered by completion date`}
+        backHref="/tasks"
+      />
+
+      {/* Burndown Chart */}
+      <div className="mb-6">
+        <BurndownChart data={burndownData} />
+      </div>
+
+      {/* Completed Tasks List */}
+      {completedResult.data.length > 0 ? (
+        <>
+          {/* Today's Completed Tasks */}
+          <TaskGroup
+            title="Today"
+            tasks={todayTasks}
+            emptyMessage="No tasks completed today yet."
+            contexts={contexts}
+          />
+
+          {/* Older Completed Tasks */}
+          <TaskGroup
+            title="Older"
+            tasks={olderTasks}
+            emptyMessage="No older completed tasks."
+            contexts={contexts}
+          />
+
+          {/* Pagination */}
+          <Pagination
+            currentPage={completedResult.currentPage}
+            totalPages={completedResult.totalPages}
+            hasNextPage={completedResult.hasNextPage}
+            hasPreviousPage={completedResult.hasPreviousPage}
+            totalCount={completedResult.totalCount}
+            pageSize={pageSize}
+          />
+        </>
+      ) : (
+        /* Empty State */
+        <div className="bg-white dark:bg-gray-900 rounded-lg shadow-sm p-12">
+          <div className="text-center">
+            <div className="w-16 h-16 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-4">
+              <CheckCircle2 className="w-8 h-8 text-gray-400 dark:text-gray-600" />
+            </div>
+            <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">
+              No completed tasks yet
+            </h3>
+            <p className="text-gray-600 dark:text-gray-400 mb-6">
+              Tasks you complete will appear here, ordered by when you finished
+              them.
+            </p>
+            <Link href="/tasks">
+              <Button>
+                Go to tasks{" "}
+                <ArrowRight className="w-4 h-4" aria-hidden="true" />
+              </Button>
+            </Link>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

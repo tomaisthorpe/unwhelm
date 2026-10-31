@@ -16,7 +16,7 @@ export function PageHeader({
   title,
   subtitle,
   backHref,
-  backLabel = "Back to Dashboard",
+  backLabel = "Back to tasks",
 }: PageHeaderProps) {
   return (
     <div className="mb-6">
@@ -39,7 +39,7 @@ export function PageHeader({
         {backHref && (
           <Link href={backHref} className="shrink-0" title={backLabel}>
             <Button variant="outline" aria-label={backLabel}>
-              <ArrowLeft className="w-4 h-4" />
+              <ArrowLeft className="w-4 h-4" aria-hidden="true" />
               <span className="hidden sm:inline">{backLabel}</span>
             </Button>
           </Link>
