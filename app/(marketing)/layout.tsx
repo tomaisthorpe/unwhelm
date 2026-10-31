@@ -1,6 +1,7 @@
 import { ReactNode } from "react";
 import { DarkModeToggle } from "@/components/dark-mode-toggle";
 import { Footer } from "@/components/footer";
+import { MarketingNav } from "@/components/marketing-nav";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -18,20 +19,7 @@ export default function MarketingLayout({ children }: { children: ReactNode }) {
               unwhelm
             </span>
           </Link>
-          <nav className="flex items-center gap-3">
-            <Link
-              href="/auth/signin"
-              className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 transition-colors px-3 py-1.5"
-            >
-              Sign in
-            </Link>
-            <Link
-              href="/auth/signup"
-              className="text-sm bg-blue-500 hover:bg-blue-600 text-white px-4 py-1.5 rounded-md transition-colors"
-            >
-              Get started
-            </Link>
-          </nav>
+          <MarketingNav />
         </div>
       </header>
 

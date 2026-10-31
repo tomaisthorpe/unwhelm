@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import { cn } from "@/lib/utils";
 
 export function Footer({ className }: { className?: string }) {
@@ -21,6 +22,12 @@ export function Footer({ className }: { className?: string }) {
           </a>
         </p>
         <div className="flex items-center gap-6">
+          <Link
+            href="/changelog"
+            className="hover:text-gray-900 dark:hover:text-gray-100 transition-colors"
+          >
+            Changelog
+          </Link>
           <a
             href="https://github.com/tomaisthorpe/unwhelm"
             target="_blank"
