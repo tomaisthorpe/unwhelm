@@ -1075,37 +1075,41 @@ export function SmartTaskInput({
 
       {/* Help Text */}
       {isInputFocused && (
-        <div className="text-xs text-gray-500 mt-2">
+        <div className="text-xs text-gray-600 dark:text-gray-300 mt-2">
           <div className="font-medium mb-1">Quick syntax:</div>
           <div className="space-y-1">
             <div>
-              <code className="bg-blue-50 text-blue-600 px-1 rounded">
+              <code className="bg-blue-50 text-blue-600 dark:bg-blue-950/50 dark:text-blue-300 px-1 rounded">
                 !context
               </code>{" "}
               for context{" "}
-              <span className="text-gray-400">(type ! to see suggestions)</span>
+              <span className="text-gray-500 dark:text-gray-400">
+                (type ! to see suggestions)
+              </span>
             </div>
             <div>
-              <code className="bg-green-50 text-green-600 px-1 rounded">
+              <code className="bg-green-50 text-green-600 dark:bg-green-950/50 dark:text-green-300 px-1 rounded">
                 #tag
               </code>{" "}
               for tags{" "}
-              <span className="text-gray-400">(type # to see suggestions)</span>
+              <span className="text-gray-500 dark:text-gray-400">
+                (type # to see suggestions)
+              </span>
             </div>
             <div>
-              <code className="bg-purple-50 text-purple-600 px-1 rounded">
+              <code className="bg-purple-50 text-purple-600 dark:bg-purple-950/50 dark:text-purple-300 px-1 rounded">
                 p1/p2/p3
               </code>{" "}
               for priority (high/medium/low)
             </div>
             <div>
-              <code className="bg-orange-50 text-orange-600 px-1 rounded">
+              <code className="bg-orange-50 text-orange-600 dark:bg-orange-950/50 dark:text-orange-300 px-1 rounded">
                 tomorrow, next week, in 3 days
               </code>{" "}
               for due dates
             </div>
             <div>
-              <code className="bg-cyan-50 text-cyan-600 px-1 rounded">
+              <code className="bg-cyan-50 text-cyan-600 dark:bg-cyan-950/50 dark:text-cyan-300 px-1 rounded">
                 daily, weekly, every day, every week, every 4 days
               </code>{" "}
               for recurring tasks
