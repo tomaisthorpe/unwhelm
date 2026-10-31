@@ -339,16 +339,18 @@ export default function MarketingHome() {
             <span className="text-blue-500">turn into a guilt machine.</span>
           </h1>
           <p className="mt-6 text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto leading-relaxed">
-            Task lists are overwhelming. unwhelm scores every task by urgency so
-            you always know what to work on next, and organises by context so
-            you only see what&apos;s relevant right now.
+            Task lists can be overwhelming.{" "}
+            <span className="font-brand font-bold text-gray-900 dark:text-gray-100">
+              unwhelm
+            </span>{" "}
+            scores every task by urgency so you know what to work on next, and
+            organises by context so you only see what&apos;s relevant right now.
           </p>
           <p className="mt-3 text-sm text-gray-400 dark:text-gray-500">
             <span className="font-medium text-gray-600 dark:text-gray-400">
               Free to use.
             </span>{" "}
-            If paid plans are ever introduced, existing users will be
-            grandfathered in.
+            If paid plans ever arrive, existing users will keep free access.
           </p>
           <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link
@@ -429,10 +431,16 @@ export default function MarketingHome() {
         <section className="bg-gray-50 dark:bg-gray-950 py-20">
           <div className="max-w-5xl mx-auto px-6">
             <h2 className="text-3xl font-bold font-brand text-gray-900 dark:text-gray-100 text-center mb-3">
-              Built for personal life, not project management
+              Built for your personal life
             </h2>
             <p className="text-center text-gray-500 dark:text-gray-400 mb-12 max-w-xl mx-auto">
-              No AI summaries, no gamification, no shame language.
+              <span className="font-bold font-brand text-gray-900 dark:text-gray-100">
+                unwhelm{" "}
+              </span>
+              is built to help you keep on top of your personal task lists. It
+              helps you know what to do next without becoming overwhelmed, by
+              showing you only what you need to see. There&apos;s no AI
+              summaries, gamification, or shame language.
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {[
@@ -440,37 +448,37 @@ export default function MarketingHome() {
                   icon: TrendingUp,
                   title: "Urgency scoring that explains itself",
                   description:
-                    "No more doom-scrolling through 40 overdue items wondering where to start. Each task gets a score and you can see exactly what's driving it.",
+                    "Forty overdue task and no idea where to start? Every task gets a score, and hovering over it shows what's pushing it up the list.",
                 },
                 {
                   icon: MapPin,
                   title: "Organised by context",
                   description:
-                    "Kitchen, coding, errands, phone calls. Personal life doesn't run on projects and deadlines. When you're in the kitchen, you see kitchen tasks.",
+                    "Most of life isn't a project with a deadline. Sort your tasks by place or type of work, such as kitchen, coding, or finances.",
                 },
                 {
                   icon: RefreshCw,
                   title: "Habits without broken streaks",
                   description:
-                    'A habit you haven\'t done in a while is "getting due", not overdue. No streak to protect, no shame when life gets in the way.',
+                    'A habit you haven\'t done in a while is "getting due", not overdue. If you miss a week, nothing resets. It will still be there when you come back.',
                 },
                 {
                   icon: Languages,
                   title: "Natural language input",
                   description:
-                    'Type "call dentist !phone p1 next friday" and it parses the context, priority, and date. Quick capture, no form.',
+                    "Type “call dentist !phone p1 next friday” and the context, priority and date are filled in for you. If you’d rather use a form, that works too.",
                 },
                 {
                   icon: BarChart2,
                   title: "Context health at a glance",
                   description:
-                    "Each context shows how well-maintained that area of your life is, based on habit completion. Not a productivity score. Just useful signal.",
+                    "Each context shows how its habits are going, so you can see which part of your life is getting attention and which is quietly slipping.",
                 },
                 {
                   icon: Smartphone,
-                  title: "PWA",
+                  title: "Works like an app",
                   description:
-                    "Installs to your home screen on iOS, Android, and desktop. Badge count on the icon shows how many tasks are due today.",
+                    "Add it to your home screen on iOS and Android, or install it on desktop. The icon badge counts what's due today.",
                 },
               ].map(({ icon: Icon, title, description }) => (
                 <div
@@ -502,7 +510,7 @@ export default function MarketingHome() {
               <p className="text-gray-600 dark:text-gray-400 leading-relaxed mb-6">
                 Inspired by TaskWarrior&apos;s urgency model, scores are
                 calculated from priority, age, due date, and tags. Each factor
-                is visible, not hidden behind an algorithm. If the score
+                is visible and not hidden behind an algorithm. If the score
                 doesn&apos;t match your gut, you can tune the coefficients.
               </p>
               <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
@@ -569,18 +577,21 @@ export default function MarketingHome() {
               />
               <div>
                 <h2 className="text-3xl font-bold font-brand text-gray-900 dark:text-gray-100 mb-4">
-                  Habits without the shame cycle
+                  Habits that don't punish you
                 </h2>
                 <p className="text-gray-600 dark:text-gray-400 leading-relaxed mb-6">
                   Most habit apps live or die by the streak. Miss one day and
-                  the guilt kicks in. unwhelm doesn&apos;t work like that. A
-                  habit you haven&apos;t done in a while is just &ldquo;getting
-                  due&rdquo;. No broken streak, no lecture.
+                  the guilt kicks in.{" "}
+                  <span className="font-brand font-bold text-gray-900 dark:text-gray-100">
+                    unwhelm
+                  </span>{" "}
+                  doesn&apos;t work like that. A habit you haven&apos;t done in
+                  a while is just &ldquo;getting due&rdquo;. No broken streak.
                 </p>
                 <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
-                  Four types (streak, learning, wellness, maintenance) each
-                  treated differently. A cleaning habit doesn&apos;t need the
-                  same energy as a daily run.
+                  There are four types: streak, learning, wellness, and
+                  maintenance A cleaning habit doesn&apos;t need the same energy
+                  as a daily run, so they don&apos;t get treated the same.
                 </p>
               </div>
             </div>
@@ -594,15 +605,18 @@ export default function MarketingHome() {
               Your workflows won&apos;t break overnight
             </h2>
             <p className="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto leading-relaxed mb-6">
-              Most productivity apps redesign themselves every 18 months.
-              Layouts change, features move, things you relied on quietly
-              disappear. The mental overhead of keeping up with the tool defeats
-              the point of having one.
+              Most productivity apps seem to redesign themselves every 18
+              months. Layouts change, features move, and things you relied on
+              quietly disappear. The mental overhead of keeping up with the tool
+              defeats the point of having one.
             </p>
             <p className="text-gray-700 dark:text-gray-300 font-medium max-w-xl mx-auto">
-              unwhelm is a small, focused app. The UI stays stable. The core
-              concepts don&apos;t shift. What works today will still work next
-              year.
+              <span className="font-brand font-bold text-gray-900 dark:text-gray-100">
+                unwhelm
+              </span>{" "}
+              is a small, focused app. The UI and the core concepts don&apos;t
+              shift, so the way you use it today is teh way you&apos;ll use it
+              next year.
             </p>
           </div>
         </section>
@@ -612,8 +626,8 @@ export default function MarketingHome() {
           <h2 className="text-4xl font-bold font-brand text-gray-900 dark:text-gray-100 mb-4">
             Give it a go
           </h2>
-          <p className="text-gray-600 dark:text-gray-400 mb-10 max-w-md mx-auto">
-            No onboarding wizard. Sign up and start adding tasks.
+          <p className="text-gray-600 dark:text-gray-400 mb-10 mx-auto">
+            There&apos;s no onboarding wizard. Sign up and start adding tasks.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
@@ -637,7 +651,9 @@ export default function MarketingHome() {
         <div className="max-w-5xl mx-auto px-6 py-10 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-gray-500 dark:text-gray-400">
           <div className="flex items-center gap-2">
             <Image src="/unwhelm.svg" alt="unwhelm" width={20} height={20} />
-            <span>unwhelm</span>
+            <span className="font-brand font-bold text-gray-900 dark:text-gray-100">
+              unwhelm
+            </span>
           </div>
           <div className="flex gap-6">
             <Link
