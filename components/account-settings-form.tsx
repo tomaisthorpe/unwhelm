@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
+import { signOut } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -264,10 +265,7 @@ export function AccountSettingsForm({
         setCurrentPassword("");
         setNewPassword("");
         setConfirmPassword("");
-        setPasswordMessage({
-          type: "success",
-          text: "Password changed successfully",
-        });
+        await signOut({ callbackUrl: "/auth/signin" });
       } catch (error) {
         setPasswordMessage({
           type: "error",

@@ -40,6 +40,7 @@ export const authOptions = {
           id: user.id,
           email: user.email,
           name: user.name,
+          sessionVersion: user.sessionVersion,
         };
       },
     }),
@@ -52,21 +53,22 @@ export const authOptions = {
     async jwt({ token, user }: { token: any; user: any }) {
       if (user) {
         token.id = user.id;
+        token.sessionVersion = user.sessionVersion;
       }
       return token;
     },
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     async session({ session, token }: { session: any; token: any }) {
       if (token?.id) {
-        // Validate that the user still exists in the database
+        // Check the account and revoke sessions issued before a password change.
         try {
           const user = await prisma.user.findUnique({
             where: { id: token.id as string },
-            select: { id: true }, // Only select id to minimize query cost
+            select: { id: true, sessionVersion: true },
           });
 
-          if (!user) {
-            // User no longer exists, return null to invalidate session
+          // Tokens issued before versioning was introduced are always version 0.
+          if (!user || (token.sessionVersion ?? 0) !== user.sessionVersion) {
             return null;
           }
 

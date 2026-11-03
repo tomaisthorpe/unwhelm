@@ -47,6 +47,7 @@ model User {
   emailVerified          DateTime?
   image                  String?
   password               String? // For credentials auth
+  sessionVersion         Int       @default(0)
   role                   UserRole  @default(USER)
   apiKey                 String?   @unique // For read-only API access (e.g. e-ink dashboard)
   taskReminderEnabled    Boolean   @default(false)

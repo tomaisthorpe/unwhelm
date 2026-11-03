@@ -803,10 +803,10 @@ export async function changePasswordAction(
   // Hash new password
   const hashedPassword = await bcrypt.hash(newPassword, 10);
 
-  // Update password
+  // Change the password and revoke existing sessions atomically.
   await prisma.user.update({
     where: { id: userId },
-    data: { password: hashedPassword },
+    data: { password: hashedPassword, sessionVersion: { increment: 1 } },
   });
 }
 
