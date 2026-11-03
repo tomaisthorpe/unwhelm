@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
-import { createInboxContext } from "@/lib/server-actions";
+import { createInboxContext } from "@/lib/inbox-context";
 import { z } from "zod";
 import { signupSchema } from "@/lib/validation";
 

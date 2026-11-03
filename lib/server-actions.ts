@@ -20,6 +20,7 @@ import { revalidatePath } from "next/cache";
 import bcrypt from "bcryptjs";
 import { FEATURE_LIMITS, FEATURE_LIMIT_ERRORS } from "./feature-limits";
 import { isPlannedToday } from "./today-plan";
+import { getOrCreateInboxContext } from "./inbox-context";
 
 // Get authenticated user or redirect
 async function getAuthenticatedUser() {
@@ -28,42 +29,6 @@ async function getAuthenticatedUser() {
     redirect("/auth/signin");
   }
   return session.user.id;
-}
-
-// Helper function to create an inbox context for a user
-export async function createInboxContext(userId: string) {
-  try {
-    const inboxContext = await prisma.context.create({
-      data: {
-        name: "Inbox",
-        description: "Default context for new tasks",
-        icon: "Inbox",
-        color: "bg-blue-500",
-        coefficient: 0.0,
-        isInbox: true,
-        userId,
-      },
-    });
-    return inboxContext;
-  } catch (error) {
-    console.error("Error creating inbox context:", error);
-    throw error;
-  }
-}
-
-// Helper function to get or create user's inbox context
-export async function getOrCreateInboxContext(userId: string) {
-  // First try to find existing inbox
-  let inboxContext = await prisma.context.findFirst({
-    where: { userId, isInbox: true },
-  });
-
-  // If no inbox exists, create one
-  if (!inboxContext) {
-    inboxContext = await createInboxContext(userId);
-  }
-
-  return inboxContext;
 }
 
 // Server action to toggle task completion

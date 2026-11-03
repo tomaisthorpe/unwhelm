@@ -28,4 +28,13 @@ const serwist = new Serwist({
   ],
 });
 
-serwist.addEventListeners();
+// External scripts keep the page's CSP context instead of being fetched under
+// the worker's policy, which cannot carry the page's script nonce.
+self.addEventListener("install", serwist.handleInstall);
+self.addEventListener("activate", serwist.handleActivate);
+self.addEventListener("message", serwist.handleCache);
+self.addEventListener("fetch", (event) => {
+  if (new URL(event.request.url).origin === self.location.origin) {
+    serwist.handleFetch(event);
+  }
+});
