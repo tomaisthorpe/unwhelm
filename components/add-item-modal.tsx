@@ -45,7 +45,7 @@ import {
   Calendar,
 } from "lucide-react";
 import type { Task, Context, Tag } from "@/lib/data";
-import { contextIconOptions } from "@/lib/context-icons";
+import { ContextIconPicker } from "@/components/context-icon-picker";
 
 // Context form schema
 const contextSchema = z.object({
@@ -559,7 +559,14 @@ function ItemModal({
         }}
         modal={true}
       >
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto bg-white dark:bg-gray-900 shadow-xl rounded-2xl border-0">
+      <DialogContent
+        className="max-w-2xl max-h-[90vh] overflow-y-auto bg-white dark:bg-gray-900 shadow-xl rounded-2xl border-0"
+        onEscapeKeyDown={(event) => {
+          if (event.target instanceof Element && event.target.closest("[data-context-icon-picker]")) {
+            event.preventDefault();
+          }
+        }}
+      >
         <DialogHeader>
           <div className="flex items-center justify-between">
             <DialogTitle>
@@ -698,22 +705,11 @@ function ItemModal({
 
               <div>
                 <Label htmlFor={getFieldId("icon")}>Icon</Label>
-                <Select
+                <ContextIconPicker
+                  id={getFieldId("icon")}
                   value={contextForm.watch("icon")}
                   onValueChange={(value) => contextForm.setValue("icon", value)}
-                >
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent className="max-h-60">
-                    {contextIconOptions.map(({ value, icon: Icon, label }) => (
-                      <SelectItem key={value} value={value}>
-                        <Icon className="w-4 h-4 inline mr-2" />
-                        {label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                />
               </div>
 
               <div>
