@@ -21,7 +21,7 @@ test("smart input parses task details and saves the task", async ({ authenticate
   await expect(form.getByText("Task Preview", { exact: true })).toBeVisible();
   // The preview follows the input's decorative text overlay.
   await expect(form.getByText(title, { exact: true }).last()).toBeVisible();
-  await expect(form.getByText("HIGH", { exact: true })).toBeVisible();
+  await expect(form.getByText("↑ High", { exact: true })).toBeVisible();
   await expect(form.getByText("Inbox", { exact: true })).toBeVisible();
   await expect(form.getByText("groceries", { exact: true })).toBeVisible();
   await expect(form.getByText("Tomorrow", { exact: true })).toBeVisible();
