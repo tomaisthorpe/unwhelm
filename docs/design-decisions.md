@@ -30,6 +30,12 @@ This document captures the key design decisions made during Todone's development
 
 ## UI Architecture Decisions
 
+### Priority Search
+
+**Decision**: Use `p1` (high), `p2` (medium), and `p3` (low) in dashboard search, matching the smart task input syntax. Combine priority with text or a tag, such as `#work p1`. Multiple priorities include tasks matching any selected priority.
+
+**Impact**: Focus and context task lists use the same search rules. Matching contexts expand temporarily; context habit health and due counts continue to reflect the full context.
+
 ### Unified Task Lists
 
 **Decision**: Show habits and tasks in the same list, sorted by urgency.

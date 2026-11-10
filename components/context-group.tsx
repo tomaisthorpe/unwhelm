@@ -16,6 +16,7 @@ import {
   useCollapsible,
 } from "./context-collapsible";
 import type { Task, Context, Tag } from "@/lib/data";
+import { parseTaskSearch, matchesTaskSearch } from "@/lib/task-search";
 import { ContextIcon } from "@/lib/context-icons";
 import { HighlightedText } from "@/components/ui/highlighted-text";
 
@@ -181,6 +182,9 @@ export function ContextGroup({
       return b.urgency - a.urgency;
     });
 
+  const search = parseTaskSearch(searchQuery ?? "");
+  const visibleTasks = contextTasks.filter((task) => matchesTaskSearch(task, search, context));
+
   const completion = getContextCompletion(contextTasks);
   const hasHabits = completion.total > 0;
 
@@ -208,15 +212,15 @@ export function ContextGroup({
           completion={completion}
           todayTasksInContext={todayTasksInContext}
           hasHabits={hasHabits}
-          searchQuery={searchQuery}
+          searchQuery={search.text}
           onEditContext={onEditContext}
           addTaskNode={addTaskNode}
         />
         <ContextCollapsibleContent>
           <div className="p-2 md:p-4">
-            {contextTasks.length > 0 ? (
+            {visibleTasks.length > 0 ? (
               <div className="space-y-1">
-                {contextTasks.map((task) =>
+                {visibleTasks.map((task) =>
                   readOnly ? (
                     <TaskCard
                       key={task.id}
@@ -242,7 +246,7 @@ export function ContextGroup({
               </div>
             ) : (
               <p className="text-sm text-gray-500 dark:text-gray-400 text-center py-4">
-                No tasks in this context
+                {searchQuery?.trim() ? "No tasks match your search" : "No tasks in this context"}
               </p>
             )}
           </div>

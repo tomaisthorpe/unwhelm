@@ -34,6 +34,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import type { Task, Tag as TagType } from "@/lib/data";
+import { parseTaskSearch } from "@/lib/task-search";
 
 interface TaskCardProps {
   task: Task;
@@ -153,7 +154,7 @@ export function TaskCard({
   showContext = false,
   showUrgency = true,
   onContextClick,
-  searchQuery,
+  searchQuery: rawSearchQuery,
   onTagClick,
   onDataChange,
   readOnly,
@@ -163,6 +164,12 @@ export function TaskCard({
   isPlanPending,
   planError,
 }: TaskCardProps) {
+  const search = parseTaskSearch(rawSearchQuery ?? "");
+  const searchQuery = search.text;
+  const priorityMatches = search.priorities.includes(task.priority);
+  const priorityLabel = task.priority === "HIGH"
+    ? "↑ High"
+    : task.priority === "LOW" ? "↓ Low" : "Medium";
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const dateInfo = formatDateForTask(task.dueDate);
   const habitStatus =
@@ -403,6 +410,7 @@ export function TaskCard({
                 task.tags.length > 0 ||
                 task.notes ||
                 task.priority !== "MEDIUM" ||
+                priorityMatches ||
                 (task.subtasks && task.subtasks.length > 0)) && (
                 <div className="flex flex-wrap items-center gap-x-2 md:gap-x-3 mt-1">
                   {showContext &&
@@ -437,7 +445,7 @@ export function TaskCard({
                         {taskContext.name}
                       </span>
                     ))}
-                  {task.priority !== "MEDIUM" && (
+                  {(task.priority !== "MEDIUM" || priorityMatches) && (
                     <span
                       className={cn(
                         "inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium mb-1",
@@ -446,7 +454,10 @@ export function TaskCard({
                           : "bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400",
                       )}
                     >
-                      {task.priority === "HIGH" ? "↑ High" : "↓ Low"}
+                      <HighlightedText
+                        text={priorityLabel}
+                        searchQuery={priorityMatches ? priorityLabel : undefined}
+                      />
                     </span>
                   )}
                   {showUrgency && habitStatus && (

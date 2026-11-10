@@ -9,6 +9,7 @@ import {
   shouldHabitShowAsAvailable,
 } from "@/lib/utils";
 import type { Task, Tag } from "@/lib/data";
+import { parseTaskSearch, matchesTaskSearch } from "@/lib/task-search";
 import { Button } from "@/components/ui/button";
 
 interface FocusSectionProps {
@@ -133,25 +134,10 @@ export function FocusSection({
       : selectedTab === "due"
         ? dueTasks
         : plannedTasks;
-  const normalizedSearchQuery = searchQuery?.trim().toLowerCase() ?? "";
-  const normalizedTagSearchQuery = normalizedSearchQuery.replace(/^#+/, "");
-  const currentTasks = normalizedSearchQuery
-    ? tabTasks.filter((task) => {
-        const contextName = contexts.find(
-          (context) => context.id === task.contextId,
-        )?.name;
-
-        return (
-          task.title.toLowerCase().includes(normalizedSearchQuery) ||
-          task.notes?.toLowerCase().includes(normalizedSearchQuery) ||
-          (normalizedTagSearchQuery.length > 0 &&
-            task.tags.some((tag) =>
-              tag.toLowerCase().includes(normalizedTagSearchQuery),
-            )) ||
-          contextName?.toLowerCase().includes(normalizedSearchQuery)
-        );
-      })
-    : tabTasks;
+  const search = parseTaskSearch(searchQuery ?? "");
+  const currentTasks = tabTasks.filter((task) =>
+    matchesTaskSearch(task, search, contexts.find((context) => context.id === task.contextId)),
+  );
 
   const completedCount = currentTasks.filter((task) => task.completed).length;
   const overdueCount =

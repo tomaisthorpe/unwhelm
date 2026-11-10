@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ChevronDown, ChevronUp, Archive, Search, X } from "lucide-react";
 import type { Context, Task, Tag } from "@/lib/data";
+import { parseTaskSearch, matchesTaskSearch, matchesContextSearch } from "@/lib/task-search";
 import { ContextGroup } from "@/components/context-group";
 import { ContextGroupContainer } from "@/components/context-group-container";
 import { ArchivedContexts } from "@/components/archived-contexts";
@@ -57,45 +58,20 @@ export function ContextsSection({
     onCollapsedStateChange?.(next);
   };
 
-  // Helper function to check if a context has tasks matching the search query
-  const hasTaskMatches = (context: Context): boolean => {
-    if (searchQuery.trim() === "") return false;
+  const search = parseTaskSearch(searchQuery);
+  const hasSearch = searchQuery.trim() !== "";
 
-    const contextTasks = tasks.filter((task) => task.contextId === context.id);
-    const searchLower = searchQuery.toLowerCase();
-    const tagSearchLower = searchLower.replace(/^#+/, "");
-
-    return contextTasks.some(
-      (task) =>
-        task.title.toLowerCase().includes(searchLower) ||
-        task.notes?.toLowerCase().includes(searchLower) ||
-        (tagSearchLower.length > 0 &&
-          task.tags.some((tag) => tag.toLowerCase().includes(tagSearchLower))),
+  const hasTaskMatches = (context: Context): boolean =>
+    hasSearch && tasks.some((task) =>
+      task.contextId === context.id && matchesTaskSearch(task, search, context),
     );
-  };
 
-  // Filter contexts based on search query
-  const filteredContexts =
-    searchQuery.trim() === ""
-      ? contexts
-      : contexts.filter((context) => {
-          // Check if context name matches
-          if (context.name.toLowerCase().includes(searchQuery.toLowerCase())) {
-            return true;
-          }
-
-          // Check if context description matches
-          if (
-            context.description
-              ?.toLowerCase()
-              .includes(searchQuery.toLowerCase())
-          ) {
-            return true;
-          }
-
-          // Check if any tasks in this context match the search
-          return hasTaskMatches(context);
-        });
+  const filteredContexts = !hasSearch
+    ? contexts
+    : contexts.filter((context) =>
+        (search.priorities.length === 0 && matchesContextSearch(context, search.text)) ||
+        hasTaskMatches(context),
+      );
 
   // Check if all contexts are effectively collapsed/expanded
   // This takes into account temporary expansion due to search matches
@@ -183,24 +159,26 @@ export function ContextsSection({
 
         {/* Search Input */}
         {!hideSearch && (
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
-            <Input
-              type="text"
-              placeholder="Search tasks, contexts, or tags..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 pr-10 bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700 focus:bg-white dark:focus:bg-gray-900 dark:text-gray-100 dark:placeholder:text-gray-500"
-            />
-            {searchQuery && (
-              <button
-                onClick={() => setSearchQuery("")}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
-                aria-label="Clear search"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            )}
+          <div className="space-y-1">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+              <Input
+                type="text"
+                placeholder="Search tasks, contexts, or tags..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10 pr-10 bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700 focus:bg-white dark:focus:bg-gray-900 dark:text-gray-100 dark:placeholder:text-gray-500"
+              />
+              {searchQuery && (
+                <button
+                  onClick={() => setSearchQuery("")}
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                  aria-label="Clear search"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              )}
+            </div>
           </div>
         )}
       </div>
