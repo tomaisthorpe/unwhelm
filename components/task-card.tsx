@@ -35,6 +35,7 @@ import {
 } from "@/components/ui/tooltip";
 import type { Task, Tag as TagType } from "@/lib/data";
 import { parseTaskSearch } from "@/lib/task-search";
+import { PriorityBadge } from "@/components/priority-badge";
 
 interface TaskCardProps {
   task: Task;
@@ -167,9 +168,6 @@ export function TaskCard({
   const search = parseTaskSearch(rawSearchQuery ?? "");
   const searchQuery = search.text;
   const priorityMatches = search.priorities.includes(task.priority);
-  const priorityLabel = task.priority === "HIGH"
-    ? "↑ High"
-    : task.priority === "LOW" ? "↓ Low" : "Medium";
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const dateInfo = formatDateForTask(task.dueDate);
   const habitStatus =
@@ -446,19 +444,11 @@ export function TaskCard({
                       </span>
                     ))}
                   {(task.priority !== "MEDIUM" || priorityMatches) && (
-                    <span
-                      className={cn(
-                        "inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium mb-1",
-                        task.priority === "HIGH"
-                          ? "bg-red-100 dark:bg-red-950/50 text-red-700 dark:text-red-400"
-                          : "bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400",
-                      )}
-                    >
-                      <HighlightedText
-                        text={priorityLabel}
-                        searchQuery={priorityMatches ? priorityLabel : undefined}
-                      />
-                    </span>
+                    <PriorityBadge
+                      priority={task.priority}
+                      highlighted={priorityMatches}
+                      className="mb-1"
+                    />
                   )}
                   {showUrgency && habitStatus && (
                     <span

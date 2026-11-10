@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { TaskForm, type TaskFormData } from "@/components/task-form";
+import { PriorityBadge } from "@/components/priority-badge";
 import { getExistingTags } from "@/lib/server-actions";
 import { useDashboardActions } from "@/lib/hooks/use-dashboard-actions";
 import {
@@ -748,19 +749,6 @@ export function SmartTaskInput({
     });
   };
 
-  const getPriorityColor = (priority: string) => {
-    switch (priority) {
-      case "HIGH":
-        return "text-red-600 bg-red-50 border-red-200";
-      case "MEDIUM":
-        return "text-yellow-600 bg-yellow-50 border-yellow-200";
-      case "LOW":
-        return "text-green-600 bg-green-50 border-green-200";
-      default:
-        return "text-gray-600 bg-gray-50 border-gray-200";
-    }
-  };
-
   const formatDate = (date: Date | null) => {
     if (!date) return null;
 
@@ -937,9 +925,7 @@ export function SmartTaskInput({
                 <div>
                   <div className="text-xs text-gray-500 mb-1">Priority</div>
                   <div className="text-sm">
-                    <Badge className={getPriorityColor(parsedTask.priority)}>
-                      {parsedTask.priority}
-                    </Badge>
+                    <PriorityBadge priority={parsedTask.priority} />
                   </div>
                 </div>
 
