@@ -135,69 +135,84 @@ export function ContextsSection({
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">Contexts</h2>
-          {!readOnly && (
-            <AddContextModal
-              contexts={contexts}
-              onDataChange={onDataChange}
+      <div
+        ref={searchContainerRef}
+        className={
+          hideSearch
+            ? "space-y-4"
+            : "sticky top-0 z-20 -mx-4 space-y-4 bg-gray-50 px-4 py-4 dark:bg-gray-950"
+        }
+      >
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">Contexts</h2>
+            {!readOnly && (
+              <AddContextModal
+                contexts={contexts}
+                onDataChange={onDataChange}
+              />
+            )}
+          </div>
+          <div className="flex items-center gap-1 sm:gap-2">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100"
+              onClick={handleExpandAll}
+              disabled={allExpanded}
+              aria-label="Expand all contexts"
+              title="Expand all contexts"
+            >
+              <ChevronDown className="w-4 h-4 sm:mr-1" />
+              <span className="hidden sm:inline">Expand all</span>
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100"
+              onClick={handleCollapseAll}
+              disabled={allCollapsed}
+              aria-label="Collapse all contexts"
+              title="Collapse all contexts"
+            >
+              <ChevronUp className="w-4 h-4 sm:mr-1" />
+              <span className="hidden sm:inline">Collapse all</span>
+            </Button>
+          </div>
+        </div>
+
+        {/* Search Input */}
+        {!hideSearch && (
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+            <Input
+              type="text"
+              placeholder="Search tasks, contexts, or tags..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-10 pr-10 bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700 focus:bg-white dark:focus:bg-gray-900 dark:text-gray-100 dark:placeholder:text-gray-500"
             />
-          )}
-        </div>
-        <div className="flex items-center gap-1 sm:gap-2">
-          <Button
-            variant="ghost"
-            size="sm"
-            className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100"
-            onClick={handleExpandAll}
-            disabled={allExpanded}
-            aria-label="Expand all contexts"
-            title="Expand all contexts"
-          >
-            <ChevronDown className="w-4 h-4 sm:mr-1" />
-            <span className="hidden sm:inline">Expand all</span>
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100"
-            onClick={handleCollapseAll}
-            disabled={allCollapsed}
-            aria-label="Collapse all contexts"
-            title="Collapse all contexts"
-          >
-            <ChevronUp className="w-4 h-4 sm:mr-1" />
-            <span className="hidden sm:inline">Collapse all</span>
-          </Button>
-        </div>
+            {searchQuery && (
+              <button
+                onClick={() => setSearchQuery("")}
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                aria-label="Clear search"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            )}
+          </div>
+        )}
       </div>
 
-      {/* Search Input */}
-      {!hideSearch && (
-        <div ref={searchContainerRef} className="relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
-          <Input
-            type="text"
-            placeholder="Search tasks, contexts, or tags..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10 pr-10 bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700 focus:bg-white dark:focus:bg-gray-900 dark:text-gray-100 dark:placeholder:text-gray-500"
-          />
-          {searchQuery && (
-            <button
-              onClick={() => setSearchQuery("")}
-              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
-              aria-label="Clear search"
-            >
-              <X className="w-4 h-4" />
-            </button>
-          )}
-        </div>
-      )}
-
       {filteredContexts.length > 0 ? (
-        <div className="grid grid-cols-1 gap-4">
+        <div
+          className={
+            hideSearch
+              ? "grid grid-cols-1 gap-4"
+              : "grid grid-cols-1 gap-4 *:scroll-mt-32"
+          }
+        >
           {filteredContexts.map((context) => {
             // Compute effective collapsed state
             // If search is active and context has task matches, temporarily expand it
