@@ -15,21 +15,37 @@ const SelectValue = SelectPrimitive.Value;
 const SelectTrigger = React.forwardRef<
   React.ElementRef<typeof SelectPrimitive.Trigger>,
   React.ComponentPropsWithoutRef<typeof SelectPrimitive.Trigger>
->(({ className, children, ...props }, ref) => (
-  <SelectPrimitive.Trigger
-    ref={ref}
-    className={cn(
-      "flex h-9 w-full items-center justify-between whitespace-nowrap rounded-md border border-input bg-white dark:bg-input/30 px-3 py-2 text-sm shadow-xs ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1",
-      className,
-    )}
-    {...props}
-  >
-    {children}
-    <SelectPrimitive.Icon asChild>
-      <ChevronDown className="h-4 w-4 opacity-50" />
-    </SelectPrimitive.Icon>
-  </SelectPrimitive.Trigger>
-));
+>(({ className, children, onPointerDown, onClick, ...props }, ref) => {
+  const pointerStartedClosed = React.useRef(false);
+
+  return (
+    <SelectPrimitive.Trigger
+      ref={ref}
+      className={cn(
+        "flex h-9 w-full items-center justify-between whitespace-nowrap rounded-md border border-input bg-white dark:bg-input/30 px-3 py-2 text-sm shadow-xs ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1",
+        className,
+      )}
+      onPointerDown={(event) => {
+        pointerStartedClosed.current = event.currentTarget.getAttribute("aria-expanded") !== "true";
+        onPointerDown?.(event);
+        if (!pointerStartedClosed.current) event.preventDefault();
+      }}
+      onClick={(event) => {
+        onClick?.(event);
+        // Touch can retarget the click to this trigger after the menu dismisses,
+        // even though its pointer-down landed on the modal overlay.
+        if (event.detail > 0 && !pointerStartedClosed.current) event.preventDefault();
+        pointerStartedClosed.current = false;
+      }}
+      {...props}
+    >
+      {children}
+      <SelectPrimitive.Icon asChild>
+        <ChevronDown className="h-4 w-4 opacity-50" />
+      </SelectPrimitive.Icon>
+    </SelectPrimitive.Trigger>
+  );
+});
 SelectTrigger.displayName = SelectPrimitive.Trigger.displayName;
 
 const SelectScrollUpButton = React.forwardRef<
@@ -70,7 +86,7 @@ SelectScrollDownButton.displayName =
 const SelectContent = React.forwardRef<
   React.ElementRef<typeof SelectPrimitive.Content>,
   React.ComponentPropsWithoutRef<typeof SelectPrimitive.Content>
->(({ className, children, position = "popper", ...props }, ref) => (
+>(({ className, children, position = "popper", onPointerDownOutside, ...props }, ref) => (
   <SelectPrimitive.Portal>
     <SelectPrimitive.Content
       ref={ref}
@@ -81,6 +97,13 @@ const SelectContent = React.forwardRef<
         className,
       )}
       position={position}
+      onPointerDownOutside={(event) => {
+        onPointerDownOutside?.(event);
+        if (!event.defaultPrevented) {
+          // Mark this interaction as consumed so the parent dialog stays open.
+          event.detail.originalEvent.preventDefault();
+        }
+      }}
       {...props}
     >
       <SelectScrollUpButton />
