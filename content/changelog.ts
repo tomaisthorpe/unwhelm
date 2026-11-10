@@ -1,6 +1,16 @@
 // Add new updates at the top. Dates use YYYY-MM-DD; copy is written for users.
 export const changelog = [
   {
+    date: "2026-11-10",
+    changes: [
+      "Added more context icons and a searchable icon picker.",
+      "Context search and controls now stay visible while you scroll.",
+      "You can now filter tasks by priority using p1, p2 or p3 in search.",
+      "Priority badges are now consistent across task cards and task previews, and the task form lists priorities from high to low.",
+      "Fixed select menus reopening when clicked again, and closing the task modal when clicking outside the menu.",
+    ],
+  },
+  {
     date: "2026-10-31",
     changes: [
       "You're now signed in automatically after creating an account.",
